@@ -1,0 +1,87 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="001" author="vadim.lebediantsev">
+        <createTable tableName="directories">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="external_id" type="uuid">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(125)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="boolean"/>
+        </createTable>
+
+        <createTable tableName="created_files">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="external_id" type="uuid">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(125)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="boolean"/>
+            <column name="directory_id" type="bigint">
+                <constraints foreignKeyName="directory_created_file_fk" references="directories(id)" nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="archive">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="version_file_guid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="edited_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_file_id" type="bigint">
+                <constraints foreignKeyName="created_file_archive_fk" references="created_files(id)" nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="replacing_history">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="replacing_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_directory_id" type="bigint">
+                <constraints foreignKeyName="source_directory_replacing_history_fk" references="directories(id)" nullable="false"/>
+            </column>
+            <column name="target_directory_id" type="bigint">
+                <constraints foreignKeyName="target_directory_replacing_history_fk" references="directories(id)" nullable="false"/>
+            </column>
+            <column name="created_file_id" type="bigint">
+                <constraints foreignKeyName="created_file_replacing_history_fk" references="created_files(id)" nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="events">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="event" type="varchar(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="directory_id" type="bigint">
+                <constraints foreignKeyName="directory_event_fk" references="directories(id)" nullable="true"/>
+            </column>
+            <column name="created_file_id" type="bigint">
+                <constraints foreignKeyName="created_file_event_fk" references="events(id)" nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

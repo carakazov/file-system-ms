@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://localhost:5432/file_system
+    username: file_system_user
+    password: 1q2w3e
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    change-log: classpath:/changelog/master.xml
