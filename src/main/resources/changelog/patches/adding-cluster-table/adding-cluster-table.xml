@@ -1,0 +1,42 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="002" author="vadim.lebediantsev">
+        <createTable tableName="clusters">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="external_id" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="title" type="varchar(125)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_request_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="003" author="vadim.lebediantsev">
+        <addColumn tableName="directories">
+            <column name="cluster_id" type="bigint">
+                <constraints foreignKeyName="cluster_directory_fk" references="clusters(id)" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="004" author="vadim.lebediantsev">
+        <renameTable oldTableName="events" newTableName="delete_history"/>
+        <addColumn tableName="delete_history">
+            <column name="cluster_id" type="bigint">
+                <constraints foreignKeyName="cluster_delete_history_fk" references="clusters(id)" nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

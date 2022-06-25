@@ -13,6 +13,10 @@ public class Directory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "cluster_id")
+    private Cluster cluster;
+
     private UUID externalId = UUID.randomUUID();
 
     private String title;
