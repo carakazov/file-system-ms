@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
-@Entity(name = "events")
-public class Event {
+@Entity(name = "delete_history")
+public class DeleteHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +19,10 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "created_file_id")
     private CreatedFile createdFile;
+
+    @ManyToOne
+    @JoinColumn(name = "cluster_id")
+    private Cluster cluster;
 
     @Enumerated(EnumType.STRING)
     private EventType event;

@@ -3,7 +3,5 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <include file="changelog/init/init-database.xml"/>
-
-    <include file="changelog/patches/patches.xml"/>
+    <include file="changelog/patches/adding-cluster-table/adding-cluster-table.xml"/>
 </databaseChangeLog>
