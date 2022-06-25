@@ -9,4 +9,8 @@ spring:
     enabled: true
     change-log: classpath:/changelog/master.xml
 
-root: root
+application:
+  root: root
+  errorMessages:
+    clusterCreationError: Exception occurred while creating cluster.
+    clusterWithSuchNameAlreadyExists: Cluster with such name already exists.
