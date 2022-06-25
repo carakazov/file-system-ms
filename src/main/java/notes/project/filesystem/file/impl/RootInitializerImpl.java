@@ -2,6 +2,7 @@ package notes.project.filesystem.file.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.file.RootInitializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -18,16 +19,15 @@ import java.nio.file.Path;
 @Slf4j
 @RequiredArgsConstructor
 public class RootInitializerImpl implements RootInitializer {
-    @Value("${root}")
-    private String root;
-
+    private final ApplicationProperties properties;
     private final ApplicationContext applicationContext;
 
     @Override
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
         try {
-            Files.createDirectories(Path.of(root));
+            Files.createDirectories(Path.of(properties.getRoot()));
+            log.info("Root directory named {} successfully created", properties.getRoot());
         } catch (IOException e) {
             log.error("Application stopped with error: {}", e.getMessage());
             SpringApplication.exit(applicationContext, () -> -1);

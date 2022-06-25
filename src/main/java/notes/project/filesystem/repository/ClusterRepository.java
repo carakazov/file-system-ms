@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClusterRepository extends JpaRepository<Cluster, Long> {
+    boolean existsByTitle(String title);
 }

@@ -1,19 +1,30 @@
 package notes.project.filesystem.file.impl;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import notes.project.filesystem.exception.ExceptionCode;
+import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.file.FileManager;
-import org.apache.tomcat.util.http.fileupload.impl.IOFileUploadException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
+import notes.project.filesystem.utils.PathHelper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class FileManagerImpl implements FileManager {
+    private final PathHelper pathHelper;
 
+    @Override
+    public void createCluster(String title) {
+        String fullPath = pathHelper.createPathToCluster(title);
+        try {
+            Files.createDirectories(Path.of(fullPath));
+        } catch (IOException e) {
+            throw new FileSystemException(ExceptionCode.CLUSTER_CREATION_ERROR, e.getMessage());
+        }
+    }
 }
