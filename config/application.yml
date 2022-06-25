@@ -8,3 +8,5 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/changelog/master.xml
+
+root: root
