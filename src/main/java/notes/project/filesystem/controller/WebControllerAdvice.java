@@ -17,7 +17,7 @@ public class WebControllerAdvice {
     private final ErrorHelper errorHelper;
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleCommonException(Exception exception) {
+    public ResponseEntity<ErrorDto> handleCommonException(Exception exception) {
         ErrorDto errorDto = errorHelper.from(exception);
         return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }

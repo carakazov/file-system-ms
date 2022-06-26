@@ -1,6 +1,7 @@
 package notes.project.filesystem.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Data
 @Entity(name = "clusters")
 @EntityListeners(AuditingEntityListener.class)
+@Accessors(chain = true)
 public class Cluster {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
