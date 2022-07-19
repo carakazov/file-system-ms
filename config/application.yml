@@ -8,6 +8,9 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/changelog/master.xml
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 application:
   root: root
