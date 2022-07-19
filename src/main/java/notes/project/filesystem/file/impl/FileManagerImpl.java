@@ -20,7 +20,15 @@ public class FileManagerImpl implements FileManager {
 
     @Override
     public void createCluster(String title) {
-        String fullPath = pathHelper.createPathToCluster(title);
+        create(pathHelper.createPathToCluster(title));
+    }
+
+    @Override
+    public void createDirectory(String clusterTitle, String directoryTitle) {
+        create(pathHelper.createPathToDirectory(clusterTitle, directoryTitle));
+    }
+
+    private synchronized void create(String fullPath) {
         try {
             Files.createDirectories(Path.of(fullPath));
         } catch (IOException e) {

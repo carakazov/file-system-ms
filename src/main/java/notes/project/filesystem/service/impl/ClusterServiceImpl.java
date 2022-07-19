@@ -30,4 +30,14 @@ public class ClusterServiceImpl implements ClusterService {
         Cluster cluster = clusterRepository.save(clusterCreationMapper.from(request));
         return clusterCreationMapper.to(cluster);
     }
+
+    @Override
+    public Boolean clusterExistsByTitle(String clusterTitle) {
+        return clusterRepository.existsByTitle(clusterTitle);
+    }
+
+    @Override
+    public Cluster findByTitle(String clusterTitle) {
+        return clusterRepository.findByTitle(clusterTitle);
+    }
 }

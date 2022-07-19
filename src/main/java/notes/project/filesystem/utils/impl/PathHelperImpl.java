@@ -13,4 +13,9 @@ public class PathHelperImpl implements PathHelper {
     public String createPathToCluster(String clusterTile) {
         return properties.getRoot() + "/" + clusterTile;
     }
+
+    @Override
+    public String createPathToDirectory(String clusterTitle, String directoryTitle) {
+        return createPathToCluster(clusterTitle) + "/" + directoryTitle;
+    }
 }

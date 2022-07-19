@@ -17,3 +17,5 @@ application:
   errorMessages:
     clusterCreationError: Exception occurred while creating cluster.
     clusterWithSuchNameAlreadyExists: Cluster with such name already exists.
+    clusterDoesNotExists: Cluster does not exists.
+    directoryExists: Directory already exists in cluster.
