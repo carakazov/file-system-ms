@@ -15,4 +15,9 @@ public class FileSystemException extends RuntimeException {
         super(sourceMessage);
         this.code = code;
     }
+
+    public FileSystemException(ExceptionCode code) {
+        super();
+        this.code = code;
+    }
 }

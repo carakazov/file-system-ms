@@ -15,7 +15,6 @@ import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.DirectoryService;
 import notes.project.filesystem.validation.Validator;
-import notes.project.filesystem.validation.dto.DirectoryCreationValidationDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,22 +23,15 @@ public class DirectoryServiceImpl implements DirectoryService {
     private final DirectoryRepository repository;
     private final DirectoryCreationMapper directoryCreationMapper;
     private final FileManager fileManager;
-    private final Validator<DirectoryCreationValidationDto> directoryCreationValidator;
     private final ClusterService clusterService;
 
 
     @Override
     @Transactional
     public DirectoryCreationResponseDto createDirectory(DirectoryCreationRequestDto request) {
-        directoryCreationValidator.validate(
-            new DirectoryCreationValidationDto(
-                clusterService.clusterExistsByTitle(request.getClusterName()),
-                repository.existsByClusterTitleAndTitle(request.getClusterName(), request.getDirectoryName())
-            )
-        );
-        Directory directory = directoryCreationMapper.from(request, clusterService.findByTitle(request.getClusterName()));
-        repository.save(directory);
         fileManager.createDirectory(request.getClusterName(), request.getDirectoryName());
+        Directory directory = directoryCreationMapper.from(request, clusterService.findByTitle(request.getClusterName()));
+        directory = repository.save(directory);
         return directoryCreationMapper.to(directory);
     }
 }

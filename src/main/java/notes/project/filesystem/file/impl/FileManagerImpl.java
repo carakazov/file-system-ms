@@ -30,9 +30,12 @@ public class FileManagerImpl implements FileManager {
 
     private synchronized void create(String fullPath) {
         try {
+            if(Files.exists(Path.of(fullPath))) {
+                throw new FileSystemException(ExceptionCode.OBJECT_ALREADY_EXISTS);
+            }
             Files.createDirectories(Path.of(fullPath));
         } catch (IOException e) {
-            throw new FileSystemException(ExceptionCode.CLUSTER_CREATION_ERROR, e.getMessage());
+            throw new FileSystemException(ExceptionCode.CREATION_ERROR, e.getMessage());
         }
     }
 }
