@@ -15,5 +15,8 @@ spring:
 application:
   root: root
   errorMessages:
-    clusterCreationError: Exception occurred while creating cluster.
+    unexpectedErrorWhileCreationOperation: Unexpected error while creation operation.
+    objectAlreadyExists: Object with such name already exists. Choose another one.
     clusterWithSuchNameAlreadyExists: Cluster with such name already exists.
+    clusterDoesNotExists: Cluster does not exists.
+    directoryExists: Directory already exists in cluster.

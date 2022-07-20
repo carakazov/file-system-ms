@@ -20,11 +20,22 @@ public class FileManagerImpl implements FileManager {
 
     @Override
     public void createCluster(String title) {
-        String fullPath = pathHelper.createPathToCluster(title);
+        create(pathHelper.createPathToCluster(title));
+    }
+
+    @Override
+    public void createDirectory(String clusterTitle, String directoryTitle) {
+        create(pathHelper.createPathToDirectory(clusterTitle, directoryTitle));
+    }
+
+    private synchronized void create(String fullPath) {
         try {
+            if(Files.exists(Path.of(fullPath))) {
+                throw new FileSystemException(ExceptionCode.OBJECT_ALREADY_EXISTS);
+            }
             Files.createDirectories(Path.of(fullPath));
         } catch (IOException e) {
-            throw new FileSystemException(ExceptionCode.CLUSTER_CREATION_ERROR, e.getMessage());
+            throw new FileSystemException(ExceptionCode.CREATION_ERROR, e.getMessage());
         }
     }
 }
