@@ -21,3 +21,6 @@ application:
     clusterDoesNotExists: Cluster does not exists.
     directoryExists: Directory already exists in cluster.
     directoryDoesNotExists: Directory does not exist.
+    incorrectTitleLength: Title length should be between 1 and 125 characters.
+    incorrectContentLength: Content length should be between 1 and 3064 characters.
+    resourceNotFound: Requested resource not found.

@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import notes.project.filesystem.dto.*;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.FileSystemException;
+import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.exception.ValidationException;
 
 import java.util.Collections;
@@ -37,6 +38,19 @@ public class ApiUtils {
             .setClusterExternalId(CREATED_CLUSTER_EXTERNAL_ID);
     }
 
+    public static AddFileRequestDto addFileRequestDto() {
+        return new AddFileRequestDto()
+            .setDirectoryExternalId(DIRECTORY_EXTERNAL_ID)
+            .setTitle(CREATE_DIRECTORY_TITLE)
+            .setContent(FILE_CONTENT);
+    }
+
+    public static AddFileResponseDto addFileResponseDto() {
+        return new AddFileResponseDto()
+            .setTitle(CREATE_FILE_TITLE)
+            .setExternalId(CREATED_FILE_EXTERNAL_ID);
+    }
+
     public static ErrorDto errorDto() {
         return new ErrorDto()
                 .setCode(EXCEPTION_CODE)
@@ -49,6 +63,10 @@ public class ApiUtils {
 
     public static FileSystemException fileSystemException() {
         return new FileSystemException(ExceptionCode.CREATION_ERROR, "source message");
+    }
+
+    public static ResourceNotFoundException resourceNotFoundException() {
+        return new ResourceNotFoundException(ExceptionCode.CREATION_ERROR);
     }
 
     public static ValidationException validationException() {

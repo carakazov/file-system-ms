@@ -1,10 +1,9 @@
 package notes.project.filesystem.file;
 
-import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.impl.FileManagerImpl;
+import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.PathHelper;
-import notes.project.filesystem.utils.TestDataConstants;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.when;
 import static notes.project.filesystem.utils.TestDataConstants.*;
 
 @ExtendWith(MockitoExtension.class)
-class FileManagerTest {
+class FileManagerImplTest {
     @Mock
     private PathHelper pathHelper;
 
@@ -39,21 +38,37 @@ class FileManagerTest {
     void createClusterSuccess() throws IOException {
         when(pathHelper.createPathToCluster(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_CLUSTER);
         fileManager.createCluster(DbUtils.cluster());
-        assertFileCreated(Path.of(RESOLVED_PATH_FOR_CREATE_CLUSTER));
+        assertFileCreated(RESOLVED_PATH_FOR_CREATE_CLUSTER);
 
-        verify(pathHelper).createPathToCluster(CREATED_CLUSTER_EXTERNAL_ID.toString());
+        verify(pathHelper).createPathToCluster(DbUtils.cluster());
     }
 
     @Test
     void createDirectorySuccess() throws IOException {
-        when(pathHelper.createPathToDirectory(any(), any())).thenReturn(RESOLVED_PATH_FORE_CREATE_DIRECTORY);
+        createClusterPath(RESOLVED_PATH_FOR_CREATE_CLUSTER);
+        when(pathHelper.createPathToDirectory(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+        when(pathHelper.createPathToCluster(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_CLUSTER);
         fileManager.createDirectory(DbUtils.directory());
-        assertFileCreated(Path.of(RESOLVED_PATH_FORE_CREATE_DIRECTORY));
+        assertFileCreated(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
 
-        verify(pathHelper).createPathToDirectory(
-            CREATED_CLUSTER_EXTERNAL_ID.toString(),
-            DIRECTORY_EXTERNAL_ID.toString()
-        );
+        verify(pathHelper).createPathToDirectory(DbUtils.directory());
+    }
+
+    @Test
+    void createFileSuccess() throws IOException{
+        when(pathHelper.createPathToFile(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_FILE);
+        when(pathHelper.createPathToDirectory(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+        CreatedFile file = DbUtils.createdFile();
+        Files.createDirectories(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+        fileManager.createFile(file, FILE_CONTENT);
+        assertFileCreated(RESOLVED_PATH_FOR_CREATE_FILE);
+
+
+        verify(pathHelper).createPathToFile(DbUtils.createdFile());
+    }
+
+    private void createClusterPath(Path path) throws IOException {
+        Files.createDirectories(path);
     }
 
     private void assertFileCreated(Path path) throws IOException {

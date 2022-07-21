@@ -11,6 +11,7 @@ import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.PathHelper;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -24,46 +25,38 @@ public class FileManagerImpl implements FileManager {
     private final PathHelper pathHelper;
 
     @Override
-    public void createCluster(Cluster cluster) {
-        create(pathHelper.createPathToCluster(cluster.getExternalId().toString()));
-    }
-
-    @Override
-    public void createDirectory(Directory directory) {
-        create(pathHelper.createPathToDirectory(
-            directory.getCluster().getExternalId().toString(),
-            directory.getExternalId().toString()
-        ));
-    }
-
-    @Override
-    public void createFile(CreatedFile createdFile, String content) {
-        create(pathHelper.createPathToFile(
-            createdFile.getDirectory().getCluster().getExternalId().toString(),
-            createdFile.getDirectory().getExternalId().toString(),
-            createdFile.getExternalId().toString()
-        ), content);
-    }
-
-    private synchronized void create(String fullPath, String content) {
+    public synchronized void createCluster(Cluster cluster) {
         try {
-            Path path = Path.of(fullPath);
-            if(Files.exists(path)) {
-                throw new FileSystemException(ExceptionCode.OBJECT_ALREADY_EXISTS);
-            }
-            Files.createFile(path);
-            Files.write(path, Collections.singleton(content), StandardCharsets.UTF_8);
+            Files.createDirectories(pathHelper.createPathToCluster(cluster));
         } catch (IOException e) {
             throw new FileSystemException(ExceptionCode.CREATION_ERROR, e.getMessage());
         }
     }
 
-    private synchronized void create(String fullPath) {
-        try {
-            if(Files.exists(Path.of(fullPath))) {
-                throw new FileSystemException(ExceptionCode.OBJECT_ALREADY_EXISTS);
+    @Override
+    public synchronized void createDirectory(Directory directory) {
+        try{
+            Path clusterPath = pathHelper.createPathToCluster(directory.getCluster());
+            if(!Files.exists(clusterPath)) {
+                throw new FileSystemException(ExceptionCode.CLUSTER_DOES_NOT_EXISTS);
             }
-            Files.createDirectories(Path.of(fullPath));
+            Path fullPath = pathHelper.createPathToDirectory(directory);
+            Files.createDirectories((fullPath));
+        }catch (IOException e) {
+            throw new FileSystemException(ExceptionCode.CREATION_ERROR, e.getMessage());
+        }
+    }
+
+    @Override
+    public synchronized void createFile(CreatedFile createdFile, String content) {
+        try {
+            Path directoryPath = pathHelper.createPathToDirectory(createdFile.getDirectory());
+            if(!Files.exists(directoryPath)) {
+                throw new FileSystemException(ExceptionCode.DIRECTORY_DOES_NOT_EXISTS);
+            }
+            Path fullPath = pathHelper.createPathToFile(createdFile);
+            Files.createFile(fullPath);
+            Files.write(fullPath, Collections.singleton(content), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new FileSystemException(ExceptionCode.CREATION_ERROR, e.getMessage());
         }

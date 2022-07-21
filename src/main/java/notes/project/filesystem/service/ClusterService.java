@@ -10,4 +10,6 @@ public interface ClusterService {
     ClusterCreationResponseDto createCluster(ClusterCreationRequestDto request);
 
     Cluster findByExternalId(UUID externalId);
+
+    void updateClusterLastRequestedTime(Cluster cluster);
 }

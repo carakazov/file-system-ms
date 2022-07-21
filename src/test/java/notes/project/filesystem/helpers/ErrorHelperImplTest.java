@@ -1,9 +1,11 @@
 package notes.project.filesystem.helpers;
 
 
+import com.github.dockerjava.api.exception.NotFoundException;
 import notes.project.filesystem.dto.ErrorDto;
 import notes.project.filesystem.dto.ValidationErrorDto;
 import notes.project.filesystem.exception.FileSystemException;
+import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.exception.ValidationException;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.ApplicationPropertiesUtils;
@@ -14,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ErrorHelperTest {
+class ErrorHelperImplTest {
     private ErrorHelper helper;
 
     @BeforeEach
@@ -36,5 +38,13 @@ class ErrorHelperTest {
         ValidationErrorDto expected = ApiUtils.validationErrorDto();
         ValidationErrorDto actual = helper.from(validationException);
         assertEquals(expected.getValidationErrors(), actual.getValidationErrors());
+    }
+
+    @Test
+    void fromNotFoundExceptionSuccess() {
+        ResourceNotFoundException exception = ApiUtils.resourceNotFoundException();
+        ErrorDto expected = ApiUtils.errorDto();
+        ErrorDto actual = helper.from(exception);
+        assertEquals(expected, actual);
     }
 }
