@@ -2,6 +2,7 @@ package notes.project.filesystem.file;
 
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.impl.FileManagerImpl;
+import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.PathHelper;
 import notes.project.filesystem.utils.TestDataConstants;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -37,19 +38,22 @@ class FileManagerTest {
     @Test
     void createClusterSuccess() throws IOException {
         when(pathHelper.createPathToCluster(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_CLUSTER);
-        fileManager.createCluster(CREATE_CLUSTER_TITLE);
+        fileManager.createCluster(DbUtils.cluster());
         assertFileCreated(Path.of(RESOLVED_PATH_FOR_CREATE_CLUSTER));
 
-        verify(pathHelper).createPathToCluster(CREATE_CLUSTER_TITLE);
+        verify(pathHelper).createPathToCluster(CREATED_CLUSTER_EXTERNAL_ID.toString());
     }
 
     @Test
     void createDirectorySuccess() throws IOException {
         when(pathHelper.createPathToDirectory(any(), any())).thenReturn(RESOLVED_PATH_FORE_CREATE_DIRECTORY);
-        fileManager.createDirectory(CREATE_CLUSTER_TITLE, CREATE_DIRECTORY_TITLE);
+        fileManager.createDirectory(DbUtils.directory());
         assertFileCreated(Path.of(RESOLVED_PATH_FORE_CREATE_DIRECTORY));
 
-        verify(pathHelper).createPathToDirectory(CREATE_CLUSTER_TITLE, CREATE_DIRECTORY_TITLE);
+        verify(pathHelper).createPathToDirectory(
+            CREATED_CLUSTER_EXTERNAL_ID.toString(),
+            DIRECTORY_EXTERNAL_ID.toString()
+        );
     }
 
     private void assertFileCreated(Path path) throws IOException {

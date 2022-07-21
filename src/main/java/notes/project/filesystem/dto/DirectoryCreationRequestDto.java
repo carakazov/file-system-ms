@@ -1,5 +1,7 @@
 package notes.project.filesystem.dto;
 
+import java.util.UUID;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,5 +14,5 @@ public class DirectoryCreationRequestDto {
     @ApiModelProperty(value = "Название создаваемой директории", required = true)
     private String directoryName;
     @ApiModelProperty(value = "Кластер, в котором будет новая директория", required = true)
-    private String clusterName;
+    private UUID clusterExternalId;
 }

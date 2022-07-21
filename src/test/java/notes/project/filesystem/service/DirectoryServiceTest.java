@@ -44,7 +44,7 @@ class DirectoryServiceTest {
 
     @Test
     void createDirectorySuccess() {
-        when(clusterService.findByTitle(any())).thenReturn(DbUtils.cluster());
+        when(clusterService.findByExternalId(any())).thenReturn(DbUtils.cluster());
         when(repository.save(any())).thenReturn(DbUtils.directory());
         DirectoryCreationRequestDto request = ApiUtils.directoryCreationRequestDto();
 
@@ -53,7 +53,7 @@ class DirectoryServiceTest {
 
         assertEquals(expected, actual);
 
-        verify(clusterService).findByTitle(request.getClusterName());
+        verify(clusterService).findByExternalId(request.getClusterExternalId());
         verifyNoMoreInteractions(repository, clusterService);
     }
 }

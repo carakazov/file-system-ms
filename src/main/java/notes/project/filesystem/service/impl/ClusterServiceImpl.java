@@ -1,8 +1,12 @@
 package notes.project.filesystem.service.impl;
 
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.ClusterCreationRequestDto;
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
+import notes.project.filesystem.exception.ExceptionCode;
+import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
 import notes.project.filesystem.model.Cluster;
@@ -22,18 +26,14 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     @Transactional
     public ClusterCreationResponseDto createCluster(ClusterCreationRequestDto request) {
-        fileManager.createCluster(request.getClusterTitle());
         Cluster cluster = clusterRepository.save(clusterCreationMapper.from(request));
+        fileManager.createCluster(cluster);
         return clusterCreationMapper.to(cluster);
     }
 
     @Override
-    public Boolean clusterExistsByTitle(String clusterTitle) {
-        return clusterRepository.existsByTitle(clusterTitle);
-    }
-
-    @Override
-    public Cluster findByTitle(String clusterTitle) {
-        return clusterRepository.findByTitle(clusterTitle);
+    public Cluster findByExternalId(UUID clusterExternalId) {
+        return clusterRepository.findByExternalId(clusterExternalId)
+            .orElseThrow(() -> new FileSystemException(ExceptionCode.CLUSTER_DOES_NOT_EXISTS));
     }
 }

@@ -1,10 +1,8 @@
 package notes.project.filesystem.service.impl;
 
 import java.util.UUID;
-import java.util.concurrent.locks.Lock;
 import javax.transaction.Transactional;
 
-import liquibase.util.Validate;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
@@ -12,12 +10,10 @@ import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.mapper.DirectoryCreationMapper;
-import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.DirectoryService;
-import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,9 +28,9 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Override
     @Transactional
     public DirectoryCreationResponseDto createDirectory(DirectoryCreationRequestDto request) {
-        Directory directory = directoryCreationMapper.from(request, clusterService.findByTitle(request.getClusterName()));
+        Directory directory = directoryCreationMapper.from(request, clusterService.findByExternalId(request.getClusterExternalId()));
         directory = repository.save(directory);
-        fileManager.createDirectory(request.getClusterName(), request.getDirectoryName());
+        fileManager.createDirectory(directory);
         return directoryCreationMapper.to(directory);
     }
 

@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.file.FileManager;
+import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
+import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.PathHelper;
 import org.springframework.stereotype.Component;
 
@@ -22,13 +24,16 @@ public class FileManagerImpl implements FileManager {
     private final PathHelper pathHelper;
 
     @Override
-    public void createCluster(String title) {
-        create(pathHelper.createPathToCluster(title));
+    public void createCluster(Cluster cluster) {
+        create(pathHelper.createPathToCluster(cluster.getExternalId().toString()));
     }
 
     @Override
-    public void createDirectory(String clusterTitle, String directoryTitle) {
-        create(pathHelper.createPathToDirectory(clusterTitle, directoryTitle));
+    public void createDirectory(Directory directory) {
+        create(pathHelper.createPathToDirectory(
+            directory.getCluster().getExternalId().toString(),
+            directory.getExternalId().toString()
+        ));
     }
 
     @Override

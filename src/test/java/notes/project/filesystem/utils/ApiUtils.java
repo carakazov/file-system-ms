@@ -34,7 +34,7 @@ public class ApiUtils {
     public static DirectoryCreationRequestDto directoryCreationRequestDto() {
         return new DirectoryCreationRequestDto()
             .setDirectoryName(CREATE_DIRECTORY_TITLE)
-            .setClusterName(CREATE_CLUSTER_TITLE);
+            .setClusterExternalId(CREATED_CLUSTER_EXTERNAL_ID);
     }
 
     public static ErrorDto errorDto() {
