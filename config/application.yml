@@ -20,3 +20,4 @@ application:
     clusterWithSuchNameAlreadyExists: Cluster with such name already exists.
     clusterDoesNotExists: Cluster does not exists.
     directoryExists: Directory already exists in cluster.
+    directoryDoesNotExists: Directory does not exist.
