@@ -8,6 +8,7 @@ import notes.project.filesystem.service.impl.ClusterServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.TestDataConstants;
+import notes.project.filesystem.validation.impl.ClusterCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +22,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClusterServiceTest {
+class ClusterServiceImplTest {
     @Mock
     private ClusterRepository clusterRepository;
     @Mock
     private FileManager fileManager;
+    @Mock
+    private ClusterCreationValidator clusterCreationValidator;
 
     private ClusterService service;
 
@@ -34,7 +37,8 @@ class ClusterServiceTest {
         service = new ClusterServiceImpl(
                 clusterRepository,
                 fileManager,
-                Mappers.getMapper(ClusterCreationMapper.class)
+                Mappers.getMapper(ClusterCreationMapper.class),
+                clusterCreationValidator
         );
     }
 

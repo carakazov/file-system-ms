@@ -2,6 +2,7 @@ package notes.project.filesystem.utils;
 
 import lombok.experimental.UtilityClass;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
@@ -13,10 +14,14 @@ public class TestDataConstants {
 
     //File manager constants
     public static final String ROOT_DIRECTORY_PATH = "target/root-test";
-    public static final String CREATE_CLUSTER_TITLE = "cluster-test";
-    public static final String CREATE_DIRECTORY_TITLE = "directory-title";
-    public static final String RESOLVED_PATH_FOR_CREATE_CLUSTER = ROOT_DIRECTORY_PATH + "/" + CREATE_CLUSTER_TITLE;
-    public static final String RESOLVED_PATH_FORE_CREATE_DIRECTORY = RESOLVED_PATH_FOR_CREATE_CLUSTER + "/" + CREATE_DIRECTORY_TITLE;
+    public static final String CREATE_CLUSTER_TITLE = "3edce674-f3cf-4650-ad89-1bdd44b3f26a";
+    public static final String CREATE_DIRECTORY_TITLE = "c139de85-4d96-4f27-8648-8cc86c1286be";
+    public static final String CREATE_FILE_TITLE = "2a99b6fe-44f2-4837-bbee-80fbe43f3076";
+    public static final Path RESOLVED_PATH_FOR_CREATE_CLUSTER = Path.of(ROOT_DIRECTORY_PATH + "/" + CREATE_CLUSTER_TITLE);
+    public static final Path RESOLVED_PATH_FOR_CREATE_DIRECTORY = Path.of(RESOLVED_PATH_FOR_CREATE_CLUSTER + "/" + CREATE_DIRECTORY_TITLE);
+    public static final Path RESOLVED_PATH_FOR_CREATE_FILE = Path.of(RESOLVED_PATH_FOR_CREATE_DIRECTORY + "/" + CREATE_FILE_TITLE + ".txt");
+
+
 
     //Cluster constants
     public static final UUID CREATED_CLUSTER_EXTERNAL_ID = UUID.fromString("3edce674-f3cf-4650-ad89-1bdd44b3f26a");
@@ -29,5 +34,9 @@ public class TestDataConstants {
     //Directory constants
     public static final UUID DIRECTORY_EXTERNAL_ID = UUID.fromString("c139de85-4d96-4f27-8648-8cc86c1286be");
     public static final LocalDateTime CREATED_DIRECTORY_TIME = LocalDateTime.of(2022, 6, 26, 10, 10 ,10 );
+
+    //Created file constants
+    public static final UUID CREATED_FILE_EXTERNAL_ID = UUID.fromString("2a99b6fe-44f2-4837-bbee-80fbe43f3076");
+    public static final String FILE_CONTENT = "some test file content";
 
 }

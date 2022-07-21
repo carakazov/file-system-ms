@@ -2,6 +2,8 @@ package notes.project.filesystem.it;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.PostConstruct;
@@ -10,7 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import notes.project.filesystem.FileSystemApplication;
 import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.model.Cluster;
+import notes.project.filesystem.utils.TestDataConstants;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -36,7 +41,7 @@ import org.testcontainers.utility.DockerImageName;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-@SpringBootTest(classes = FileSystemApplication.class, webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureJsonTesters
 @ActiveProfiles("it")
 @DirtiesContext
@@ -68,9 +73,34 @@ public abstract class AbstractIntegrationTest {
     @Inject
     protected TestEntityManager testEntityManager;
 
+    protected Cluster findClusterByTitle(String title) {
+        return testEntityManager.getEntityManager().createQuery(
+            "select c from clusters c where c.title = :title",
+            Cluster.class
+        ).setParameter("title", title).getSingleResult();
+    }
 
-    protected synchronized void deleteCluster(Cluster cluster) throws IOException {
-        String path = applicationProperties.getRoot() + "/" + cluster.getExternalId();
-        FileUtils.deleteDirectory(new File(path));
+    protected void createCluster(Cluster cluster) throws IOException {
+        Files.createDirectories(Path.of(applicationProperties.getRoot() + "/" + cluster.getExternalId().toString()));
+    }
+
+    protected void createDirectoryForFile() throws IOException {
+        Files.createDirectories(
+            Path.of(
+                applicationProperties.getRoot() + "/" + TestDataConstants.CREATED_CLUSTER_EXTERNAL_ID + "/" + TestDataConstants.DIRECTORY_EXTERNAL_ID
+            )
+        );
+    }
+
+
+    @BeforeEach
+    protected void createTestRoot() throws IOException {
+        Files.createDirectories(Path.of(applicationProperties.getRoot()));
+    }
+
+
+    @AfterEach
+    protected void deleteTestRoot() throws IOException {
+        FileUtils.deleteDirectory(new File(applicationProperties.getRoot()));
     }
 }

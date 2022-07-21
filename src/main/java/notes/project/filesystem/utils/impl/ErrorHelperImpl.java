@@ -3,6 +3,7 @@ package notes.project.filesystem.utils.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import notes.project.filesystem.config.ApplicationProperties;
+import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.utils.ErrorHelper;
 import notes.project.filesystem.dto.ErrorDto;
 import notes.project.filesystem.dto.ValidationErrorDto;
@@ -45,6 +46,16 @@ public class ErrorHelperImpl implements ErrorHelper {
             errors.add(error);
         });
         return new ValidationErrorDto(errors);
+    }
+
+    @Override
+    public ErrorDto from(ResourceNotFoundException exception) {
+        logException(exception);
+        ErrorDto errorDto = new ErrorDto();
+        String exceptionMessage = getMessageByCode(exception.getCode());
+        errorDto.setMessage(exceptionMessage);
+        errorDto.setCode(exception.getCode().getCode());
+        return errorDto;
     }
 
     @Override

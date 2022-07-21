@@ -8,6 +8,8 @@ import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.impl.DirectoryServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.validation.impl.ClusterCreationValidator;
+import notes.project.filesystem.validation.impl.DirectoryCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DirectoryServiceTest {
+class DirectoryServiceImplTest {
     @Mock
     private DirectoryRepository repository;
 
@@ -30,6 +32,9 @@ class DirectoryServiceTest {
     @Mock
     private ClusterService clusterService;
 
+    @Mock
+    private DirectoryCreationValidator directoryCreationValidator;
+
     private DirectoryService service;
 
     @BeforeEach
@@ -38,7 +43,8 @@ class DirectoryServiceTest {
             repository,
             Mappers.getMapper(DirectoryCreationMapper.class),
             fileManager,
-            clusterService
+            clusterService,
+            directoryCreationValidator
         );
     }
 
@@ -54,6 +60,5 @@ class DirectoryServiceTest {
         assertEquals(expected, actual);
 
         verify(clusterService).findByExternalId(request.getClusterExternalId());
-        verifyNoMoreInteractions(repository, clusterService);
     }
 }
