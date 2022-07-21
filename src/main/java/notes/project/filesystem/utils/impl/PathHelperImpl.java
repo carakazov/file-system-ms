@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PathHelperImpl implements PathHelper {
     private final ApplicationProperties properties;
+
+    private static final String FILE_RESOLUTION = ".txt";
+
     @Override
     public String createPathToCluster(String clusterTile) {
         return properties.getRoot() + "/" + clusterTile;
@@ -17,5 +20,10 @@ public class PathHelperImpl implements PathHelper {
     @Override
     public String createPathToDirectory(String clusterTitle, String directoryTitle) {
         return createPathToCluster(clusterTitle) + "/" + directoryTitle;
+    }
+
+    @Override
+    public String createPathToFile(String clusterId, String directoryId, String fileId) {
+        return createPathToDirectory(clusterId, directoryId) + "/" + fileId + FILE_RESOLUTION;
     }
 }
