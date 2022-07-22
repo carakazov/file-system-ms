@@ -12,6 +12,7 @@ import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.exception.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,15 @@ public class ErrorHelperImpl implements ErrorHelper {
     public ErrorDto from(Exception exception) {
         logException(exception);
         return new ErrorDto().setCode(COMMON_EXCEPTION_CODE).setMessage(COMMON_EXCEPTION_MESSAGE);
+    }
+
+    @Override
+    public ErrorDto from(MethodArgumentNotValidException exception) {
+        logException(exception);
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setMessage(getMessageByCode(ExceptionCode.WRONG_REQUEST_PARAMETERS));
+        errorDto.setCode(ExceptionCode.WRONG_REQUEST_PARAMETERS.getCode());
+        return errorDto;
     }
 
     private String getMessageByCode(ExceptionCode code) {

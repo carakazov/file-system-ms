@@ -1,7 +1,6 @@
 package notes.project.filesystem.helpers;
 
 
-import com.github.dockerjava.api.exception.NotFoundException;
 import notes.project.filesystem.dto.ErrorDto;
 import notes.project.filesystem.dto.ValidationErrorDto;
 import notes.project.filesystem.exception.FileSystemException;
