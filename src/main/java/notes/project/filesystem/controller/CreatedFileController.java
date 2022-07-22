@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
 import notes.project.filesystem.service.CreatedFileService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ public class CreatedFileController {
     private final CreatedFileService createdFileService;
 
     @PostMapping
-    public AddFileResponseDto createFinal(@RequestBody AddFileRequestDto request) {
+    public AddFileResponseDto createFinal(@RequestBody @Validated AddFileRequestDto request) {
         return createdFileService.addFile(request);
     }
 }
