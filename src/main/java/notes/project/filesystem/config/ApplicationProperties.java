@@ -13,6 +13,7 @@ import java.util.Map;
 @Accessors(chain = true)
 public class ApplicationProperties {
     private String root;
+    private String archiveRoot;
 
     private Map<String, String> errorMessages;
 

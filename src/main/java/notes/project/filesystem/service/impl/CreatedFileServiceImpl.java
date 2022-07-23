@@ -1,7 +1,9 @@
 package notes.project.filesystem.service.impl;
 
+import java.util.List;
 import javax.transaction.Transactional;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
@@ -37,5 +39,10 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         fileManager.createFile(file, request.getContent());
         clusterService.updateClusterLastRequestedTime(directory.getCluster());
         return fileCreationMapper.to(repository.save(file));
+    }
+
+    @Override
+    public List<CreatedFile> findFilesOfDirectory(Directory directory) {
+        return repository.findByDirectory(directory);
     }
 }

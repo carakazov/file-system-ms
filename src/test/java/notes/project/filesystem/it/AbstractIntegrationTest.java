@@ -44,7 +44,7 @@ import javax.persistence.EntityManager;
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureJsonTesters
 @ActiveProfiles("it")
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ContextConfiguration(initializers = AbstractIntegrationTest.Initializer.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureTestEntityManager

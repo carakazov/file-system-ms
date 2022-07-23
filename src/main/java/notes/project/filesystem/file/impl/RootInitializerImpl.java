@@ -24,10 +24,12 @@ public class RootInitializerImpl implements RootInitializer {
 
     @Override
     @EventListener(ApplicationReadyEvent.class)
-    public void initialize() {
+    public synchronized void initialize() {
         try {
             Files.createDirectories(Path.of(properties.getRoot()));
+            Files.createDirectories(Path.of(properties.getArchiveRoot()));
             log.info("Root directory named {} successfully created", properties.getRoot());
+            log.info("Archive root directory named {} successfully created", properties.getArchiveRoot());
         } catch (IOException e) {
             log.error("Application stopped with error: {}", e.getMessage());
             SpringApplication.exit(applicationContext, () -> -1);

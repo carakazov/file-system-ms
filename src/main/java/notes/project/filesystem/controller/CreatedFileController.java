@@ -1,5 +1,6 @@
 package notes.project.filesystem.controller;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;

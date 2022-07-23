@@ -14,6 +14,7 @@ spring:
 
 application:
   root: root
+  archiveRoot: archive-root
   errorMessages:
     unexpectedErrorWhileCreationOperation: Unexpected error while creation operation.
     objectAlreadyExists: Object with such name already exists. Choose another one.
@@ -25,3 +26,6 @@ application:
     incorrectContentLength: Content length should be between 1 and 3064 characters.
     resourceNotFound: Requested resource not found.
     wrongRequestParameters: Wrong request parameters.
+    unexpectedErrorWhileReadingOperation: Unexpected error while reading operation.
+    fileDoesNotExist: File does not exist.
+    deletionError: Unexpected error while deleting.

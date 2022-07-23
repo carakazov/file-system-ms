@@ -27,5 +27,6 @@ public class DeleteHistory {
     @Enumerated(EnumType.STRING)
     private EventType event;
 
+    @Column(name = "event_date")
     private LocalDateTime date;
 }

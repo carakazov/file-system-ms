@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -25,6 +26,9 @@ public class Directory {
     private UUID externalId = UUID.randomUUID();
 
     private String title;
+
+    @OneToMany(mappedBy = "directory")
+    private List<CreatedFile> createdFiles;
 
     @CreatedDate
     private LocalDateTime createDate;

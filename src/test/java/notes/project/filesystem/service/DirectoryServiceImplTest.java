@@ -3,6 +3,7 @@ package notes.project.filesystem.service;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
 import notes.project.filesystem.file.FileManager;
+import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.DirectoryCreationMapper;
 import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.impl.DirectoryServiceImpl;
@@ -35,6 +36,12 @@ class DirectoryServiceImplTest {
     @Mock
     private DirectoryCreationValidator directoryCreationValidator;
 
+    @Mock
+    private ZipManager zipManager;
+
+    @Mock
+    private DeleteHistoryService deleteHistoryService;
+
     private DirectoryService service;
 
     @BeforeEach
@@ -44,7 +51,9 @@ class DirectoryServiceImplTest {
             Mappers.getMapper(DirectoryCreationMapper.class),
             fileManager,
             clusterService,
-            directoryCreationValidator
+            directoryCreationValidator,
+            zipManager,
+            deleteHistoryService
         );
     }
 
