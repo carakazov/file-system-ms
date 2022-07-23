@@ -4,8 +4,11 @@ import lombok.Getter;
 
 public enum ExceptionCode {
     CREATION_ERROR("unexpectedErrorWhileCreationOperation"),
-    CLUSTER_DOES_NOT_EXISTS("clusterDoesNotExists"),
-    DIRECTORY_DOES_NOT_EXISTS("directoryDoesNotExists"),
+    DELETION_ERROR("deletionError"),
+    READING_ERROR("unexpectedErrorWhileReadingOperation"),
+    FILE_DOES_NOT_EXISTS("fileDoesNotExist"),
+    CLUSTER_DOES_NOT_EXISTS("clusterDoesNotExist"),
+    DIRECTORY_DOES_NOT_EXISTS("directoryDoesNotExist"),
     INCORRECT_TITLE_LENGTH("incorrectTitleLength"),
     INCORRECT_CONTENT_LENGTH("incorrectContentLength"),
     RESOURCE_NOT_FOUND("resourceNotFound"),

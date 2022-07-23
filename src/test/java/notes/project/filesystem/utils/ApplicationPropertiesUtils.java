@@ -15,4 +15,9 @@ public class ApplicationPropertiesUtils {
         return new ApplicationProperties()
                 .setErrorMessages(TestDataConstants.EXCEPTION_MAP);
     }
+
+    public static ApplicationProperties applicationPropertiesForZipManager() {
+        return new ApplicationProperties()
+            .setArchiveRoot(TestDataConstants.ARCHIVE_ROOT);
+    }
 }

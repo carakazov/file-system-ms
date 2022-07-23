@@ -1,9 +1,13 @@
 package notes.project.filesystem.service;
 
+import java.util.Optional;
+
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
 import notes.project.filesystem.file.FileManager;
+import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.DirectoryCreationMapper;
+import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.impl.DirectoryServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
@@ -35,6 +39,12 @@ class DirectoryServiceImplTest {
     @Mock
     private DirectoryCreationValidator directoryCreationValidator;
 
+    @Mock
+    private ZipManager zipManager;
+
+    @Mock
+    private DeleteHistoryService deleteHistoryService;
+
     private DirectoryService service;
 
     @BeforeEach
@@ -44,7 +54,9 @@ class DirectoryServiceImplTest {
             Mappers.getMapper(DirectoryCreationMapper.class),
             fileManager,
             clusterService,
-            directoryCreationValidator
+            directoryCreationValidator,
+            zipManager,
+            deleteHistoryService
         );
     }
 
@@ -60,5 +72,17 @@ class DirectoryServiceImplTest {
         assertEquals(expected, actual);
 
         verify(clusterService).findByExternalId(request.getClusterExternalId());
+    }
+
+    @Test
+    void deleteDirectorySuccess() {
+        Directory directory = DbUtils.directoryWithFiles();
+        when(repository.findByExternalId(any())).thenReturn(Optional.of(directory));
+
+        service.deleteDirectory(directory.getExternalId());
+
+        verify(deleteHistoryService).createDirectoryDeleteHistory(directory.setDeleted(Boolean.TRUE));
+        verify(clusterService).updateClusterLastRequestedTime(directory.getCluster());
+        verify(zipManager).zipDirectory(directory);
     }
 }

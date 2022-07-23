@@ -3,6 +3,7 @@ package notes.project.filesystem.it;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import notes.project.filesystem.controller.CreatedFileController;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureTestEntityManager
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
@@ -45,12 +48,8 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
     void createFileSuccess() throws Exception {
         testEntityManager.merge(DbUtils.cluster());
 
-        Cluster cluster = testEntityManager.getEntityManager().createQuery(
-            "select c from clusters c where c.title = :title",
-            Cluster.class
-        ).setParameter("title", DbUtils.cluster().getTitle()).getSingleResult();
 
-        testEntityManager.merge(DbUtils.directory().setCluster(cluster));
+        testEntityManager.merge(DbUtils.directory());
 
         createDirectoryForFile();
 

@@ -9,13 +9,17 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.PathHelper;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 
 @Component
@@ -59,6 +63,32 @@ public class FileManagerImpl implements FileManager {
             Files.write(fullPath, Collections.singleton(content), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new FileSystemException(ExceptionCode.CREATION_ERROR, e.getMessage());
+        }
+    }
+
+    @Override
+    public synchronized String readFile(CreatedFile createdFile) {
+        Path filePath = pathHelper.createPathToFile(createdFile);
+        try(FileInputStream fileInputStream = new FileInputStream(filePath.toString())) {
+            if(!Files.exists(filePath)) {
+                throw new FileSystemException(ExceptionCode.FILE_DOES_NOT_EXISTS);
+            }
+            return new String(fileInputStream.readAllBytes());
+        } catch(IOException e) {
+            throw new FileSystemException(ExceptionCode.READING_ERROR, e.getMessage());
+        }
+    }
+
+    @Override
+    public synchronized void deleteDirectory(Directory directory) {
+        Path directoryPath = pathHelper.createPathToDirectory(directory);
+        try {
+            if(!Files.exists(directoryPath)) {
+                throw new FileSystemException(ExceptionCode.DIRECTORY_DOES_NOT_EXISTS);
+            }
+            FileUtils.deleteDirectory(new File(directoryPath.toString()));
+        } catch(IOException e) {
+            throw new FileSystemException(ExceptionCode.DELETION_ERROR, e.getMessage());
         }
     }
 }
