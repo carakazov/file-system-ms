@@ -1,12 +1,14 @@
 package notes.project.filesystem.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity(name = "delete_history")
+@Accessors(chain = true)
 public class DeleteHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

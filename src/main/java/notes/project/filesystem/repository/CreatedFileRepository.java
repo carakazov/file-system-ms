@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CreatedFileRepository extends JpaRepository<CreatedFile, Long> {
-    List<CreatedFile> findByDirectory(Directory directory);
+
 }

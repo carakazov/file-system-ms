@@ -1,12 +1,18 @@
 package notes.project.filesystem.it;
 
+import java.nio.file.Path;
+import java.util.Collections;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import liquibase.pro.packaged.D;
+import liquibase.pro.packaged.E;
 import notes.project.filesystem.controller.DirectoryController;
 import notes.project.filesystem.model.Cluster;
+import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.utils.TestDataConstants;
 import notes.project.filesystem.utils.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,4 +71,26 @@ class DirectoryControllerIntegrationTest extends AbstractIntegrationTest {
 
         assertNotNull(directory);
     }
+
+    @Test
+    void deleteDirectorySuccess() throws Exception {
+        createDirectoryWithFile();
+
+        Directory directory = DbUtils.directory();
+        CreatedFile createdFile = DbUtils.createdFile();
+
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(directory);
+        testEntityManager.merge(createdFile);
+
+        directory.setCreatedFiles(Collections.singletonList(createdFile));
+
+        testEntityManager.merge(directory);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/directory/c139de85-4d96-4f27-8648-8cc86c1286be"));
+
+        assertFileCreatedThenDelete(TestDataConstants.ZIPPED_DIRECTORY_PATH);
+        assertFileDeleted(TestDataConstants.RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+    }
+
 }

@@ -1,7 +1,9 @@
 package notes.project.filesystem.it;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.TimeZone;
@@ -12,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import notes.project.filesystem.FileSystemApplication;
 import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.model.Cluster;
+import notes.project.filesystem.utils.TestAsyncTaskExecutor;
 import notes.project.filesystem.utils.TestDataConstants;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterEach;
@@ -24,6 +27,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -41,13 +45,13 @@ import org.testcontainers.utility.DockerImageName;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                classes = AbstractIntegrationTest.IntegrationTestConfiguration.class)
 @AutoConfigureJsonTesters
 @ActiveProfiles("it")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@ContextConfiguration(initializers = AbstractIntegrationTest.Initializer.class)
-@RunWith(SpringRunner.class)
-@AutoConfigureTestEntityManager
 public abstract class AbstractIntegrationTest {
 
     @Inject
@@ -55,18 +59,13 @@ public abstract class AbstractIntegrationTest {
     @Inject
     protected ObjectMapper objectMapper;
 
-    @ClassRule
-    public static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
-        new PostgreSQLContainer<>(DockerImageName.parse("postgres"));
-    public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(ConfigurableApplicationContext applicationContext) {
-            POSTGRES_CONTAINER.start();
-            TestPropertyValues.of(
-                "spring.datasource.url:" + POSTGRES_CONTAINER.getJdbcUrl(),
-                "spring.datasource.username:" + POSTGRES_CONTAINER.getUsername(),
-                "spring.datasource.password:" + POSTGRES_CONTAINER.getPassword()
-            ).applyTo(applicationContext);
+
+    @ActiveProfiles("it")
+    @TestConfiguration
+    public static class IntegrationTestConfiguration {
+        @Bean("asyncTaskExecutor")
+        public TaskExecutor getTaskExecutor(EntityManager entityManager) {
+            return new TestAsyncTaskExecutor(entityManager);
         }
     }
 
@@ -92,15 +91,35 @@ public abstract class AbstractIntegrationTest {
         );
     }
 
+    protected void createDirectoryWithFile() throws IOException {
+        createDirectoryForFile();
+        Files.createFile(TestDataConstants.RESOLVED_PATH_FOR_CREATE_FILE);
+        try(FileOutputStream fileOutputStream = new FileOutputStream(TestDataConstants.RESOLVED_PATH_FOR_CREATE_FILE.toString())) {
+            fileOutputStream.write(TestDataConstants.FILE_CONTENT.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    protected void assertFileCreatedThenDelete(Path path) throws IOException{
+        assertTrue(Files.exists(path));
+        Files.delete(path);
+    }
+
+    protected void assertFileDeleted(Path path) throws IOException {
+        assertFalse(Files.exists(path));
+    }
 
     @BeforeEach
     protected void createTestRoot() throws IOException {
         Files.createDirectories(Path.of(applicationProperties.getRoot()));
+        Files.createDirectories(Path.of(applicationProperties.getArchiveRoot()));
     }
 
 
     @AfterEach
     protected void deleteTestRoot() throws IOException {
         FileUtils.deleteDirectory(new File(applicationProperties.getRoot()));
+        FileUtils.deleteDirectory(new File(applicationProperties.getArchiveRoot()));
     }
+
+
 }

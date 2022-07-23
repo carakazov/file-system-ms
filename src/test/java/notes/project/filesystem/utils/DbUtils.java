@@ -1,9 +1,9 @@
 package notes.project.filesystem.utils;
 
+import java.util.Collections;
+
 import lombok.experimental.UtilityClass;
-import notes.project.filesystem.model.Cluster;
-import notes.project.filesystem.model.CreatedFile;
-import notes.project.filesystem.model.Directory;
+import notes.project.filesystem.model.*;
 
 import static notes.project.filesystem.utils.TestDataConstants.*;
 
@@ -28,6 +28,13 @@ public class DbUtils {
             .setCluster(cluster());
     }
 
+    public static Directory directoryWithFiles() {
+        Directory directory = directory();
+        CreatedFile createdFile = createdFile();
+        directory.setCreatedFiles(Collections.singletonList(createdFile));
+        return directory;
+    }
+
     public static CreatedFile createdFile() {
         return new CreatedFile()
             .setId(ID)
@@ -35,5 +42,13 @@ public class DbUtils {
             .setDeleted(Boolean.FALSE)
             .setExternalId(CREATED_FILE_EXTERNAL_ID)
             .setDirectory(directory());
+    }
+
+    public static DeleteHistory deleteDirectoryHistory() {
+        return new DeleteHistory()
+            .setId(ID)
+            .setDirectory(directory())
+            .setEvent(EventType.DELETED)
+            .setDate(DELETE_DATE);
     }
 }

@@ -3,6 +3,7 @@ package notes.project.filesystem.it;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import notes.project.filesystem.controller.CreatedFileController;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;

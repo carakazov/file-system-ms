@@ -1,5 +1,6 @@
 package notes.project.filesystem.utils;
 
+import liquibase.pro.packaged.A;
 import lombok.experimental.UtilityClass;
 
 import java.nio.file.Path;
@@ -13,7 +14,7 @@ public class TestDataConstants {
     public static Long ID = 1L;
 
     //File manager constants
-    public static final String ROOT_DIRECTORY_PATH = "target/root-test";
+    public static final String ROOT_DIRECTORY_PATH = "target/root";
     public static final String CREATE_CLUSTER_TITLE = "3edce674-f3cf-4650-ad89-1bdd44b3f26a";
     public static final String CREATE_DIRECTORY_TITLE = "c139de85-4d96-4f27-8648-8cc86c1286be";
     public static final String CREATE_FILE_TITLE = "2a99b6fe-44f2-4837-bbee-80fbe43f3076";
@@ -21,7 +22,10 @@ public class TestDataConstants {
     public static final Path RESOLVED_PATH_FOR_CREATE_DIRECTORY = Path.of(RESOLVED_PATH_FOR_CREATE_CLUSTER + "/" + CREATE_DIRECTORY_TITLE);
     public static final Path RESOLVED_PATH_FOR_CREATE_FILE = Path.of(RESOLVED_PATH_FOR_CREATE_DIRECTORY + "/" + CREATE_FILE_TITLE + ".txt");
 
-
+    //Zip manager
+    public static final String ARCHIVE_ROOT = "target/archive-root";
+    public static final Path ARCHIVE_ROOT_PATH = Path.of(ARCHIVE_ROOT);
+    public static final Path ZIPPED_DIRECTORY_PATH = Path.of(ARCHIVE_ROOT + "/" + CREATE_DIRECTORY_TITLE + ".zip");
 
     //Cluster constants
     public static final UUID CREATED_CLUSTER_EXTERNAL_ID = UUID.fromString("3edce674-f3cf-4650-ad89-1bdd44b3f26a");
@@ -38,5 +42,8 @@ public class TestDataConstants {
     //Created file constants
     public static final UUID CREATED_FILE_EXTERNAL_ID = UUID.fromString("2a99b6fe-44f2-4837-bbee-80fbe43f3076");
     public static final String FILE_CONTENT = "some test file content";
+
+    //Delete history constants
+    public static final LocalDateTime DELETE_DATE = LocalDateTime.of(2022,  6, 26, 10, 10, 10);
 
 }

@@ -2,6 +2,7 @@ package notes.project.filesystem.file;
 
 import notes.project.filesystem.file.impl.FileManagerImpl;
 import notes.project.filesystem.model.CreatedFile;
+import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.PathHelper;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -12,10 +13,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -23,7 +28,7 @@ import static org.mockito.Mockito.when;
 import static notes.project.filesystem.utils.TestDataConstants.*;
 
 @ExtendWith(MockitoExtension.class)
-class FileManagerImplTest {
+class FileManagerImplTest extends FileSystemTest {
     @Mock
     private PathHelper pathHelper;
 
@@ -67,12 +72,33 @@ class FileManagerImplTest {
         verify(pathHelper).createPathToFile(DbUtils.createdFile());
     }
 
-    private void createClusterPath(Path path) throws IOException {
-        Files.createDirectories(path);
+    @Test
+    void readFileSuccess() throws IOException{
+        createFileWithContent();
+        CreatedFile createdFile = DbUtils.createdFile();
+
+        when(pathHelper.createPathToFile(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_FILE);
+
+        String actual = fileManager.readFile(createdFile);
+
+        assertEquals(FILE_CONTENT, actual);
+
+        verify(pathHelper).createPathToFile(createdFile);
+
+        Files.delete(RESOLVED_PATH_FOR_CREATE_FILE);
+        FileUtils.deleteDirectory(new File(ROOT_DIRECTORY_PATH));
     }
 
-    private void assertFileCreated(Path path) throws IOException {
-        assertTrue(Files.exists(path));
-        FileUtils.deleteDirectory(new File(ROOT_DIRECTORY_PATH));
+    @Test
+    void deleteDirectory() throws IOException {
+        Files.createDirectories(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+
+        when(pathHelper.createPathToDirectory(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+
+        Directory directory = DbUtils.directory();
+
+        fileManager.deleteDirectory(directory);
+
+        assertFileDeleted(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
     }
 }

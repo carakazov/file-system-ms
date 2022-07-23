@@ -9,6 +9,4 @@ import notes.project.filesystem.model.Directory;
 
 public interface CreatedFileService {
     AddFileResponseDto addFile(AddFileRequestDto request);
-
-    List<CreatedFile> findFilesOfDirectory(Directory directory);
 }

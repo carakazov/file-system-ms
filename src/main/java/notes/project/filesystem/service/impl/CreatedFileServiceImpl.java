@@ -40,9 +40,4 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         clusterService.updateClusterLastRequestedTime(directory.getCluster());
         return fileCreationMapper.to(repository.save(file));
     }
-
-    @Override
-    public List<CreatedFile> findFilesOfDirectory(Directory directory) {
-        return repository.findByDirectory(directory);
-    }
 }
