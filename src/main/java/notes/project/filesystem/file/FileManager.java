@@ -10,4 +10,5 @@ public interface FileManager {
     String readFile(CreatedFile createdFile);
 
     void deleteDirectory(Directory directory);
+    void deleteFile(CreatedFile createdFile);
 }

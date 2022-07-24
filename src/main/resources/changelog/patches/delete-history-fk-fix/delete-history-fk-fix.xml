@@ -1,0 +1,13 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="003" author="vadim.lebediantsev">
+        <dropForeignKeyConstraint baseTableName="delete_history"
+                                  constraintName="created_file_event_fk"/>
+        <addForeignKeyConstraint baseTableName="delete_history" baseColumnNames="created_file_id" constraintName="created_file_even_fk" referencedTableName="created_files"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+</databaseChangeLog>

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import notes.project.filesystem.file.impl.ZipManagerImpl;
+import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.ApplicationPropertiesUtils;
 import notes.project.filesystem.utils.DbUtils;
@@ -48,6 +49,21 @@ class ZipManagerImplTest extends FileSystemTest {
         assertFileCreated(ZIPPED_DIRECTORY_PATH);
 
         Files.delete(ZIPPED_DIRECTORY_PATH);
+        Files.delete(ARCHIVE_ROOT_PATH);
+    }
+
+    @Test
+    void zipCreatedFileSuccess() throws IOException {
+        when(fileManager.readFile(any())).thenReturn(FILE_CONTENT);
+        CreatedFile createdFile = DbUtils.createdFile();
+
+        createClusterPath(ARCHIVE_ROOT_PATH);
+
+        zipManager.zipCreatedFile(createdFile);
+
+        assertFileCreated(ZIPPED_CREATED_FILE_PATH);
+
+        Files.delete(ZIPPED_CREATED_FILE_PATH);
         Files.delete(ARCHIVE_ROOT_PATH);
     }
 }

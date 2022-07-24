@@ -7,4 +7,5 @@ import notes.project.filesystem.model.Directory;
 
 public interface ZipManager {
     void zipDirectory(Directory directory);
+    void zipCreatedFile(CreatedFile createdFile);
 }

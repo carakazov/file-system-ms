@@ -1,19 +1,25 @@
 package notes.project.filesystem.service.impl;
 
+import java.nio.file.ReadOnlyFileSystemException;
 import java.util.List;
+import java.util.UUID;
 import javax.transaction.Transactional;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
+import notes.project.filesystem.exception.ExceptionCode;
+import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.file.FileManager;
+import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.CreatedFileService;
+import notes.project.filesystem.service.DeleteHistoryService;
 import notes.project.filesystem.service.DirectoryService;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
@@ -27,6 +33,8 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final FileCreationMapper fileCreationMapper;
     private final ClusterService clusterService;
     private final Validator<AddFileRequestDto> addFileValidator;
+    private final DeleteHistoryService deleteHistoryService;
+    private final ZipManager zipManager;
 
     @Override
     @Transactional
@@ -39,5 +47,21 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         fileManager.createFile(file, request.getContent());
         clusterService.updateClusterLastRequestedTime(directory.getCluster());
         return fileCreationMapper.to(repository.save(file));
+    }
+
+    @Override
+    public CreatedFile findFileByExternalId(UUID externalId) {
+        return repository.findByExternalId(externalId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public void deleteCreatedFile(UUID fileExternalId) {
+        CreatedFile createdFile = findFileByExternalId(fileExternalId);
+        createdFile.setDeleted(Boolean.TRUE);
+        deleteHistoryService.createCreatedFileDeleteHistory(createdFile);
+        clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
+        zipManager.zipCreatedFile(createdFile);
     }
 }

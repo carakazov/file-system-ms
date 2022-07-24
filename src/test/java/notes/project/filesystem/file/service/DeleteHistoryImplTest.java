@@ -1,8 +1,9 @@
-package notes.project.filesystem.service;
+package notes.project.filesystem.file.service;
 
 import notes.project.filesystem.model.DeleteHistory;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.DeleteHistoryRepository;
+import notes.project.filesystem.service.DeleteHistoryService;
 import notes.project.filesystem.service.impl.DeleteHistoryServiceImpl;
 import notes.project.filesystem.utils.DbUtils;
 import org.junit.jupiter.api.BeforeEach;

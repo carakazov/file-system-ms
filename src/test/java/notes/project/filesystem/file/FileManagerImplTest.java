@@ -101,4 +101,18 @@ class FileManagerImplTest extends FileSystemTest {
 
         assertFileDeleted(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
     }
+
+    @Test
+    void deleteFileSuccess() throws IOException {
+        Files.createDirectories(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+        Files.createFile(RESOLVED_PATH_FOR_CREATE_FILE);
+
+        when(pathHelper.createPathToFile(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_FILE);
+
+        CreatedFile createdFile = DbUtils.createdFile();
+
+        fileManager.deleteFile(createdFile);
+
+        assertFileDeleted(RESOLVED_PATH_FOR_CREATE_FILE);
+    }
 }

@@ -18,7 +18,7 @@ public class CreatedFile {
 
     private String title;
 
-    private Boolean deleted;
+    private Boolean deleted = Boolean.FALSE;
 
     @ManyToOne
     @JoinColumn(name = "directory_id")
