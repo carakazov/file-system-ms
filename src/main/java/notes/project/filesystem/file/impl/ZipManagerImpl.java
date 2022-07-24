@@ -1,5 +1,6 @@
 package notes.project.filesystem.file.impl;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -31,13 +33,10 @@ public class ZipManagerImpl implements ZipManager {
 
     @Override
     public synchronized void zipDirectory(Directory directory) {
-        String pathToZip = createZipForDirectory(directory);
+        String pathToZip = createZipFile(directory.getExternalId());
         try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(pathToZip))) {
             for(CreatedFile file : directory.getCreatedFiles()) {
-                ZipEntry zipEntry = new ZipEntry(file.getExternalId().toString() + FileResolution.TXT.getResolution());
-                zipOutputStream.putNextEntry(zipEntry);
-                byte[] content = fileManager.readFile(file).getBytes(StandardCharsets.UTF_8);
-                zipOutputStream.write(content);
+                readFileContentToZipEntry(file, zipOutputStream);
             }
             fileManager.deleteDirectory(directory);
         } catch(IOException exception) {
@@ -45,10 +44,27 @@ public class ZipManagerImpl implements ZipManager {
         }
     }
 
+    @Override
+    public synchronized void zipCreatedFile(CreatedFile createdFile) {
+        String pathToZip = createZipFile(createdFile.getExternalId());
+        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(pathToZip))) {
+            readFileContentToZipEntry(createdFile, zipOutputStream);
+            fileManager.deleteFile(createdFile);
+        } catch(IOException exception) {
+            throw new FileSystemException(ExceptionCode.CREATION_ERROR);
+        }
+    }
 
-    private synchronized String createZipForDirectory(Directory directory)  {
+    private synchronized void readFileContentToZipEntry(CreatedFile createdFile, ZipOutputStream zipOutputStream) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(createdFile.getExternalId().toString() + FileResolution.TXT.getResolution());
+        zipOutputStream.putNextEntry(zipEntry);
+        byte[] content = fileManager.readFile(createdFile).getBytes(StandardCharsets.UTF_8);
+        zipOutputStream.write(content);
+    }
+
+    private synchronized String createZipFile(UUID objectExternalId)  {
         try {
-            Path zipPath = Path.of(applicationProperties.getArchiveRoot() + "/" + directory.getExternalId() + FileResolution.ZIP.getResolution());
+            Path zipPath = Path.of(applicationProperties.getArchiveRoot() + "/" + objectExternalId + FileResolution.ZIP.getResolution());
             Files.createFile(zipPath);
             return zipPath.toString();
         } catch(IOException exception) {

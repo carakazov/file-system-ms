@@ -3,11 +3,13 @@ package notes.project.filesystem.it;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import liquibase.pro.packaged.E;
 import lombok.extern.slf4j.Slf4j;
 import notes.project.filesystem.controller.CreatedFileController;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.utils.TestDataConstants;
 import notes.project.filesystem.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -65,5 +67,21 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
         ).setParameter("title", "my file test").getSingleResult();
 
         assertNotNull(createdFile);
+    }
+
+    @Test
+    void deleteFileSuccess() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+        testEntityManager.merge(DbUtils.createdFile());
+
+        createDirectoryWithFile();
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/file/2a99b6fe-44f2-4837-bbee-80fbe43f3076"));
+
+
+
+        assertFileCreatedThenDelete(TestDataConstants.ZIPPED_CREATED_FILE_PATH);
+        assertFileDeleted(TestDataConstants.RESOLVED_PATH_FOR_CREATE_FILE);
     }
 }

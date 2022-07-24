@@ -1,15 +1,14 @@
 package notes.project.filesystem.controller;
 
+import java.util.UUID;
+
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
 import notes.project.filesystem.service.CreatedFileService;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +19,10 @@ public class CreatedFileController {
     @PostMapping
     public AddFileResponseDto createFinal(@RequestBody @Validated AddFileRequestDto request) {
         return createdFileService.addFile(request);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFile(@PathVariable(name = "id") UUID externalId) {
+        createdFileService.deleteCreatedFile(externalId);
     }
 }

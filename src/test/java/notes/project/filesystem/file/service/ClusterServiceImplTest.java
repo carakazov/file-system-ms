@@ -1,9 +1,10 @@
-package notes.project.filesystem.service;
+package notes.project.filesystem.file.service;
 
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
 import notes.project.filesystem.repository.ClusterRepository;
+import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.impl.ClusterServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;

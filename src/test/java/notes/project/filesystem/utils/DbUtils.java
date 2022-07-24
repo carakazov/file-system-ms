@@ -2,6 +2,7 @@ package notes.project.filesystem.utils;
 
 import java.util.Collections;
 
+import liquibase.pro.packaged.D;
 import lombok.experimental.UtilityClass;
 import notes.project.filesystem.model.*;
 
@@ -48,6 +49,14 @@ public class DbUtils {
         return new DeleteHistory()
             .setId(ID)
             .setDirectory(directory())
+            .setEvent(EventType.DELETED)
+            .setDate(DELETE_DATE);
+    }
+
+    public static DeleteHistory deleteCreatedFileHistory() {
+        return new DeleteHistory()
+            .setId(ID)
+            .setCreatedFile(createdFile())
             .setEvent(EventType.DELETED)
             .setDate(DELETE_DATE);
     }

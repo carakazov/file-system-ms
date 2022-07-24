@@ -58,6 +58,7 @@ public class DirectoryServiceImpl implements DirectoryService {
     public void deleteDirectory(UUID externalId) {
         Directory directory = findByExternalId(externalId);
         directory.setDeleted(Boolean.TRUE);
+        directory.getCreatedFiles().forEach(item -> item.setDeleted(Boolean.TRUE));
         deleteHistoryService.createDirectoryDeleteHistory(directory);
         clusterService.updateClusterLastRequestedTime(directory.getCluster());
         zipManager.zipDirectory(directory);

@@ -91,4 +91,17 @@ public class FileManagerImpl implements FileManager {
             throw new FileSystemException(ExceptionCode.DELETION_ERROR, e.getMessage());
         }
     }
+
+    @Override
+    public synchronized void deleteFile(CreatedFile createdFile) {
+        Path filePath = pathHelper.createPathToFile(createdFile);
+        try {
+            if(!Files.exists(filePath)) {
+                throw new FileSystemException(ExceptionCode.FILE_DOES_NOT_EXISTS);
+            }
+            Files.delete(filePath);
+        } catch(IOException exception) {
+            throw new FileSystemException(ExceptionCode.DELETION_ERROR, exception.getMessage());
+        }
+    }
 }
