@@ -2,10 +2,7 @@ package notes.project.filesystem.controller;
 
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,5 +42,8 @@ public class ClusterController {
         return clusterService.createCluster(request);
     }
 
-
+    @DeleteMapping("/{id}")
+    public void deleteCluster(@PathVariable(name = "id") UUID externalId) {
+        clusterService.deleteCluster(externalId);
+    }
 }

@@ -12,6 +12,7 @@ import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.DeleteHistoryService;
 import notes.project.filesystem.service.DirectoryService;
+import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.service.impl.DirectoryServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
@@ -32,21 +33,18 @@ import static org.mockito.Mockito.*;
 class DirectoryServiceImplTest {
     @Mock
     private DirectoryRepository repository;
-
     @Mock
     private FileManager fileManager;
-
     @Mock
     private ClusterService clusterService;
-
     @Mock
     private DirectoryCreationValidator directoryCreationValidator;
-
     @Mock
     private ZipManager zipManager;
-
     @Mock
     private DeleteHistoryService deleteHistoryService;
+    @Mock
+    private ObjectExistingStatusChanger objectExistingStatusChanger;
 
     private DirectoryService service;
 
@@ -59,7 +57,8 @@ class DirectoryServiceImplTest {
             clusterService,
             directoryCreationValidator,
             zipManager,
-            deleteHistoryService
+            deleteHistoryService,
+            objectExistingStatusChanger
         );
     }
 
