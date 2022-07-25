@@ -11,10 +11,13 @@ import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.file.FileManager;
+import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.repository.ClusterRepository;
 import notes.project.filesystem.service.ClusterService;
+import notes.project.filesystem.service.DeleteHistoryService;
+import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,9 @@ public class ClusterServiceImpl implements ClusterService {
     private final FileManager fileManager;
     private final ClusterCreationMapper clusterCreationMapper;
     private final Validator<ClusterCreationRequestDto> createClusterValidator;
+    private final DeleteHistoryService deleteHistoryService;
+    private final ObjectExistingStatusChanger objectExistingStatusChanger;
+    private final ZipManager zipManager;
 
     @Override
     @Transactional
@@ -47,5 +53,14 @@ public class ClusterServiceImpl implements ClusterService {
     @Transactional
     public void updateClusterLastRequestedTime(Cluster cluster) {
         cluster.setLastRequestDate(LocalDateTime.now());
+    }
+
+    @Override
+    @Transactional
+    public void deleteCluster(UUID externalId) {
+        Cluster cluster = findByExternalId(externalId);
+        deleteHistoryService.createClusterDeleteHistory(cluster);
+        objectExistingStatusChanger.changeClusterExistingStatus(cluster);
+        zipManager.zipCluster(cluster);
     }
 }

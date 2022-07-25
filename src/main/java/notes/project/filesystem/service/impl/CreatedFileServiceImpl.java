@@ -17,10 +17,7 @@ import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.CreatedFileRepository;
-import notes.project.filesystem.service.ClusterService;
-import notes.project.filesystem.service.CreatedFileService;
-import notes.project.filesystem.service.DeleteHistoryService;
-import notes.project.filesystem.service.DirectoryService;
+import notes.project.filesystem.service.*;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +32,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final Validator<AddFileRequestDto> addFileValidator;
     private final DeleteHistoryService deleteHistoryService;
     private final ZipManager zipManager;
+    private final ObjectExistingStatusChanger objectExistingStatusChanger;
 
     @Override
     @Transactional
@@ -59,9 +57,9 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     @Transactional
     public void deleteCreatedFile(UUID fileExternalId) {
         CreatedFile createdFile = findFileByExternalId(fileExternalId);
-        createdFile.setDeleted(Boolean.TRUE);
         deleteHistoryService.createCreatedFileDeleteHistory(createdFile);
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
+        objectExistingStatusChanger.changeCreatedFileExistingStatus(createdFile);
         zipManager.zipCreatedFile(createdFile);
     }
 }

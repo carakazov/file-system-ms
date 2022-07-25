@@ -12,4 +12,6 @@ public interface ClusterService {
     Cluster findByExternalId(UUID externalId);
 
     void updateClusterLastRequestedTime(Cluster cluster);
+
+    void deleteCluster(UUID externalId);
 }

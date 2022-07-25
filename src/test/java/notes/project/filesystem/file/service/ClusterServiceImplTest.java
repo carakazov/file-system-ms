@@ -2,9 +2,12 @@ package notes.project.filesystem.file.service;
 
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
 import notes.project.filesystem.file.FileManager;
+import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
 import notes.project.filesystem.repository.ClusterRepository;
 import notes.project.filesystem.service.ClusterService;
+import notes.project.filesystem.service.DeleteHistoryService;
+import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.service.impl.ClusterServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
@@ -30,6 +33,13 @@ class ClusterServiceImplTest {
     private FileManager fileManager;
     @Mock
     private ClusterCreationValidator clusterCreationValidator;
+    @Mock
+    private DeleteHistoryService deleteHistoryService;
+    @Mock
+    private ObjectExistingStatusChanger objectExistingStatusChanger;
+    @Mock
+    private ZipManager zipManager;
+
 
     private ClusterService service;
 
@@ -39,7 +49,10 @@ class ClusterServiceImplTest {
                 clusterRepository,
                 fileManager,
                 Mappers.getMapper(ClusterCreationMapper.class),
-                clusterCreationValidator
+                clusterCreationValidator,
+                deleteHistoryService,
+                objectExistingStatusChanger,
+                zipManager
         );
     }
 

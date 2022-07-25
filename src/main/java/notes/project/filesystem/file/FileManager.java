@@ -11,4 +11,5 @@ public interface FileManager {
 
     void deleteDirectory(Directory directory);
     void deleteFile(CreatedFile createdFile);
+    void deleteCluster(Cluster cluster);
 }

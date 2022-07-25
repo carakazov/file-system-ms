@@ -13,10 +13,7 @@ import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.DeleteHistory;
 import notes.project.filesystem.repository.CreatedFileRepository;
-import notes.project.filesystem.service.ClusterService;
-import notes.project.filesystem.service.CreatedFileService;
-import notes.project.filesystem.service.DeleteHistoryService;
-import notes.project.filesystem.service.DirectoryService;
+import notes.project.filesystem.service.*;
 import notes.project.filesystem.service.impl.CreatedFileServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
@@ -50,11 +47,12 @@ class CreatedFileServiceImplTest {
     @Mock
     private DeleteHistoryService deleteHistoryService;
     @Mock
+    private ObjectExistingStatusChanger objectExistingStatusChanger;
+    @Mock
     private ZipManager zipManager;
 
     private CreatedFileService service;
 
-    private ArgumentCaptor<DeleteHistory> createdFileDeleteHistoryCaptor;
 
     @BeforeEach
     void init() {
@@ -66,7 +64,8 @@ class CreatedFileServiceImplTest {
             clusterService,
             fileCreationValidator,
             deleteHistoryService,
-            zipManager
+            zipManager,
+            objectExistingStatusChanger
         );
     }
 

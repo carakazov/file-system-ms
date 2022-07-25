@@ -104,4 +104,17 @@ public class FileManagerImpl implements FileManager {
             throw new FileSystemException(ExceptionCode.DELETION_ERROR, exception.getMessage());
         }
     }
+
+    @Override
+    public synchronized void deleteCluster(Cluster cluster) {
+        Path clusterPath = pathHelper.createPathToCluster(cluster);
+        try {
+            if(!Files.exists(clusterPath)) {
+                throw new FileSystemException(ExceptionCode.CLUSTER_DOES_NOT_EXISTS);
+            }
+            FileUtils.deleteDirectory(new File(clusterPath.toString()));
+        } catch(IOException exception) {
+            throw new FileSystemException(ExceptionCode.DELETION_ERROR, exception.getMessage());
+        }
+    }
 }
