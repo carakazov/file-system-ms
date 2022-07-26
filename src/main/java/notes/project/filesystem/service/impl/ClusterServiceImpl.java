@@ -31,6 +31,7 @@ public class ClusterServiceImpl implements ClusterService {
     private final DeleteHistoryService deleteHistoryService;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
     private final ZipManager zipManager;
+    private final Validator<Cluster> deleteClusterValidator;
 
     private final static Object LOCK = new Object();
 
@@ -59,6 +60,7 @@ public class ClusterServiceImpl implements ClusterService {
     @Transactional
     public void deleteCluster(UUID externalId) {
         Cluster cluster = findByExternalId(externalId);
+        deleteClusterValidator.validate(cluster);
         deleteHistoryService.createClusterDeleteHistory(cluster);
         synchronized(LOCK) {
             zipManager.zipCluster(cluster);

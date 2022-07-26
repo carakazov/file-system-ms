@@ -14,6 +14,7 @@ import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.service.impl.ClusterServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.validation.Validator;
 import notes.project.filesystem.validation.impl.ClusterCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,8 @@ class ClusterServiceImplTest {
     private ObjectExistingStatusChanger objectExistingStatusChanger;
     @Mock
     private ZipManager zipManager;
+    @Mock
+    private Validator<Cluster> deleteClusterValidator;
 
 
     private ClusterService service;
@@ -49,13 +52,14 @@ class ClusterServiceImplTest {
     @BeforeEach
     void init() {
         service = new ClusterServiceImpl(
-                clusterRepository,
-                fileManager,
-                Mappers.getMapper(ClusterCreationMapper.class),
-                clusterCreationValidator,
-                deleteHistoryService,
-                objectExistingStatusChanger,
-                zipManager
+            clusterRepository,
+            fileManager,
+            Mappers.getMapper(ClusterCreationMapper.class),
+            clusterCreationValidator,
+            deleteHistoryService,
+            objectExistingStatusChanger,
+            zipManager,
+            deleteClusterValidator
         );
     }
 

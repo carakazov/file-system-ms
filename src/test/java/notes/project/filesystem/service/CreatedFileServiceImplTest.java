@@ -9,12 +9,14 @@ import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.model.CreatedFile;
+import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.*;
 import notes.project.filesystem.service.impl.CreatedFileServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import notes.project.filesystem.validation.Validator;
 import notes.project.filesystem.validation.impl.FileCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +49,8 @@ class CreatedFileServiceImplTest {
     private ObjectExistingStatusChanger objectExistingStatusChanger;
     @Mock
     private ZipManager zipManager;
-
+    @Mock
+    private Validator<CreatedFile> deleteDirectoryValidator;
     private CreatedFileService service;
 
 
@@ -62,7 +65,8 @@ class CreatedFileServiceImplTest {
             fileCreationValidator,
             deleteHistoryService,
             zipManager,
-            objectExistingStatusChanger
+            objectExistingStatusChanger,
+            deleteDirectoryValidator
         );
     }
 
