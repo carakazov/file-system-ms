@@ -12,7 +12,10 @@ public enum ExceptionCode {
     INCORRECT_TITLE_LENGTH("incorrectTitleLength"),
     INCORRECT_CONTENT_LENGTH("incorrectContentLength"),
     RESOURCE_NOT_FOUND("resourceNotFound"),
-    WRONG_REQUEST_PARAMETERS("wrongRequestParameters");
+    WRONG_REQUEST_PARAMETERS("wrongRequestParameters"),
+    FILE_ALREADY_DELETED("fileAlreadyDeleted"),
+    DIRECTORY_ALREADY_DELETED("directoryAlreadyDeleted"),
+    CLUSTER_ALREADY_DELETED("clusterAlreadyDeleted");
     @Getter
     private final String code;
 

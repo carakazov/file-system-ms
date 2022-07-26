@@ -30,6 +30,7 @@ public class DirectoryServiceImpl implements DirectoryService {
     private final ZipManager zipManager;
     private final DeleteHistoryService deleteHistoryService;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
+    private final Validator<Directory> deleteDirectoryValidator;
 
     private final static Object LOCK = new Object();
 
@@ -55,6 +56,7 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Transactional
     public void deleteDirectory(UUID externalId) {
         Directory directory = findByExternalId(externalId);
+        deleteDirectoryValidator.validate(directory);
         deleteHistoryService.createDirectoryDeleteHistory(directory);
         clusterService.updateClusterLastRequestedTime(directory.getCluster());
         synchronized(LOCK) {

@@ -32,6 +32,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final DeleteHistoryService deleteHistoryService;
     private final ZipManager zipManager;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
+    private final Validator<CreatedFile> deleteFileValidator;
 
     private final static Object LOCK = new Object();
 
@@ -58,6 +59,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     @Transactional
     public void deleteCreatedFile(UUID fileExternalId) {
         CreatedFile createdFile = findFileByExternalId(fileExternalId);
+        deleteFileValidator.validate(createdFile);
         deleteHistoryService.createCreatedFileDeleteHistory(createdFile);
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         synchronized(LOCK) {
