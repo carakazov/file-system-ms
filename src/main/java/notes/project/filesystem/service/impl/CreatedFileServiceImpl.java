@@ -7,16 +7,19 @@ import liquibase.change.core.LoadDataChange;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
+import notes.project.filesystem.dto.ReadCreatedFileDto;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.FileCreationMapper;
+import notes.project.filesystem.mapper.ReadFileMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.*;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import notes.project.filesystem.validation.BusinessValidator;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,8 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final ZipManager zipManager;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
     private final Validator<CreatedFile> deleteFileValidator;
+    private final ReadFileMapper readFileMapper;
+    private final BusinessValidator<CreatedFile> readFileValidator;
 
     private final static Object LOCK = new Object();
 
@@ -66,5 +71,13 @@ public class CreatedFileServiceImpl implements CreatedFileService {
             zipManager.zipCreatedFile(createdFile);
             objectExistingStatusChanger.changeCreatedFileExistingStatus(createdFile);
         }
+    }
+
+    @Override
+    public ReadCreatedFileDto readFile(UUID externalId) {
+        CreatedFile createdFile = findFileByExternalId(externalId);
+        readFileValidator.validate(createdFile);
+        clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
+        return readFileMapper.to(createdFile, fileManager.readFile(createdFile));
     }
 }

@@ -8,4 +8,6 @@
     <include file="changelog/patches/delete-history-fk-fix/delete-history-fk-fix.xml"/>
 
     <include file="changelog/patches/adding-deleted-column-to-cluster/adding-deleted-column-to-cluster.xml"/>
+
+    <include file="changelog/patches/add-file-creation-date/add-file-creation-date.xml"/>
 </databaseChangeLog>

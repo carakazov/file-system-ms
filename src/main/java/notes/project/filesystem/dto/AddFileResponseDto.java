@@ -1,5 +1,6 @@
 package notes.project.filesystem.dto;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import io.swagger.annotations.ApiModel;
@@ -15,4 +16,6 @@ public class AddFileResponseDto {
     private String title;
     @ApiModelProperty(value = "Внешний ID файла")
     private UUID externalId;
+    @ApiModelProperty(value = "Время создания файла")
+    private LocalDateTime createdDate;
 }

@@ -42,7 +42,8 @@ public class DbUtils {
             .setTitle(CREATE_FILE_TITLE)
             .setDeleted(Boolean.FALSE)
             .setExternalId(CREATED_FILE_EXTERNAL_ID)
-            .setDirectory(directory());
+            .setDirectory(directory())
+            .setCreatedDate(CREATED_FILE_CREATED_DATE);
     }
 
     public static DeleteHistory deleteDirectoryHistory() {
