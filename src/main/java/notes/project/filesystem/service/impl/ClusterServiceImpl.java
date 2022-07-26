@@ -1,6 +1,5 @@
 package notes.project.filesystem.service.impl;
 
-import java.lang.module.ResolutionException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -8,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.ClusterCreationRequestDto;
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
 import notes.project.filesystem.exception.ExceptionCode;
-import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
@@ -33,6 +31,8 @@ public class ClusterServiceImpl implements ClusterService {
     private final DeleteHistoryService deleteHistoryService;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
     private final ZipManager zipManager;
+
+    private final static Object LOCK = new Object();
 
     @Override
     @Transactional
@@ -60,7 +60,9 @@ public class ClusterServiceImpl implements ClusterService {
     public void deleteCluster(UUID externalId) {
         Cluster cluster = findByExternalId(externalId);
         deleteHistoryService.createClusterDeleteHistory(cluster);
-        objectExistingStatusChanger.changeClusterExistingStatus(cluster);
-        zipManager.zipCluster(cluster);
+        synchronized(LOCK) {
+            zipManager.zipCluster(cluster);
+            objectExistingStatusChanger.changeClusterExistingStatus(cluster);
+        }
     }
 }

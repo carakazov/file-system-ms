@@ -1,14 +1,20 @@
 package notes.project.filesystem.it;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import liquibase.pro.packaged.E;
 import notes.project.filesystem.controller.ClusterController;
 import notes.project.filesystem.model.Cluster;
+import notes.project.filesystem.model.CreatedFile;
+import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.utils.TestDataConstants;
 import notes.project.filesystem.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,4 +69,28 @@ class ClusterControllerIntegrationTest extends AbstractIntegrationTest {
         assertNotNull(cluster);
     }
 
+    @Test
+    void deleteClusterSuccess() throws Exception {
+        CreatedFile createdFile = DbUtils.createdFile();
+        Directory directory = DbUtils.directory();
+        Cluster cluster = DbUtils.cluster();
+
+
+        testEntityManager.merge(cluster);
+        testEntityManager.merge(directory);
+        testEntityManager.merge(createdFile);
+
+        cluster.setDirectories(Collections.singletonList(directory));
+        directory.setCreatedFiles(Collections.singletonList(createdFile));
+
+        testEntityManager.merge(directory);
+        testEntityManager.merge(cluster);
+
+        createDirectoryWithFile();
+        mockMvc.perform(MockMvcRequestBuilders.delete("/cluster/3edce674-f3cf-4650-ad89-1bdd44b3f26a"));
+
+
+        assertFileCreatedThenDelete(TestDataConstants.ZIPPED_CREATED_FILE_PATH);
+        assertFileDeleted(TestDataConstants.RESOLVED_PATH_FOR_CREATE_CLUSTER);
+    }
 }

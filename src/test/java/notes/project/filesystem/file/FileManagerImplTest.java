@@ -1,6 +1,7 @@
 package notes.project.filesystem.file;
 
 import notes.project.filesystem.file.impl.FileManagerImpl;
+import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.DbUtils;
@@ -114,5 +115,18 @@ class FileManagerImplTest extends FileSystemTest {
         fileManager.deleteFile(createdFile);
 
         assertFileDeleted(RESOLVED_PATH_FOR_CREATE_FILE);
+    }
+
+    @Test
+    void deleteClusterSuccess() throws IOException {
+        Files.createDirectories(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+
+        when(pathHelper.createPathToCluster(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_CLUSTER);
+
+        Cluster cluster = DbUtils.cluster();
+
+        fileManager.deleteCluster(cluster);
+
+        assertFileDeleted(RESOLVED_PATH_FOR_CREATE_CLUSTER);
     }
 }

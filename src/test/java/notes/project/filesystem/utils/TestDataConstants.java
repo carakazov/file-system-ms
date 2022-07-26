@@ -25,7 +25,6 @@ public class TestDataConstants {
     //Zip manager
     public static final String ARCHIVE_ROOT = "target/archive-root";
     public static final Path ARCHIVE_ROOT_PATH = Path.of(ARCHIVE_ROOT);
-    public static final Path ZIPPED_DIRECTORY_PATH = Path.of(ARCHIVE_ROOT + "/" + CREATE_DIRECTORY_TITLE + ".zip");
     public static final Path ZIPPED_CREATED_FILE_PATH = Path.of(ARCHIVE_ROOT + "/" + CREATE_FILE_TITLE + ".zip");
 
     //Cluster constants

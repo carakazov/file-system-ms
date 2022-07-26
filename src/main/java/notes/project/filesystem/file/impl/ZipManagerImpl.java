@@ -1,15 +1,10 @@
 package notes.project.filesystem.file.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -23,79 +18,54 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.FileResolution;
-import notes.project.filesystem.service.CreatedFileService;
-import notes.project.filesystem.utils.PathHelper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class ZipManagerImpl implements ZipManager {
-    private final ApplicationProperties applicationProperties;
+    private final ApplicationProperties properties;
     private final FileManager fileManager;
 
     @Override
-    public synchronized void zipDirectory(Directory directory) {
-        String pathToZip = createZipFile(directory.getExternalId());
-        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(pathToZip))) {
-            for(CreatedFile file : directory.getCreatedFiles()) {
-                readFileContentToZipEntry(file, zipOutputStream);
-            }
-            fileManager.deleteDirectory(directory);
-        } catch(IOException exception) {
-            throw new FileSystemException(ExceptionCode.CREATION_ERROR);
-        }
-    }
-
-    @Override
-    public synchronized void zipCreatedFile(CreatedFile createdFile) {
-        String pathToZip = createZipFile(createdFile.getExternalId());
-        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(pathToZip))) {
-            readFileContentToZipEntry(createdFile, zipOutputStream);
+    public void zipCreatedFile(CreatedFile createdFile) {
+        String archivePath = properties.getArchiveRoot() + "/" + createdFile.getExternalId().toString() + FileResolution.ZIP.getResolution();
+        createZip(archivePath);
+        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(archivePath))) {
+            createZipEntry(createdFile, zipOutputStream);
             fileManager.deleteFile(createdFile);
         } catch(IOException exception) {
-            throw new FileSystemException(ExceptionCode.CREATION_ERROR);
+            throw new FileSystemException(ExceptionCode.DELETION_ERROR);
         }
     }
 
     @Override
-    public synchronized void zipCluster(Cluster cluster) {
-        String pathToZip = createZipFile(cluster.getExternalId());
-        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(pathToZip))) {
-            for(Directory directory : cluster.getDirectories()) {
-                for(CreatedFile createdFile : directory.getCreatedFiles()) {
-                    readFileContentToZipEntry(createdFile, zipOutputStream, directory.getExternalId().toString());
-                }
-            }
-            fileManager.deleteCluster(cluster);
-        } catch(IOException exception) {
-            throw new FileSystemException(ExceptionCode.CREATION_ERROR);
-        }
+    public void zipDirectory(Directory directory) {
+        directory.getCreatedFiles().stream()
+            .filter(item -> Boolean.FALSE.equals(item.getDeleted()))
+            .forEach(this::zipCreatedFile);
+        fileManager.deleteDirectory(directory);
     }
 
-    private synchronized void readFileContentToZipEntry(CreatedFile createdFile, ZipOutputStream zipOutputStream) throws IOException {
-        readFileContentToZipEntry(createdFile, zipOutputStream, null);
+    @Override
+    public void zipCluster(Cluster cluster) {
+        cluster.getDirectories().stream()
+            .filter(item -> Boolean.FALSE.equals(item.getDeleted()))
+            .forEach(this::zipDirectory);
+        fileManager.deleteCluster(cluster);
     }
 
-    private synchronized void readFileContentToZipEntry(CreatedFile createdFile, ZipOutputStream zipOutputStream, String additionalPath) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        if(Objects.nonNull(additionalPath)) {
-            builder.append(additionalPath).append("/");
-        }
-        builder.append(createdFile.getExternalId().toString()).append(FileResolution.TXT.getResolution());
-
-        ZipEntry zipEntry = new ZipEntry(builder.toString());
+    private void createZipEntry(CreatedFile createdFile, ZipOutputStream zipOutputStream) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(createdFile.getExternalId().toString() + FileResolution.TXT.getResolution());
         zipOutputStream.putNextEntry(zipEntry);
-        byte[] content = fileManager.readFile(createdFile).getBytes(StandardCharsets.UTF_8);
-        zipOutputStream.write(content);
+        zipOutputStream.write(fileManager.readFile(createdFile).getBytes(StandardCharsets.UTF_8));
+        zipOutputStream.closeEntry();
     }
 
-    private synchronized String createZipFile(UUID objectExternalId)  {
+    private void createZip(String archivePath) {
         try {
-            Path zipPath = Path.of(applicationProperties.getArchiveRoot() + "/" + objectExternalId + FileResolution.ZIP.getResolution());
-            Files.createFile(zipPath);
-            return zipPath.toString();
+            Files.createFile(Path.of(archivePath));
         } catch(IOException exception) {
-            throw new FileSystemException(ExceptionCode.CREATION_ERROR, exception.getMessage());
+            throw new FileSystemException(ExceptionCode.DELETION_ERROR);
         }
     }
 }
