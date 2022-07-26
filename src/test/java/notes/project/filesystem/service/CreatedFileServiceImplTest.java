@@ -1,28 +1,25 @@
-package notes.project.filesystem.file.service;
+package notes.project.filesystem.service;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import io.swagger.annotations.Api;
-import liquibase.pro.packaged.M;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.model.CreatedFile;
-import notes.project.filesystem.model.DeleteHistory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.*;
 import notes.project.filesystem.service.impl.CreatedFileServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.validation.impl.FileCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 

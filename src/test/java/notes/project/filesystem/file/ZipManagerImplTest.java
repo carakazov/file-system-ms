@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import notes.project.filesystem.file.impl.ZipManagerImpl;
+import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.ApplicationPropertiesUtils;
 import notes.project.filesystem.utils.DbUtils;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,9 +46,9 @@ class ZipManagerImplTest extends FileSystemTest {
 
         zipManager.zipDirectory(directory);
 
-        assertFileCreated(ZIPPED_DIRECTORY_PATH);
+        assertFileCreated(ZIPPED_CREATED_FILE_PATH);
 
-        Files.delete(ZIPPED_DIRECTORY_PATH);
+        Files.delete(ZIPPED_CREATED_FILE_PATH);
         Files.delete(ARCHIVE_ROOT_PATH);
     }
 
@@ -60,6 +60,21 @@ class ZipManagerImplTest extends FileSystemTest {
         createClusterPath(ARCHIVE_ROOT_PATH);
 
         zipManager.zipCreatedFile(createdFile);
+
+        assertFileCreated(ZIPPED_CREATED_FILE_PATH);
+
+        Files.delete(ZIPPED_CREATED_FILE_PATH);
+        Files.delete(ARCHIVE_ROOT_PATH);
+    }
+
+    @Test
+    void zipClusterSuccess() throws IOException {
+        when(fileManager.readFile(any())).thenReturn(FILE_CONTENT);
+        Cluster cluster = DbUtils.clusterWithFiles();
+
+        createClusterPath(ARCHIVE_ROOT_PATH);
+
+        zipManager.zipCluster(cluster);
 
         assertFileCreated(ZIPPED_CREATED_FILE_PATH);
 

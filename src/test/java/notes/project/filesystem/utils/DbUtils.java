@@ -53,10 +53,25 @@ public class DbUtils {
             .setDate(DELETE_DATE);
     }
 
+    public static Cluster clusterWithFiles() {
+        Cluster cluster = cluster();
+        Directory directory = directoryWithFiles();
+        cluster.setDirectories(Collections.singletonList(directory));
+        return cluster;
+    }
+
     public static DeleteHistory deleteCreatedFileHistory() {
         return new DeleteHistory()
             .setId(ID)
             .setCreatedFile(createdFile())
+            .setEvent(EventType.DELETED)
+            .setDate(DELETE_DATE);
+    }
+
+    public static DeleteHistory deleteClusterHistory() {
+        return new DeleteHistory()
+            .setId(ID)
+            .setCluster(cluster())
             .setEvent(EventType.DELETED)
             .setDate(DELETE_DATE);
     }

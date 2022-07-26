@@ -1,11 +1,9 @@
 package notes.project.filesystem.service.impl;
 
-import java.nio.file.ReadOnlyFileSystemException;
-import java.util.List;
 import java.util.UUID;
 import javax.transaction.Transactional;
 
-import io.swagger.v3.oas.annotations.Operation;
+import liquibase.change.core.LoadDataChange;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
@@ -18,6 +16,7 @@ import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.*;
+import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +32,8 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final DeleteHistoryService deleteHistoryService;
     private final ZipManager zipManager;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
+
+    private final static Object LOCK = new Object();
 
     @Override
     @Transactional
@@ -59,7 +60,9 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         CreatedFile createdFile = findFileByExternalId(fileExternalId);
         deleteHistoryService.createCreatedFileDeleteHistory(createdFile);
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
-        objectExistingStatusChanger.changeCreatedFileExistingStatus(createdFile);
-        zipManager.zipCreatedFile(createdFile);
+        synchronized(LOCK) {
+            zipManager.zipCreatedFile(createdFile);
+            objectExistingStatusChanger.changeCreatedFileExistingStatus(createdFile);
+        }
     }
 }

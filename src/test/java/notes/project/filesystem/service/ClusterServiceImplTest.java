@@ -1,9 +1,12 @@
-package notes.project.filesystem.file.service;
+package notes.project.filesystem.service;
+
+import java.util.Optional;
 
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
+import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.repository.ClusterRepository;
 import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.DeleteHistoryService;
@@ -11,7 +14,6 @@ import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.service.impl.ClusterServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
-import notes.project.filesystem.utils.TestDataConstants;
 import notes.project.filesystem.validation.impl.ClusterCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -65,4 +68,16 @@ class ClusterServiceImplTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    void deleteClusterSuccess() {
+        Cluster cluster = DbUtils.clusterWithFiles();
+        when(clusterRepository.findByExternalId(any())).thenReturn(Optional.of(cluster));
+
+        service.deleteCluster(cluster.getExternalId());
+
+        verify(deleteHistoryService).createClusterDeleteHistory(cluster);
+        verify(zipManager).zipCluster(cluster);
+    }
+
 }

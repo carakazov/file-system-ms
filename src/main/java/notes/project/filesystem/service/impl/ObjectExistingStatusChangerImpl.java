@@ -6,6 +6,7 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

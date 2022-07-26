@@ -1,4 +1,4 @@
-package notes.project.filesystem.file.service;
+package notes.project.filesystem.service;
 
 import java.util.Optional;
 
@@ -16,7 +16,6 @@ import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.service.impl.DirectoryServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
-import notes.project.filesystem.validation.impl.ClusterCreationValidator;
 import notes.project.filesystem.validation.impl.DirectoryCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

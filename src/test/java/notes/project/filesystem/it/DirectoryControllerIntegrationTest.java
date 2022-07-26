@@ -89,7 +89,7 @@ class DirectoryControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/directory/c139de85-4d96-4f27-8648-8cc86c1286be"));
 
-        assertFileCreatedThenDelete(TestDataConstants.ZIPPED_DIRECTORY_PATH);
+        assertFileCreatedThenDelete(TestDataConstants.ZIPPED_CREATED_FILE_PATH);
         assertFileDeleted(TestDataConstants.RESOLVED_PATH_FOR_CREATE_DIRECTORY);
     }
 
