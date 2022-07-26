@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
+import notes.project.filesystem.dto.ReadCreatedFileDto;
 import notes.project.filesystem.service.CreatedFileService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +25,10 @@ public class CreatedFileController {
     @DeleteMapping("/{id}")
     public void deleteFile(@PathVariable(name = "id") UUID externalId) {
         createdFileService.deleteCreatedFile(externalId);
+    }
+
+    @GetMapping("/{id}")
+    public ReadCreatedFileDto readFile(@PathVariable(name = "id") UUID externalId) {
+        return createdFileService.readFile(externalId);
     }
 }

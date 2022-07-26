@@ -3,11 +3,14 @@ package notes.project.filesystem.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import io.swagger.annotations.Api;
 import notes.project.filesystem.dto.AddFileRequestDto;
 import notes.project.filesystem.dto.AddFileResponseDto;
+import notes.project.filesystem.dto.ReadCreatedFileDto;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.FileCreationMapper;
+import notes.project.filesystem.mapper.ReadFileMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.CreatedFileRepository;
@@ -16,6 +19,7 @@ import notes.project.filesystem.service.impl.CreatedFileServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import notes.project.filesystem.validation.BusinessValidator;
 import notes.project.filesystem.validation.Validator;
 import notes.project.filesystem.validation.impl.FileCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +55,9 @@ class CreatedFileServiceImplTest {
     private ZipManager zipManager;
     @Mock
     private Validator<CreatedFile> deleteDirectoryValidator;
+    @Mock
+    private BusinessValidator<CreatedFile> readFileValidator;
+
     private CreatedFileService service;
 
 
@@ -66,7 +73,9 @@ class CreatedFileServiceImplTest {
             deleteHistoryService,
             zipManager,
             objectExistingStatusChanger,
-            deleteDirectoryValidator
+            deleteDirectoryValidator,
+            Mappers.getMapper(ReadFileMapper.class),
+            readFileValidator
         );
     }
 
@@ -89,11 +98,26 @@ class CreatedFileServiceImplTest {
         CreatedFile createdFile = DbUtils.createdFile();
         when(repository.findByExternalId(any())).thenReturn(Optional.of(createdFile));
 
-        service.deleteCreatedFile(UUID.fromString(CREATE_FILE_TITLE));
+        service.deleteCreatedFile(CREATED_FILE_EXTERNAL_ID);
 
         verify(deleteHistoryService).createCreatedFileDeleteHistory(createdFile.setDeleted(Boolean.TRUE));
         verify(clusterService).updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         verify(zipManager).zipCreatedFile(createdFile);
+    }
+
+    @Test
+    void readFileSuccess() {
+        CreatedFile file = DbUtils.createdFile();
+        when(repository.findByExternalId(any())).thenReturn(Optional.of(file));
+        when(fileManager.readFile(any())).thenReturn(FILE_CONTENT);
+        ReadCreatedFileDto expected = ApiUtils.readCreatedFileDto();
+
+        ReadCreatedFileDto actual = service.readFile(CREATED_FILE_EXTERNAL_ID);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByExternalId(CREATED_FILE_EXTERNAL_ID);
+        verify(fileManager).readFile(file);
     }
 
 }

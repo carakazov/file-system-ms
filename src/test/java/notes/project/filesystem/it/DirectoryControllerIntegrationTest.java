@@ -61,7 +61,7 @@ class DirectoryControllerIntegrationTest extends AbstractIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtils.getClasspathResource("api/DirectoryCreationRequest.json")))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.clusterName").value("3edce674-f3cf-4650-ad89-1bdd44b3f26a"))
+            .andExpect(jsonPath("$.clusterName").value("cluster-title"))
             .andExpect(jsonPath("$.directoryName").value("test directory"));
 
         Directory directory = testEntityManager.getEntityManager().createQuery(

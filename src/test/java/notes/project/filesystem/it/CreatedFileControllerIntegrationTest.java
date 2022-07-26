@@ -1,5 +1,6 @@
 package notes.project.filesystem.it;
 
+import java.io.IOException;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -83,5 +84,19 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
 
         assertFileCreatedThenDelete(TestDataConstants.ZIPPED_CREATED_FILE_PATH);
         assertFileDeleted(TestDataConstants.RESOLVED_PATH_FOR_CREATE_FILE);
+    }
+
+    @Test
+    void readFileSuccess() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+        testEntityManager.merge(DbUtils.createdFile());
+
+        createDirectoryWithFile();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/2a99b6fe-44f2-4837-bbee-80fbe43f3076"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value("file-title"))
+            .andExpect(jsonPath("$.content").value("some test file content"));
     }
 }

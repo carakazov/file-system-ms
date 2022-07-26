@@ -48,7 +48,15 @@ public class ApiUtils {
     public static AddFileResponseDto addFileResponseDto() {
         return new AddFileResponseDto()
             .setTitle(CREATE_FILE_TITLE)
-            .setExternalId(CREATED_FILE_EXTERNAL_ID);
+            .setExternalId(CREATED_FILE_EXTERNAL_ID)
+            .setCreatedDate(CREATED_FILE_CREATED_DATE);
+    }
+
+    public static ReadCreatedFileDto readCreatedFileDto() {
+        return new ReadCreatedFileDto()
+            .setContent(FILE_CONTENT)
+            .setTitle(CREATE_FILE_TITLE)
+            .setCreationDate(CREATED_FILE_CREATED_DATE);
     }
 
     public static ErrorDto errorDto() {
