@@ -15,11 +15,9 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collections;
 
 @Component
@@ -42,7 +40,7 @@ public class FileManagerImpl implements FileManager {
         try{
             Path clusterPath = pathHelper.createPathToCluster(directory.getCluster());
             if(!Files.exists(clusterPath)) {
-                throw new FileSystemException(ExceptionCode.CLUSTER_DOES_NOT_EXISTS);
+                throw new FileSystemException(ExceptionCode.CLUSTER_DOES_NOT_EXIST);
             }
             Path fullPath = pathHelper.createPathToDirectory(directory);
             Files.createDirectories((fullPath));
@@ -110,7 +108,7 @@ public class FileManagerImpl implements FileManager {
         Path clusterPath = pathHelper.createPathToCluster(cluster);
         try {
             if(!Files.exists(clusterPath)) {
-                throw new FileSystemException(ExceptionCode.CLUSTER_DOES_NOT_EXISTS);
+                throw new FileSystemException(ExceptionCode.CLUSTER_DOES_NOT_EXIST);
             }
             FileUtils.deleteDirectory(new File(clusterPath.toString()));
         } catch(IOException exception) {

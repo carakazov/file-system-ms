@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import notes.project.filesystem.dto.ClusterCreationRequestDto;
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
+import notes.project.filesystem.dto.ReadClusterDto;
 import notes.project.filesystem.model.Cluster;
 
 public interface ClusterService {
@@ -14,4 +15,6 @@ public interface ClusterService {
     void updateClusterLastRequestedTime(Cluster cluster);
 
     void deleteCluster(UUID externalId);
+
+    ReadClusterDto readCluster(UUID externalId);
 }

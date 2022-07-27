@@ -6,16 +6,19 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.ClusterCreationRequestDto;
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
+import notes.project.filesystem.dto.ReadClusterDto;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
+import notes.project.filesystem.mapper.ReadClusterMapper;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.repository.ClusterRepository;
 import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.DeleteHistoryService;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import notes.project.filesystem.validation.BusinessValidator;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +35,8 @@ public class ClusterServiceImpl implements ClusterService {
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
     private final ZipManager zipManager;
     private final Validator<Cluster> deleteClusterValidator;
+    private final BusinessValidator<Cluster> readClusterValidator;
+    private final ReadClusterMapper readClusterMapper;
 
     private final static Object LOCK = new Object();
 
@@ -66,5 +71,13 @@ public class ClusterServiceImpl implements ClusterService {
             zipManager.zipCluster(cluster);
             objectExistingStatusChanger.changeClusterExistingStatus(cluster);
         }
+    }
+
+    @Override
+    @Transactional
+    public ReadClusterDto readCluster(UUID externalId) {
+        Cluster cluster = findByExternalId(externalId);
+        readClusterValidator.validate(cluster);
+        return readClusterMapper.to(cluster);
     }
 }

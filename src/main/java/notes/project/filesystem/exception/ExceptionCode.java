@@ -8,7 +8,7 @@ public enum ExceptionCode {
     READING_ERROR("unexpectedErrorWhileReadingOperation"),
     FILE_DOES_NOT_EXISTS("fileDoesNotExist"),
     DIRECTORY_DOES_NOT_EXIST("directoryDoesNotExist"),
-    CLUSTER_DOES_NOT_EXISTS("clusterDoesNotExist"),
+    CLUSTER_DOES_NOT_EXIST("clusterDoesNotExist"),
     INCORRECT_TITLE_LENGTH("incorrectTitleLength"),
     INCORRECT_CONTENT_LENGTH("incorrectContentLength"),
     RESOURCE_NOT_FOUND("resourceNotFound"),
