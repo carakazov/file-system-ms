@@ -29,3 +29,4 @@ application:
     unexpectedErrorWhileReadingOperation: Unexpected error while reading operation.
     fileDoesNotExist: File does not exist.
     deletionError: Unexpected error while deleting.
+    directoryDoesNotExist: Directory does not exist.

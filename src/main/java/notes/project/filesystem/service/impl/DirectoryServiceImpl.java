@@ -6,16 +6,19 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
+import notes.project.filesystem.dto.ReadDirectoryDto;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.DirectoryCreationMapper;
+import notes.project.filesystem.mapper.ReadDirectoryMapper;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.*;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import notes.project.filesystem.validation.BusinessValidator;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,8 @@ public class DirectoryServiceImpl implements DirectoryService {
     private final DeleteHistoryService deleteHistoryService;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
     private final Validator<Directory> deleteDirectoryValidator;
+    private final BusinessValidator<Directory> readDirectoryValidator;
+    private final ReadDirectoryMapper readDirectoryMapper;
 
     private final static Object LOCK = new Object();
 
@@ -63,5 +68,13 @@ public class DirectoryServiceImpl implements DirectoryService {
             zipManager.zipDirectory(directory);
             objectExistingStatusChanger.changeDirectoryExistingStatus(directory);
         }
+    }
+
+    @Override
+    @Transactional
+    public ReadDirectoryDto readDirectory(UUID externalId) {
+        Directory directory = findByExternalId(externalId);
+        readDirectoryValidator.validate(directory);
+        return readDirectoryMapper.to(directory);
     }
 }

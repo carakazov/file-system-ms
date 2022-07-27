@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static notes.project.filesystem.utils.TestDataConstants.*;
 
 @Tag("it")
 @ExtendWith(SpringExtension.class)
@@ -93,4 +94,24 @@ class DirectoryControllerIntegrationTest extends AbstractIntegrationTest {
         assertFileDeleted(TestDataConstants.RESOLVED_PATH_FOR_CREATE_DIRECTORY);
     }
 
+    @Test
+    void readDirectorySuccess() throws Exception {
+        Directory directory = DbUtils.directory();
+        CreatedFile createdFile = DbUtils.createdFile();
+
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(directory);
+        testEntityManager.merge(createdFile);
+
+        directory.setCreatedFiles(Collections.singletonList(createdFile));
+
+        testEntityManager.merge(directory);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/directory/c139de85-4d96-4f27-8648-8cc86c1286be"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value(CREATE_DIRECTORY_TITLE))
+            .andExpect(jsonPath("$.externalId").value(CREATED_DIRECTORY_EXTERNAL_ID_STRING))
+            .andExpect(jsonPath("$.files[0].title").value(CREATE_FILE_TITLE))
+            .andExpect(jsonPath("$.files[0].externalId").value(CREATED_FILE_EXTERNAL_ID_STRING));
+    }
 }
