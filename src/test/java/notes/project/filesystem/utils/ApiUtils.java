@@ -59,6 +59,21 @@ public class ApiUtils {
             .setCreationDate(CREATED_FILE_CREATED_DATE);
     }
 
+    public static ReadDirectoryDto readDirectoryDto() {
+        return new ReadDirectoryDto()
+            .setTitle(CREATE_DIRECTORY_TITLE)
+            .setExternalId(DIRECTORY_EXTERNAL_ID)
+            .setCreationDate(CREATED_DIRECTORY_TIME)
+            .setFiles(Collections.singletonList(fileInfoDto()));
+    }
+
+    public static FileInfoDto fileInfoDto() {
+        return new FileInfoDto()
+            .setTitle(CREATE_FILE_TITLE)
+            .setExternalId(CREATED_FILE_EXTERNAL_ID)
+            .setCreationDate(CREATED_FILE_CREATED_DATE);
+    }
+
     public static ErrorDto errorDto() {
         return new ErrorDto()
                 .setCode(EXCEPTION_CODE)

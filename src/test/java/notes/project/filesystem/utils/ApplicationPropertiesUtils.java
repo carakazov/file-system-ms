@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 
 @UtilityClass
 public class ApplicationPropertiesUtils {
+    public static ApplicationProperties applicationProperties() {
+        return new ApplicationProperties();
+    }
+
     public static ApplicationProperties applicationPropertiesForPathHelper() {
         return new ApplicationProperties()
                 .setRoot(TestDataConstants.ROOT_DIRECTORY_PATH);

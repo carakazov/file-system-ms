@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
+import notes.project.filesystem.dto.ReadDirectoryDto;
 import notes.project.filesystem.service.DirectoryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +29,11 @@ public class DirectoryController {
     @ApiOperation(value = "/{directory/{externalId}}", notes = "Метод по удалению директории")
     public void deleteDirectory(@PathVariable(name = "externalId") @ApiParam(name = "Внешний ID директории") UUID externalId) {
         directoryService.deleteDirectory(externalId);
+    }
+
+    @GetMapping("/{id}")
+    @ApiOperation(value = "/directory/{id}", notes = "Метод запроса информации о директории и её содержимом")
+    public ReadDirectoryDto readDirectory(@PathVariable(name = "id") UUID externalId) {
+        return directoryService.readDirectory(externalId);
     }
 }

@@ -56,7 +56,7 @@ public class FileManagerImpl implements FileManager {
         try {
             Path directoryPath = pathHelper.createPathToDirectory(createdFile.getDirectory());
             if(!Files.exists(directoryPath)) {
-                throw new FileSystemException(ExceptionCode.DIRECTORY_DOES_NOT_EXISTS);
+                throw new FileSystemException(ExceptionCode.DIRECTORY_DOES_NOT_EXIST);
             }
             Path fullPath = pathHelper.createPathToFile(createdFile);
             Files.createFile(fullPath);
@@ -84,7 +84,7 @@ public class FileManagerImpl implements FileManager {
         Path directoryPath = pathHelper.createPathToDirectory(directory);
         try {
             if(!Files.exists(directoryPath)) {
-                throw new FileSystemException(ExceptionCode.DIRECTORY_DOES_NOT_EXISTS);
+                throw new FileSystemException(ExceptionCode.DIRECTORY_DOES_NOT_EXIST);
             }
             FileUtils.deleteDirectory(new File(directoryPath.toString()));
         } catch(IOException e) {
