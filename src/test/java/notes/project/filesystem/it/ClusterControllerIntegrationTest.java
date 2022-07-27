@@ -36,6 +36,7 @@ import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static notes.project.filesystem.utils.TestDataConstants.*;
 
 @Tag("it")
 @ExtendWith(SpringExtension.class)
@@ -92,5 +93,25 @@ class ClusterControllerIntegrationTest extends AbstractIntegrationTest {
 
         assertFileCreatedThenDelete(TestDataConstants.ZIPPED_CREATED_FILE_PATH);
         assertFileDeleted(TestDataConstants.RESOLVED_PATH_FOR_CREATE_CLUSTER);
+    }
+
+    @Test
+    void readCluster() throws Exception {
+        Cluster cluster = DbUtils.cluster();
+        Directory directory = DbUtils.directory();
+
+        testEntityManager.merge(cluster);
+        testEntityManager.merge(directory);
+
+        cluster.setDirectories(Collections.singletonList(directory));
+
+        testEntityManager.merge(cluster);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/cluster/3edce674-f3cf-4650-ad89-1bdd44b3f26a"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value(CREATE_CLUSTER_TITLE))
+            .andExpect(jsonPath("$.externalId").value(CREATED_CLUSTER_EXTERNAL_ID_STRING))
+            .andExpect(jsonPath("$.directories[0].title").value(CREATE_DIRECTORY_TITLE))
+            .andExpect(jsonPath("$.directories[0].externalId").value(CREATED_DIRECTORY_EXTERNAL_ID_STRING));
     }
 }

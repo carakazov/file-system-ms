@@ -6,6 +6,7 @@ import notes.project.filesystem.dto.ClusterCreationResponseDto;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
+import notes.project.filesystem.mapper.ReadClusterMapper;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.repository.ClusterRepository;
 import notes.project.filesystem.service.ClusterService;
@@ -14,6 +15,8 @@ import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.service.impl.ClusterServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.utils.TestUtils;
+import notes.project.filesystem.validation.BusinessValidator;
 import notes.project.filesystem.validation.Validator;
 import notes.project.filesystem.validation.impl.ClusterCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,6 +48,8 @@ class ClusterServiceImplTest {
     private ZipManager zipManager;
     @Mock
     private Validator<Cluster> deleteClusterValidator;
+    @Mock
+    private BusinessValidator<Cluster> readClusterValidator;
 
 
     private ClusterService service;
@@ -59,7 +64,9 @@ class ClusterServiceImplTest {
             deleteHistoryService,
             objectExistingStatusChanger,
             zipManager,
-            deleteClusterValidator
+            deleteClusterValidator,
+            readClusterValidator,
+            TestUtils.getComplexMapper(ReadClusterMapper.class)
         );
     }
 
@@ -82,6 +89,16 @@ class ClusterServiceImplTest {
 
         verify(deleteHistoryService).createClusterDeleteHistory(cluster);
         verify(zipManager).zipCluster(cluster);
+    }
+
+    @Test
+    void readFileSuccess() {
+        Cluster cluster = DbUtils.clusterWithFiles();
+        when(clusterRepository.findByExternalId(any())).thenReturn(Optional.of(cluster));
+
+        service.readCluster(cluster.getExternalId());
+
+        verify(clusterRepository).findByExternalId(cluster.getExternalId());
     }
 
 }

@@ -16,9 +16,11 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.ClusterCreationRequestDto;
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
+import notes.project.filesystem.dto.ReadClusterDto;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.repository.CreatedFileRepository;
@@ -39,12 +41,21 @@ public class ClusterController {
     private final ClusterService clusterService;
 
     @PostMapping
+    @ApiOperation(value = "Создание кластера")
     public ClusterCreationResponseDto createCluster(@RequestBody ClusterCreationRequestDto request) {
         return clusterService.createCluster(request);
     }
 
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "Удаление кластера")
     public void deleteCluster(@PathVariable(name = "id") UUID externalId) {
         clusterService.deleteCluster(externalId);
     }
+
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Чтение кластера")
+    public ReadClusterDto readCluster(@PathVariable(name = "id") UUID externalId) {
+        return clusterService.readCluster(externalId);
+    }
+
 }
