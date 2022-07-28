@@ -129,4 +129,18 @@ class FileManagerImplTest extends FileSystemTest {
 
         assertFileDeleted(RESOLVED_PATH_FOR_CREATE_CLUSTER);
     }
+
+    @Test
+    void moveFileSuccess() throws IOException {
+        Files.createDirectories(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+        Files.createDirectories(PATH_TO_ALTERNATIVE_DIRECTORY);
+        Files.createFile(RESOLVED_PATH_FOR_CREATE_FILE);
+
+        when(pathHelper.createPathToFile(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_FILE);
+        when(pathHelper.createPathToDirectory(any())).thenReturn(PATH_TO_ALTERNATIVE_DIRECTORY);
+
+        fileManager.moveFile(DbUtils.createdFile(), DbUtils.directoryWithAlternativeExternalId());
+
+        assertFileCreated(PATH_TO_REPLACED_FILE);
+    }
 }

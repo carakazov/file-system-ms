@@ -1,12 +1,9 @@
 package notes.project.filesystem.it;
 
-import java.nio.file.Path;
 import java.util.Collections;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import liquibase.pro.packaged.D;
-import liquibase.pro.packaged.E;
 import notes.project.filesystem.controller.DirectoryController;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
@@ -14,7 +11,6 @@ import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.TestDataConstants;
 import notes.project.filesystem.utils.TestUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -109,9 +105,9 @@ class DirectoryControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/directory/c139de85-4d96-4f27-8648-8cc86c1286be"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.title").value(CREATE_DIRECTORY_TITLE))
-            .andExpect(jsonPath("$.externalId").value(CREATED_DIRECTORY_EXTERNAL_ID_STRING))
-            .andExpect(jsonPath("$.files[0].title").value(CREATE_FILE_TITLE))
-            .andExpect(jsonPath("$.files[0].externalId").value(CREATED_FILE_EXTERNAL_ID_STRING));
+            .andExpect(jsonPath("$.title").value(DIRECTORY_TITLE))
+            .andExpect(jsonPath("$.externalId").value(DIRECTORY_EXTERNAL_ID_STRING))
+            .andExpect(jsonPath("$.files[0].title").value(FILE_TITLE))
+            .andExpect(jsonPath("$.files[0].externalId").value(FILE_EXTERNAL_ID_STRING));
     }
 }

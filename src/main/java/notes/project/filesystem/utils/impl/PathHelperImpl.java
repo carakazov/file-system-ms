@@ -18,19 +18,19 @@ public class PathHelperImpl implements PathHelper {
     private static final String FILE_RESOLUTION = ".txt";
 
     @Override
-    public Path createPathToCluster(Cluster cluster) {
+    public synchronized Path createPathToCluster(Cluster cluster) {
         return Path.of(properties.getRoot() + "/" + cluster.getExternalId().toString());
     }
 
     @Override
-    public Path createPathToDirectory(Directory directory) {
+    public synchronized Path createPathToDirectory(Directory directory) {
         return Path.of(
             createPathToCluster(directory.getCluster()) + "/" + directory.getExternalId().toString()
         );
     }
 
     @Override
-    public Path createPathToFile(CreatedFile file) {
+    public synchronized Path createPathToFile(CreatedFile file) {
         return Path.of(
             createPathToDirectory(file.getDirectory()) + "/" + file.getExternalId().toString() + FILE_RESOLUTION
         );

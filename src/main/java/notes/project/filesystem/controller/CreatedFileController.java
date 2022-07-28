@@ -4,9 +4,7 @@ import java.util.UUID;
 
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import notes.project.filesystem.dto.AddFileRequestDto;
-import notes.project.filesystem.dto.AddFileResponseDto;
-import notes.project.filesystem.dto.ReadCreatedFileDto;
+import notes.project.filesystem.dto.*;
 import notes.project.filesystem.service.CreatedFileService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +28,10 @@ public class CreatedFileController {
     @GetMapping("/{id}")
     public ReadCreatedFileDto readFile(@PathVariable(name = "id") UUID externalId) {
         return createdFileService.readFile(externalId);
+    }
+
+    @PutMapping
+    public MoveCreatedFileResponseDto moveFile(@RequestBody MoveCreatedFileRequestDto request) {
+        return createdFileService.moveFile(request);
     }
 }

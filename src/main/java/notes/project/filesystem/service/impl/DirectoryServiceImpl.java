@@ -18,7 +18,6 @@ import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.*;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
-import notes.project.filesystem.validation.BusinessValidator;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +32,6 @@ public class DirectoryServiceImpl implements DirectoryService {
     private final ZipManager zipManager;
     private final DeleteHistoryService deleteHistoryService;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
-    private final Validator<Directory> deleteDirectoryValidator;
-    private final BusinessValidator<Directory> readDirectoryValidator;
     private final ReadDirectoryMapper readDirectoryMapper;
 
     private final static Object LOCK = new Object();
@@ -43,7 +40,7 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Transactional
     public DirectoryCreationResponseDto createDirectory(DirectoryCreationRequestDto request) {
         createDirectoryValidator.validate(request);
-        Cluster cluster = clusterService.findByExternalId(request.getClusterExternalId());
+        Cluster cluster = clusterService.findNotDeletedClusterByExternalId(request.getClusterExternalId());
         Directory directory = directoryCreationMapper.from(request, cluster);
         directory = repository.save(directory);
         clusterService.updateClusterLastRequestedTime(cluster);
@@ -60,8 +57,7 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Override
     @Transactional
     public void deleteDirectory(UUID externalId) {
-        Directory directory = findByExternalId(externalId);
-        deleteDirectoryValidator.validate(directory);
+        Directory directory = findNotDeletedDirectoryByExternalId(externalId);
         deleteHistoryService.createDirectoryDeleteHistory(directory);
         clusterService.updateClusterLastRequestedTime(directory.getCluster());
         synchronized(LOCK) {
@@ -73,8 +69,13 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Override
     @Transactional
     public ReadDirectoryDto readDirectory(UUID externalId) {
-        Directory directory = findByExternalId(externalId);
-        readDirectoryValidator.validate(directory);
+        Directory directory = findNotDeletedDirectoryByExternalId(externalId);
         return readDirectoryMapper.to(directory);
+    }
+
+    @Override
+    public Directory findNotDeletedDirectoryByExternalId(UUID externalId) {
+        return repository.findByExternalIdAndDeletedFalse(externalId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
     }
 }

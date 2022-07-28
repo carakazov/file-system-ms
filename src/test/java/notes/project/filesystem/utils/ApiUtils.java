@@ -14,54 +14,54 @@ import static notes.project.filesystem.utils.TestDataConstants.*;
 @UtilityClass
 public class ApiUtils {
     public static ClusterCreationRequestDto clusterCreationRequestDto() {
-        return new ClusterCreationRequestDto().setClusterTitle(CREATE_CLUSTER_TITLE);
+        return new ClusterCreationRequestDto().setClusterTitle(CLUSTER_TITLE);
     }
 
     public static ClusterCreationResponseDto clusterCreationResponseDto() {
         return new ClusterCreationResponseDto()
-                .setTitle(CREATE_CLUSTER_TITLE)
+                .setTitle(CLUSTER_TITLE)
                 .setCreateDate(CREATED_CLUSTER_DATE)
-                .setExternalId(CREATED_CLUSTER_EXTERNAL_ID);
+                .setExternalId(CLUSTER_EXTERNAL_ID);
     }
 
     public static DirectoryCreationResponseDto directoryCreationResponseDto() {
         return new DirectoryCreationResponseDto()
-            .setDirectoryName(CREATE_DIRECTORY_TITLE)
-            .setClusterName(CREATE_CLUSTER_TITLE)
+            .setDirectoryName(DIRECTORY_TITLE)
+            .setClusterName(CLUSTER_TITLE)
             .setExternalId(DIRECTORY_EXTERNAL_ID)
             .setCreationDate(CREATED_DIRECTORY_TIME);
     }
 
     public static DirectoryCreationRequestDto directoryCreationRequestDto() {
         return new DirectoryCreationRequestDto()
-            .setDirectoryName(CREATE_DIRECTORY_TITLE)
-            .setClusterExternalId(CREATED_CLUSTER_EXTERNAL_ID);
+            .setDirectoryName(DIRECTORY_TITLE)
+            .setClusterExternalId(CLUSTER_EXTERNAL_ID);
     }
 
     public static AddFileRequestDto addFileRequestDto() {
         return new AddFileRequestDto()
             .setDirectoryExternalId(DIRECTORY_EXTERNAL_ID)
-            .setTitle(CREATE_DIRECTORY_TITLE)
+            .setTitle(DIRECTORY_TITLE)
             .setContent(FILE_CONTENT);
     }
 
     public static AddFileResponseDto addFileResponseDto() {
         return new AddFileResponseDto()
-            .setTitle(CREATE_FILE_TITLE)
-            .setExternalId(CREATED_FILE_EXTERNAL_ID)
+            .setTitle(FILE_TITLE)
+            .setExternalId(FILE_EXTERNAL_ID)
             .setCreatedDate(CREATED_FILE_CREATED_DATE);
     }
 
     public static ReadCreatedFileDto readCreatedFileDto() {
         return new ReadCreatedFileDto()
             .setContent(FILE_CONTENT)
-            .setTitle(CREATE_FILE_TITLE)
+            .setTitle(FILE_TITLE)
             .setCreationDate(CREATED_FILE_CREATED_DATE);
     }
 
     public static ReadDirectoryDto readDirectoryDto() {
         return new ReadDirectoryDto()
-            .setTitle(CREATE_DIRECTORY_TITLE)
+            .setTitle(DIRECTORY_TITLE)
             .setExternalId(DIRECTORY_EXTERNAL_ID)
             .setCreationDate(CREATED_DIRECTORY_TIME)
             .setFiles(Collections.singletonList(fileInfoDto()));
@@ -69,9 +69,22 @@ public class ApiUtils {
 
     public static FileInfoDto fileInfoDto() {
         return new FileInfoDto()
-            .setTitle(CREATE_FILE_TITLE)
-            .setExternalId(CREATED_FILE_EXTERNAL_ID)
+            .setTitle(FILE_TITLE)
+            .setExternalId(FILE_EXTERNAL_ID)
             .setCreationDate(CREATED_FILE_CREATED_DATE);
+    }
+
+    public static MoveCreatedFileResponseDto moveCreatedFileResponseDto() {
+        return new MoveCreatedFileResponseDto()
+            .setCreatedFileExternalId(FILE_EXTERNAL_ID)
+            .setNewDirectoryExternalId(ALTERNATIVE_DIRECTORY_EXTERNAL_ID)
+            .setReplacingDate(REPLACING_DATE);
+    }
+
+    public static MoveCreatedFileRequestDto moveCreatedFileRequestDto() {
+        return new MoveCreatedFileRequestDto()
+            .setCreatedFileExternalId(FILE_EXTERNAL_ID)
+            .setNewDirectoryExternalId(ALTERNATIVE_DIRECTORY_EXTERNAL_ID);
     }
 
     public static ErrorDto errorDto() {

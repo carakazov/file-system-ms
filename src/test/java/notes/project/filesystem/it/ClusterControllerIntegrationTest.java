@@ -1,14 +1,9 @@
 package notes.project.filesystem.it;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collections;
-import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import liquibase.pro.packaged.E;
 import notes.project.filesystem.controller.ClusterController;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
@@ -16,14 +11,11 @@ import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.TestDataConstants;
 import notes.project.filesystem.utils.TestUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.annotation.DirtiesContext;
@@ -31,7 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -109,9 +100,9 @@ class ClusterControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/cluster/3edce674-f3cf-4650-ad89-1bdd44b3f26a"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.title").value(CREATE_CLUSTER_TITLE))
-            .andExpect(jsonPath("$.externalId").value(CREATED_CLUSTER_EXTERNAL_ID_STRING))
-            .andExpect(jsonPath("$.directories[0].title").value(CREATE_DIRECTORY_TITLE))
-            .andExpect(jsonPath("$.directories[0].externalId").value(CREATED_DIRECTORY_EXTERNAL_ID_STRING));
+            .andExpect(jsonPath("$.title").value(CLUSTER_TITLE))
+            .andExpect(jsonPath("$.externalId").value(CLUSTER_EXTERNAL_ID_STRING))
+            .andExpect(jsonPath("$.directories[0].title").value(DIRECTORY_TITLE))
+            .andExpect(jsonPath("$.directories[0].externalId").value(DIRECTORY_EXTERNAL_ID_STRING));
     }
 }

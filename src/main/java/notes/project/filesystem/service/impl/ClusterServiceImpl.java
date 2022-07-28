@@ -18,7 +18,6 @@ import notes.project.filesystem.repository.ClusterRepository;
 import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.DeleteHistoryService;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
-import notes.project.filesystem.validation.BusinessValidator;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +33,6 @@ public class ClusterServiceImpl implements ClusterService {
     private final DeleteHistoryService deleteHistoryService;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
     private final ZipManager zipManager;
-    private final Validator<Cluster> deleteClusterValidator;
-    private final BusinessValidator<Cluster> readClusterValidator;
     private final ReadClusterMapper readClusterMapper;
 
     private final static Object LOCK = new Object();
@@ -64,8 +61,7 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     @Transactional
     public void deleteCluster(UUID externalId) {
-        Cluster cluster = findByExternalId(externalId);
-        deleteClusterValidator.validate(cluster);
+        Cluster cluster = findNotDeletedClusterByExternalId(externalId);
         deleteHistoryService.createClusterDeleteHistory(cluster);
         synchronized(LOCK) {
             zipManager.zipCluster(cluster);
@@ -76,8 +72,13 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     @Transactional
     public ReadClusterDto readCluster(UUID externalId) {
-        Cluster cluster = findByExternalId(externalId);
-        readClusterValidator.validate(cluster);
+        Cluster cluster = findNotDeletedClusterByExternalId(externalId);
         return readClusterMapper.to(cluster);
+    }
+
+    @Override
+    public Cluster findNotDeletedClusterByExternalId(UUID externalId) {
+        return clusterRepository.findByExternalIdAndDeletedFalse(externalId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
     }
 }

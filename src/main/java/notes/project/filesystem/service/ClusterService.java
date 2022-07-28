@@ -17,4 +17,6 @@ public interface ClusterService {
     void deleteCluster(UUID externalId);
 
     ReadClusterDto readCluster(UUID externalId);
+
+    Cluster findNotDeletedClusterByExternalId(UUID externalId);
 }
