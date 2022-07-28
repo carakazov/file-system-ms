@@ -143,4 +143,20 @@ class FileManagerImplTest extends FileSystemTest {
 
         assertFileCreated(PATH_TO_REPLACED_FILE);
     }
+
+    @Test
+    void updateFileSuccess() throws IOException {
+        Files.createDirectories(RESOLVED_PATH_FOR_CREATE_DIRECTORY);
+        Files.createFile(RESOLVED_PATH_FOR_CREATE_FILE);
+
+        when(pathHelper.createPathToFile(any())).thenReturn(RESOLVED_PATH_FOR_CREATE_FILE);
+
+        fileManager.updateFile(DbUtils.createdFile(), NEW_FILE_CONTENT);
+
+        String content = Files.readString(RESOLVED_PATH_FOR_CREATE_FILE);
+
+        assertEquals(NEW_FILE_CONTENT, content);
+
+        FileUtils.deleteDirectory(new File(ROOT_DIRECTORY_PATH));
+    }
 }

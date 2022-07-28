@@ -19,4 +19,6 @@ public interface CreatedFileService {
     MoveCreatedFileResponseDto moveFile(MoveCreatedFileRequestDto request);
 
     CreatedFile findNotDeletedFileByExternalId(UUID externalId);
+
+    void updateFile(UUID externalId, UpdateFileRequestDto request);
 }

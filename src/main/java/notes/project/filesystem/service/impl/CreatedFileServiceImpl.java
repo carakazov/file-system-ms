@@ -36,6 +36,8 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final ReadFileMapper readFileMapper;
     private final ReplacingHistoryService replacingHistoryService;
     private final ReplacingHistoryMapper replacingHistoryMapper;
+    private final ArchiveService archiveService;
+    private final Validator<UpdateFileRequestDto> updateFileValidator;
 
     private final static Object LOCK = new Object();
 
@@ -83,6 +85,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         CreatedFile createdFile = findNotDeletedFileByExternalId(request.getCreatedFileExternalId());
         Directory directory = directoryService.findNotDeletedDirectoryByExternalId(request.getNewDirectoryExternalId());
         ReplacingHistory replacingHistory = replacingHistoryService.create(createdFile, directory);
+        clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         synchronized(LOCK) {
             fileManager.moveFile(createdFile, directory);
             createdFile.setDirectory(directory);
@@ -94,5 +97,19 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     public CreatedFile findNotDeletedFileByExternalId(UUID externalId) {
         return repository.findByExternalIdAndDeletedFalse(externalId)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public void updateFile(UUID externalId, UpdateFileRequestDto request) {
+        updateFileValidator.validate(request);
+        CreatedFile createdFile = findNotDeletedFileByExternalId(externalId);
+        UUID versionFileId = UUID.randomUUID();
+        archiveService.create(createdFile, versionFileId);
+        clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
+        synchronized(LOCK) {
+            zipManager.zipFileForUpdate(createdFile, versionFileId);
+            fileManager.updateFile(createdFile, request.getContent());
+        }
     }
 }

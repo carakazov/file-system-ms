@@ -34,4 +34,9 @@ public class CreatedFileController {
     public MoveCreatedFileResponseDto moveFile(@RequestBody MoveCreatedFileRequestDto request) {
         return createdFileService.moveFile(request);
     }
+
+    @PutMapping("/{id}")
+    public void updateFile(@PathVariable(name = "id") UUID externalId, @RequestBody UpdateFileRequestDto request) {
+        createdFileService.updateFile(externalId, request);
+    }
 }

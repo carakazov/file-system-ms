@@ -13,4 +13,5 @@ public interface FileManager {
     void deleteFile(CreatedFile createdFile);
     void deleteCluster(Cluster cluster);
     void moveFile(CreatedFile file, Directory newDirectory);
+    void updateFile(CreatedFile oldFile, String newContent);
 }

@@ -87,6 +87,11 @@ public class ApiUtils {
             .setNewDirectoryExternalId(ALTERNATIVE_DIRECTORY_EXTERNAL_ID);
     }
 
+    public static UpdateFileRequestDto updateFileRequestDto() {
+        return new UpdateFileRequestDto()
+            .setContent(NEW_FILE_CONTENT);
+    }
+
     public static ErrorDto errorDto() {
         return new ErrorDto()
                 .setCode(EXCEPTION_CODE)

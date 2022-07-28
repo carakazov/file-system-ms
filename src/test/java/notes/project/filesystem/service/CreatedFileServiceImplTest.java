@@ -2,10 +2,8 @@ package notes.project.filesystem.service;
 
 import java.util.Optional;
 
-import notes.project.filesystem.dto.AddFileRequestDto;
-import notes.project.filesystem.dto.AddFileResponseDto;
-import notes.project.filesystem.dto.MoveCreatedFileResponseDto;
-import notes.project.filesystem.dto.ReadCreatedFileDto;
+import io.swagger.annotations.Api;
+import notes.project.filesystem.dto.*;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.FileCreationMapper;
@@ -18,6 +16,7 @@ import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.impl.CreatedFileServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.validation.Validator;
 import notes.project.filesystem.validation.impl.FileCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +51,10 @@ class CreatedFileServiceImplTest {
     private ZipManager zipManager;
     @Mock
     private ReplacingHistoryService replacingHistoryService;
+    @Mock
+    private ArchiveService archiveService;
+    @Mock
+    private Validator<UpdateFileRequestDto> updateFileValidator;
     private CreatedFileService service;
 
 
@@ -69,7 +72,9 @@ class CreatedFileServiceImplTest {
             objectExistingStatusChanger,
             Mappers.getMapper(ReadFileMapper.class),
             replacingHistoryService,
-            Mappers.getMapper(ReplacingHistoryMapper.class)
+            Mappers.getMapper(ReplacingHistoryMapper.class),
+            archiveService,
+            updateFileValidator
         );
     }
 
@@ -135,5 +140,22 @@ class CreatedFileServiceImplTest {
         verify(directoryService).findNotDeletedDirectoryByExternalId(directory.getExternalId());
         verify(replacingHistoryService).create(createdFile, directory);
         verify(fileManager).moveFile(createdFile, directory);
+    }
+
+    @Test
+    void updateFileSuccess() {
+        CreatedFile createdFile = DbUtils.createdFile();
+
+        when(repository.findByExternalIdAndDeletedFalse(any())).thenReturn(Optional.of(createdFile));
+
+        UpdateFileRequestDto request = ApiUtils.updateFileRequestDto();
+
+        service.updateFile(FILE_EXTERNAL_ID, request);
+
+        verify(updateFileValidator).validate(request);
+        verify(repository).findByExternalIdAndDeletedFalse(FILE_EXTERNAL_ID);
+        verify(archiveService).create(eq(createdFile), any());
+        verify(zipManager).zipFileForUpdate(eq(createdFile), any());
+        verify(fileManager).updateFile(createdFile, request.getContent());
     }
 }

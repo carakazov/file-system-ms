@@ -29,4 +29,5 @@ application:
     fileDoesNotExist: File does not exist.
     deletionError: Unexpected error while deleting.
     directoryDoesNotExist: Directory does not exist.
-    replacingError: Error while replacing files.
+    replacingError: Error while replacing file.
+    updatingError: Error while updating file.

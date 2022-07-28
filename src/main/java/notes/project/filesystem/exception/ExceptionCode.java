@@ -16,7 +16,8 @@ public enum ExceptionCode {
     FILE_ALREADY_DELETED("fileAlreadyDeleted"),
     DIRECTORY_ALREADY_DELETED("directoryAlreadyDeleted"),
     CLUSTER_ALREADY_DELETED("clusterAlreadyDeleted"),
-    REPLACING_ERROR("replacingError");
+    REPLACING_ERROR("replacingError"),
+    UPDATING_ERROR("updatingError");
     @Getter
     private final String code;
 
