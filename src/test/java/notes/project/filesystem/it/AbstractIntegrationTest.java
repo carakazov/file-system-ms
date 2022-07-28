@@ -6,42 +6,22 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.TimeZone;
-import java.util.concurrent.ExecutorService;
-import javax.annotation.PostConstruct;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import notes.project.filesystem.FileSystemApplication;
 import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.utils.TestAsyncTaskExecutor;
 import notes.project.filesystem.utils.TestDataConstants;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
-import org.testcontainers.utility.DockerImageName;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -87,7 +67,15 @@ public abstract class AbstractIntegrationTest {
     protected void createDirectoryForFile() throws IOException {
         Files.createDirectories(
             Path.of(
-                applicationProperties.getRoot() + "/" + TestDataConstants.CREATED_CLUSTER_EXTERNAL_ID + "/" + TestDataConstants.DIRECTORY_EXTERNAL_ID
+                applicationProperties.getRoot() + "/" + TestDataConstants.CLUSTER_EXTERNAL_ID + "/" + TestDataConstants.DIRECTORY_EXTERNAL_ID
+            )
+        );
+    }
+
+    protected void createDirectoryWithAlternativeExternalId() throws IOException {
+        Files.createDirectories(
+            Path.of(
+                applicationProperties.getRoot() + "/" + TestDataConstants.CLUSTER_EXTERNAL_ID + "/" + TestDataConstants.ALTERNATIVE_DIRECTORY_EXTERNAL_ID
             )
         );
     }

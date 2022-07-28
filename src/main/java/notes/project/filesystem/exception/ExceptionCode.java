@@ -15,7 +15,8 @@ public enum ExceptionCode {
     WRONG_REQUEST_PARAMETERS("wrongRequestParameters"),
     FILE_ALREADY_DELETED("fileAlreadyDeleted"),
     DIRECTORY_ALREADY_DELETED("directoryAlreadyDeleted"),
-    CLUSTER_ALREADY_DELETED("clusterAlreadyDeleted");
+    CLUSTER_ALREADY_DELETED("clusterAlreadyDeleted"),
+    REPLACING_ERROR("replacingError");
     @Getter
     private final String code;
 

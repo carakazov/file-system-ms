@@ -12,4 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CreatedFileRepository extends JpaRepository<CreatedFile, Long> {
     Optional<CreatedFile> findByExternalId(UUID externalId);
+
+    Optional<CreatedFile> findByExternalIdAndDeletedFalse(UUID externalId);
 }

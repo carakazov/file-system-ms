@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClusterRepository extends JpaRepository<Cluster, Long> {
-    boolean existsByTitle(String title);
     Optional<Cluster> findByExternalId(UUID clusterExternalId);
+
+    Optional<Cluster> findByExternalIdAndDeletedFalse(UUID externalId);
 }

@@ -3,23 +3,21 @@ package notes.project.filesystem.service.impl;
 import java.util.UUID;
 import javax.transaction.Transactional;
 
-import liquibase.change.core.LoadDataChange;
 import lombok.RequiredArgsConstructor;
-import notes.project.filesystem.dto.AddFileRequestDto;
-import notes.project.filesystem.dto.AddFileResponseDto;
-import notes.project.filesystem.dto.ReadCreatedFileDto;
+import notes.project.filesystem.dto.*;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.mapper.ReadFileMapper;
+import notes.project.filesystem.mapper.ReplacingHistoryMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
+import notes.project.filesystem.model.ReplacingHistory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.*;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
-import notes.project.filesystem.validation.BusinessValidator;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -35,9 +33,9 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final DeleteHistoryService deleteHistoryService;
     private final ZipManager zipManager;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
-    private final Validator<CreatedFile> deleteFileValidator;
     private final ReadFileMapper readFileMapper;
-    private final BusinessValidator<CreatedFile> readFileValidator;
+    private final ReplacingHistoryService replacingHistoryService;
+    private final ReplacingHistoryMapper replacingHistoryMapper;
 
     private final static Object LOCK = new Object();
 
@@ -45,7 +43,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     @Transactional
     public AddFileResponseDto addFile(AddFileRequestDto request) {
         addFileValidator.validate(request);
-        Directory directory = directoryService.findByExternalId(request.getDirectoryExternalId());
+        Directory directory = directoryService.findNotDeletedDirectoryByExternalId(request.getDirectoryExternalId());
         CreatedFile file = new CreatedFile();
         file.setDirectory(directory);
         file.setTitle(request.getTitle());
@@ -63,8 +61,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     @Override
     @Transactional
     public void deleteCreatedFile(UUID fileExternalId) {
-        CreatedFile createdFile = findFileByExternalId(fileExternalId);
-        deleteFileValidator.validate(createdFile);
+        CreatedFile createdFile = findNotDeletedFileByExternalId(fileExternalId);
         deleteHistoryService.createCreatedFileDeleteHistory(createdFile);
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         synchronized(LOCK) {
@@ -75,9 +72,27 @@ public class CreatedFileServiceImpl implements CreatedFileService {
 
     @Override
     public ReadCreatedFileDto readFile(UUID externalId) {
-        CreatedFile createdFile = findFileByExternalId(externalId);
-        readFileValidator.validate(createdFile);
+        CreatedFile createdFile = findNotDeletedFileByExternalId(externalId);
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         return readFileMapper.to(createdFile, fileManager.readFile(createdFile));
+    }
+
+    @Override
+    @Transactional
+    public MoveCreatedFileResponseDto moveFile(MoveCreatedFileRequestDto request) {
+        CreatedFile createdFile = findNotDeletedFileByExternalId(request.getCreatedFileExternalId());
+        Directory directory = directoryService.findNotDeletedDirectoryByExternalId(request.getNewDirectoryExternalId());
+        ReplacingHistory replacingHistory = replacingHistoryService.create(createdFile, directory);
+        synchronized(LOCK) {
+            fileManager.moveFile(createdFile, directory);
+            createdFile.setDirectory(directory);
+        }
+        return replacingHistoryMapper.from(replacingHistory);
+    }
+
+    @Override
+    public CreatedFile findNotDeletedFileByExternalId(UUID externalId) {
+        return repository.findByExternalIdAndDeletedFalse(externalId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
     }
 }

@@ -1,6 +1,7 @@
 package notes.project.filesystem.it;
 
 import java.io.IOException;
+import java.util.Collections;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import notes.project.filesystem.controller.CreatedFileController;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
+import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.TestDataConstants;
 import notes.project.filesystem.utils.TestUtils;
@@ -98,5 +100,33 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.title").value("file-title"))
             .andExpect(jsonPath("$.content").value("some test file content"));
+    }
+
+    @Test
+    void moveFileSuccess() throws Exception {
+        Cluster cluster = DbUtils.cluster();
+        Directory sourceDirectory = DbUtils.directory();
+        Directory targetDirectory = DbUtils.directoryWithAlternativeExternalId();
+        CreatedFile file = DbUtils.createdFile();
+
+        testEntityManager.merge(cluster);
+        testEntityManager.merge(sourceDirectory);
+        testEntityManager.merge(targetDirectory);
+        testEntityManager.merge(file);
+
+        sourceDirectory.setCreatedFiles(Collections.singletonList(file));
+
+        testEntityManager.merge(sourceDirectory);
+
+        createDirectoryWithFile();
+
+        createDirectoryWithAlternativeExternalId();
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/file")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtils.getClasspathResource("api/MoveFileRequest.json")))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.createdFileExternalId").value("2a99b6fe-44f2-4837-bbee-80fbe43f3076"))
+            .andExpect(jsonPath("$.newDirectoryExternalId").value("9816d9b5-5988-4cc9-b6cf-5628ce00648f"));
     }
 }

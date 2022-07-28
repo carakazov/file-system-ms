@@ -15,4 +15,6 @@ public interface DirectoryService {
     void deleteDirectory(UUID externalId);
 
     ReadDirectoryDto readDirectory(UUID externalId);
+
+    Directory findNotDeletedDirectoryByExternalId(UUID externalId);
 }

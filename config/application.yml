@@ -19,9 +19,8 @@ application:
     unexpectedErrorWhileCreationOperation: Unexpected error while creation operation.
     objectAlreadyExists: Object with such name already exists. Choose another one.
     clusterWithSuchNameAlreadyExists: Cluster with such name already exists.
-    clusterDoesNotExists: Cluster does not exists.
+    clusterDoesNotExist: Cluster does not exists.
     directoryExists: Directory already exists in cluster.
-    directoryDoesNotExists: Directory does not exist.
     incorrectTitleLength: Title length should be between 1 and 125 characters.
     incorrectContentLength: Content length should be between 1 and 3064 characters.
     resourceNotFound: Requested resource not found.
@@ -30,3 +29,4 @@ application:
     fileDoesNotExist: File does not exist.
     deletionError: Unexpected error while deleting.
     directoryDoesNotExist: Directory does not exist.
+    replacingError: Error while replacing files.
