@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -28,10 +29,10 @@ public class ZipManagerImpl implements ZipManager {
 
     @Override
     public void zipCreatedFile(CreatedFile createdFile) {
-        String archivePath = properties.getArchiveRoot() + "/" + createdFile.getExternalId().toString() + FileResolution.ZIP.getResolution();
+        String archivePath = createPathToArchive(createdFile.getExternalId());
         createZip(archivePath);
         try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(archivePath))) {
-            createZipEntry(createdFile, zipOutputStream);
+            createZipEntry(fileManager.readFile(createdFile), createdFile.getExternalId(), zipOutputStream);
             fileManager.deleteFile(createdFile);
         } catch(IOException exception) {
             throw new FileSystemException(ExceptionCode.DELETION_ERROR);
@@ -54,10 +55,24 @@ public class ZipManagerImpl implements ZipManager {
         fileManager.deleteCluster(cluster);
     }
 
-    private void createZipEntry(CreatedFile createdFile, ZipOutputStream zipOutputStream) throws IOException {
-        ZipEntry zipEntry = new ZipEntry(createdFile.getExternalId().toString() + FileResolution.TXT.getResolution());
+    @Override
+    public synchronized void zipFileForUpdate(CreatedFile createdFile, UUID versionFileExternalId) {
+        String archivePath = createPathToArchive(versionFileExternalId);
+        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(archivePath))) {
+            createZipEntry(fileManager.readFile(createdFile), versionFileExternalId, zipOutputStream);
+        } catch(IOException exception) {
+            throw new FileSystemException(ExceptionCode.DELETION_ERROR);
+        }
+    }
+
+    private String createPathToArchive(UUID externalId) {
+        return properties.getArchiveRoot() + "/" + externalId + FileResolution.ZIP.getResolution();
+    }
+
+    private void createZipEntry(String content, UUID fileExternalId, ZipOutputStream zipOutputStream) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(fileExternalId.toString() + FileResolution.TXT.getResolution());
         zipOutputStream.putNextEntry(zipEntry);
-        zipOutputStream.write(fileManager.readFile(createdFile).getBytes(StandardCharsets.UTF_8));
+        zipOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
         zipOutputStream.closeEntry();
     }
 

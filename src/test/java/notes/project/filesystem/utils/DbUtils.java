@@ -94,4 +94,12 @@ public class DbUtils {
             .setDeleted(Boolean.FALSE)
             .setCreateDate(CREATED_DIRECTORY_TIME);
     }
+
+    public static Archive archive() {
+        return new Archive()
+            .setId(ID)
+            .setVersionFileGuid(FILE_VERSION_UUID)
+            .setCreatedFile(createdFile())
+            .setEditedDate(EDITED_DATE);
+    }
 }

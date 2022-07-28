@@ -51,11 +51,15 @@ public class TestDataConstants {
     public static final UUID FILE_EXTERNAL_ID = UUID.fromString(FILE_EXTERNAL_ID_STRING);
     public static final String FILE_CONTENT = "some test file content";
     public static final LocalDateTime CREATED_FILE_CREATED_DATE = LocalDateTime.of(2022, 6, 26, 10, 10 ,10 );
-
+    public static final String NEW_FILE_CONTENT = "new file content";
+    public static final UUID FILE_VERSION_UUID = UUID.fromString("ec1d0392-6aac-43c3-ba31-6e4e0a6c1f03");
+    public static final Path ZIPPED_FILE_PATH_FOR_UPDATE = Path.of(ARCHIVE_ROOT_PATH + "/" + FILE_VERSION_UUID + FileResolution.ZIP.getResolution());
     //Delete history constants
     public static final LocalDateTime DELETE_DATE = LocalDateTime.of(2022,  6, 26, 10, 10, 10);
-
     //Replacing history constants
     public static final LocalDateTime REPLACING_DATE = LocalDateTime.of(2022,  6, 26, 10, 10, 12);
+
+    //Archive
+    public static final LocalDateTime EDITED_DATE = LocalDateTime.of(2022, 6,26, 10, 10, 10);
 
 }

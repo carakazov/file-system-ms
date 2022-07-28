@@ -122,6 +122,16 @@ public class FileManagerImpl implements FileManager {
         }
     }
 
+    @Override
+    public synchronized void updateFile(CreatedFile oldFile, String newContent) {
+        Path path = pathHelper.createPathToFile(oldFile);
+        try {
+            Files.write(path, newContent.getBytes(StandardCharsets.UTF_8));
+        } catch(IOException exception) {
+            throw new FileSystemException(ExceptionCode.UPDATING_ERROR);
+        }
+    }
+
     private synchronized void checkFileExists(Path path, FileSystemException exception) {
         if(!Files.exists(path)) {
             throw exception;
