@@ -6,14 +6,18 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.model.Cluster;
+import notes.project.filesystem.model.FileResolution;
 import notes.project.filesystem.utils.TestAsyncTaskExecutor;
 import notes.project.filesystem.utils.TestDataConstants;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +30,7 @@ import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import static notes.project.filesystem.utils.TestDataConstants.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -95,6 +100,16 @@ public abstract class AbstractIntegrationTest {
 
     protected void assertFileDeleted(Path path) throws IOException {
         assertFalse(Files.exists(path));
+    }
+
+    protected void createZippedFile() throws IOException {
+        Files.createFile(TestDataConstants.ZIPPED_CREATED_FILE_PATH);
+        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(ZIPPED_CREATED_FILE_PATH.toString()))) {
+            ZipEntry zipEntry = new ZipEntry(FILE_EXTERNAL_ID_STRING + FileResolution.TXT.getResolution());
+            zipOutputStream.putNextEntry(zipEntry);
+            zipOutputStream.write(FILE_CONTENT.getBytes(StandardCharsets.UTF_8));
+            zipOutputStream.closeEntry();
+        }
     }
 
     @BeforeEach

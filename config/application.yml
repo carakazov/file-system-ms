@@ -15,6 +15,7 @@ spring:
 application:
   root: root
   archiveRoot: archive-root
+  recreateFullPath: false
   errorMessages:
     unexpectedErrorWhileCreationOperation: Unexpected error while creation operation.
     objectAlreadyExists: Object with such name already exists. Choose another one.
@@ -31,3 +32,8 @@ application:
     directoryDoesNotExist: Directory does not exist.
     replacingError: Error while replacing file.
     updatingError: Error while updating file.
+    recreatingError: Error while recreating file.
+    fileNotDeleted: File not deleted.
+    parentObjectDeleted: Parent object deleted.
+    directoryNotDeleted: Directory not deleted.
+    clusterNotDeleted: Cluster not deleted.

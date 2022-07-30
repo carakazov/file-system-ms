@@ -4,6 +4,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.dto.*;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.ResourceNotFoundException;
@@ -14,6 +15,7 @@ import notes.project.filesystem.mapper.ReadFileMapper;
 import notes.project.filesystem.mapper.ReplacingHistoryMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
+import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.model.ReplacingHistory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.*;
@@ -38,6 +40,8 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final ReplacingHistoryMapper replacingHistoryMapper;
     private final ArchiveService archiveService;
     private final Validator<UpdateFileRequestDto> updateFileValidator;
+    private final Validator<CreatedFile> recreateFileValidator;
+    private final ApplicationProperties properties;
 
     private final static Object LOCK = new Object();
 
@@ -64,7 +68,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     @Transactional
     public void deleteCreatedFile(UUID fileExternalId) {
         CreatedFile createdFile = findNotDeletedFileByExternalId(fileExternalId);
-        deleteHistoryService.createCreatedFileDeleteHistory(createdFile);
+        deleteHistoryService.createCreatedFileDeleteHistory(createdFile, EventType.DELETED);
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         synchronized(LOCK) {
             zipManager.zipCreatedFile(createdFile);

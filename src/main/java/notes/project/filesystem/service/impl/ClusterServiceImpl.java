@@ -14,6 +14,7 @@ import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
 import notes.project.filesystem.mapper.ReadClusterMapper;
 import notes.project.filesystem.model.Cluster;
+import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.repository.ClusterRepository;
 import notes.project.filesystem.service.ClusterService;
 import notes.project.filesystem.service.DeleteHistoryService;
@@ -62,7 +63,7 @@ public class ClusterServiceImpl implements ClusterService {
     @Transactional
     public void deleteCluster(UUID externalId) {
         Cluster cluster = findNotDeletedClusterByExternalId(externalId);
-        deleteHistoryService.createClusterDeleteHistory(cluster);
+        deleteHistoryService.createClusterDeleteHistory(cluster, EventType.DELETED);
         synchronized(LOCK) {
             zipManager.zipCluster(cluster);
             objectExistingStatusChanger.changeClusterExistingStatus(cluster);

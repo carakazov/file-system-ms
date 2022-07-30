@@ -15,6 +15,7 @@ import notes.project.filesystem.mapper.DirectoryCreationMapper;
 import notes.project.filesystem.mapper.ReadDirectoryMapper;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.Directory;
+import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.*;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
@@ -58,7 +59,7 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Transactional
     public void deleteDirectory(UUID externalId) {
         Directory directory = findNotDeletedDirectoryByExternalId(externalId);
-        deleteHistoryService.createDirectoryDeleteHistory(directory);
+        deleteHistoryService.createDirectoryDeleteHistory(directory, EventType.DELETED);
         clusterService.updateClusterLastRequestedTime(directory.getCluster());
         synchronized(LOCK) {
             zipManager.zipDirectory(directory);

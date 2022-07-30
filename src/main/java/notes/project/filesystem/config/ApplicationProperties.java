@@ -14,6 +14,7 @@ import java.util.Map;
 public class ApplicationProperties {
     private String root;
     private String archiveRoot;
+    private Boolean recreateFullPath;
 
     private Map<String, String> errorMessages;
 

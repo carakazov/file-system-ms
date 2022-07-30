@@ -12,4 +12,7 @@ public interface ZipManager {
     void zipCreatedFile(CreatedFile createdFile);
     void zipCluster(Cluster cluster);
     void zipFileForUpdate(CreatedFile createdFile, UUID versionFileExternalId);
+    void recreateFile(CreatedFile createdFile);
+    void recreateDirectory(Directory directory);
+    void recreateCluster(Cluster cluster);
 }

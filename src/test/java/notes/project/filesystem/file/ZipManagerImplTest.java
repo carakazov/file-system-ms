@@ -98,4 +98,37 @@ class ZipManagerImplTest extends FileSystemTest {
         assertFileCreated(ZIPPED_FILE_PATH_FOR_UPDATE);
         FileUtils.deleteDirectory(new File(ARCHIVE_ROOT));
     }
+
+    @Test
+    void recreateFileSuccess() throws IOException {
+        createClusterPath(ARCHIVE_ROOT_PATH);
+        createZipFile(ZIPPED_CREATED_FILE_PATH);
+
+        zipManager.recreateFile(DbUtils.createdFile());
+
+        assertFileDeleted(ZIPPED_CREATED_FILE_PATH);
+        Files.delete(ARCHIVE_ROOT_PATH);
+    }
+
+    @Test
+    void recreateDirectorySuccess() throws IOException {
+        createClusterPath(ARCHIVE_ROOT_PATH);
+        createZipFile(ZIPPED_CREATED_FILE_PATH);
+
+        zipManager.recreateDirectory(DbUtils.directoryWithFiles());
+
+        assertFileDeleted(ZIPPED_CREATED_FILE_PATH);
+        Files.delete(ARCHIVE_ROOT_PATH);
+    }
+
+    @Test
+    void recreateClusterSuccess() throws IOException {
+        createClusterPath(ARCHIVE_ROOT_PATH);
+        createZipFile(ZIPPED_CREATED_FILE_PATH);
+
+        zipManager.recreateCluster(DbUtils.clusterWithFiles());
+
+        assertFileDeleted(ZIPPED_CREATED_FILE_PATH);
+        Files.delete(ARCHIVE_ROOT_PATH);
+    }
 }

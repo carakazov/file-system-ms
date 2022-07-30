@@ -3,11 +3,12 @@ package notes.project.filesystem.service;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
+import notes.project.filesystem.model.EventType;
 
 public interface DeleteHistoryService {
-    void createDirectoryDeleteHistory(Directory directory);
+    void createDirectoryDeleteHistory(Directory directory, EventType eventType);
 
-    void createCreatedFileDeleteHistory(CreatedFile createdFile);
+    void createCreatedFileDeleteHistory(CreatedFile createdFile, EventType eventType);
 
-    void createClusterDeleteHistory(Cluster cluster);
+    void createClusterDeleteHistory(Cluster cluster, EventType eventType);
 }

@@ -8,3 +8,4 @@ spring:
 application:
   root: target/root
   archiveRoot: target/archive-root
+  recreateFullPath: true

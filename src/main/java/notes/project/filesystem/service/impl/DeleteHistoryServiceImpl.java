@@ -17,33 +17,33 @@ public class DeleteHistoryServiceImpl implements DeleteHistoryService {
 
     @Override
     @Transactional
-    public void createDirectoryDeleteHistory(Directory directory) {
+    public void createDirectoryDeleteHistory(Directory directory, EventType eventType) {
         DeleteHistory deleteHistory = new DeleteHistory();
         deleteHistory.setDirectory(directory);
-        setDefaultParameters(deleteHistory);
+        setDefaultParameters(deleteHistory, eventType);
         deleteHistoryRepository.save(deleteHistory);
     }
 
     @Override
     @Transactional
-    public void createCreatedFileDeleteHistory(CreatedFile createdFile) {
+    public void createCreatedFileDeleteHistory(CreatedFile createdFile, EventType eventType) {
         DeleteHistory deleteHistory = new DeleteHistory();
         deleteHistory.setCreatedFile(createdFile);
-        setDefaultParameters(deleteHistory);
+        setDefaultParameters(deleteHistory, eventType);
         deleteHistoryRepository.save(deleteHistory);
     }
 
     @Override
     @Transactional
-    public void createClusterDeleteHistory(Cluster cluster) {
+    public void createClusterDeleteHistory(Cluster cluster, EventType eventType) {
         DeleteHistory deleteHistory = new DeleteHistory();
         deleteHistory.setCluster(cluster);
-        setDefaultParameters(deleteHistory);
+        setDefaultParameters(deleteHistory,eventType);
         deleteHistoryRepository.save(deleteHistory);
     }
 
-    private void setDefaultParameters(DeleteHistory deleteHistory) {
-        deleteHistory.setEvent(EventType.DELETED);
+    private void setDefaultParameters(DeleteHistory deleteHistory, EventType eventType) {
+        deleteHistory.setEvent(eventType);
         deleteHistory.setDate(LocalDateTime.now());
     }
 }

@@ -24,4 +24,9 @@ public class ApplicationPropertiesUtils {
         return new ApplicationProperties()
             .setArchiveRoot(TestDataConstants.ARCHIVE_ROOT);
     }
+
+    public static ApplicationProperties applicationPropertiesForRecreateFacade() {
+        return new ApplicationProperties()
+            .setRecreateFullPath(Boolean.TRUE);
+    }
 }
