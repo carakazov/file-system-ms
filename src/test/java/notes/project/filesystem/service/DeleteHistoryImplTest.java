@@ -1,9 +1,6 @@
 package notes.project.filesystem.service;
 
-import notes.project.filesystem.model.Cluster;
-import notes.project.filesystem.model.CreatedFile;
-import notes.project.filesystem.model.DeleteHistory;
-import notes.project.filesystem.model.Directory;
+import notes.project.filesystem.model.*;
 import notes.project.filesystem.repository.DeleteHistoryRepository;
 import notes.project.filesystem.service.DeleteHistoryService;
 import notes.project.filesystem.service.impl.DeleteHistoryServiceImpl;
@@ -44,7 +41,7 @@ class DeleteHistoryImplTest {
 
         when(repository.save(any())).thenReturn(expected);
 
-        service.createCreatedFileDeleteHistory(createdFile);
+        service.createCreatedFileDeleteHistory(createdFile, EventType.DELETED);
 
         verify(repository).save(deleteHistorySaveCaptor.capture());
 
@@ -61,7 +58,7 @@ class DeleteHistoryImplTest {
 
         when(repository.save(any())).thenReturn(expected);
 
-        service.createDirectoryDeleteHistory(directory);
+        service.createDirectoryDeleteHistory(directory, EventType.DELETED);
 
         verify(repository).save(deleteHistorySaveCaptor.capture());
 
@@ -78,7 +75,7 @@ class DeleteHistoryImplTest {
 
         when(repository.save(any())).thenReturn(expected);
 
-        service.createClusterDeleteHistory(cluster);
+        service.createClusterDeleteHistory(cluster, EventType.DELETED);
 
         verify(repository).save(deleteHistorySaveCaptor.capture());
 

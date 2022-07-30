@@ -8,6 +8,7 @@ import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
 import notes.project.filesystem.mapper.ReadClusterMapper;
 import notes.project.filesystem.model.Cluster;
+import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.repository.ClusterRepository;
 import notes.project.filesystem.service.impl.ClusterServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
@@ -75,7 +76,7 @@ class ClusterServiceImplTest {
 
         service.deleteCluster(cluster.getExternalId());
 
-        verify(deleteHistoryService).createClusterDeleteHistory(cluster);
+        verify(deleteHistoryService).createClusterDeleteHistory(cluster, EventType.DELETED);
         verify(zipManager).zipCluster(cluster);
     }
 

@@ -1,14 +1,15 @@
 package notes.project.filesystem.file.impl;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import liquibase.pro.packaged.B;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.exception.ExceptionCode;
@@ -19,6 +20,8 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.FileResolution;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -63,6 +66,35 @@ public class ZipManagerImpl implements ZipManager {
         } catch(IOException exception) {
             throw new FileSystemException(ExceptionCode.DELETION_ERROR);
         }
+    }
+
+    @Override
+    public synchronized void recreateFile(CreatedFile createdFile) {
+        String path = createPathToArchive(createdFile.getExternalId());
+        try {
+            ZipFile zipFile = new ZipFile(path);
+            ZipEntry zipEntry = zipFile.getEntry(createdFile.getExternalId() + FileResolution.TXT.getResolution());
+            InputStream inputStream = zipFile.getInputStream(zipEntry);
+            String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            fileManager.createFile(createdFile, content);
+            inputStream.close();
+            zipFile.close();
+            FileUtils.delete(new File(path));
+        } catch(IOException exception) {
+            throw new FileSystemException(ExceptionCode.RECREATING_ERROR, exception.getMessage());
+        }
+    }
+
+    @Override
+    public synchronized void recreateDirectory(Directory directory) {
+        fileManager.createDirectory(directory);
+        directory.getCreatedFiles().forEach(this::recreateFile);
+    }
+
+    @Override
+    public synchronized void recreateCluster(Cluster cluster) {
+        fileManager.createCluster(cluster);
+        cluster.getDirectories().forEach(this::recreateDirectory);
     }
 
     private String createPathToArchive(UUID externalId) {

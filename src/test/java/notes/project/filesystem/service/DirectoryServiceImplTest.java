@@ -10,6 +10,7 @@ import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.DirectoryCreationMapper;
 import notes.project.filesystem.mapper.ReadDirectoryMapper;
 import notes.project.filesystem.model.Directory;
+import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.repository.DirectoryRepository;
 import notes.project.filesystem.service.impl.DirectoryServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
@@ -83,7 +84,7 @@ class DirectoryServiceImplTest {
 
         service.deleteDirectory(directory.getExternalId());
 
-        verify(deleteHistoryService).createDirectoryDeleteHistory(directory.setDeleted(Boolean.TRUE));
+        verify(deleteHistoryService).createDirectoryDeleteHistory(directory.setDeleted(Boolean.TRUE), EventType.DELETED);
         verify(clusterService).updateClusterLastRequestedTime(directory.getCluster());
         verify(zipManager).zipDirectory(directory);
     }

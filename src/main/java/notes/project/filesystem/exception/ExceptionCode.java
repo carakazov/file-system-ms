@@ -17,7 +17,12 @@ public enum ExceptionCode {
     DIRECTORY_ALREADY_DELETED("directoryAlreadyDeleted"),
     CLUSTER_ALREADY_DELETED("clusterAlreadyDeleted"),
     REPLACING_ERROR("replacingError"),
-    UPDATING_ERROR("updatingError");
+    UPDATING_ERROR("updatingError"),
+    RECREATING_ERROR("recreatingError"),
+    FILE_NOT_DELETED("fileNotDeleted"),
+    DIRECTORY_NOT_DELETED("directoryNotDeleted"),
+    CLUSTER_NOT_DELETED("clusterNotDeleted"),
+    PARENT_OBJECT_DELETED("parentObjectDeleted");
     @Getter
     private final String code;
 

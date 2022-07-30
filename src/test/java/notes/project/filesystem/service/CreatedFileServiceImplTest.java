@@ -11,6 +11,7 @@ import notes.project.filesystem.mapper.ReadFileMapper;
 import notes.project.filesystem.mapper.ReplacingHistoryMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
+import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.model.ReplacingHistory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.impl.CreatedFileServiceImpl;
@@ -74,7 +75,9 @@ class CreatedFileServiceImplTest {
             replacingHistoryService,
             Mappers.getMapper(ReplacingHistoryMapper.class),
             archiveService,
-            updateFileValidator
+            updateFileValidator,
+            null,
+            null
         );
     }
 
@@ -99,7 +102,7 @@ class CreatedFileServiceImplTest {
 
         service.deleteCreatedFile(FILE_EXTERNAL_ID);
 
-        verify(deleteHistoryService).createCreatedFileDeleteHistory(createdFile.setDeleted(Boolean.TRUE));
+        verify(deleteHistoryService).createCreatedFileDeleteHistory(createdFile.setDeleted(Boolean.TRUE), EventType.DELETED);
         verify(clusterService).updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         verify(zipManager).zipCreatedFile(createdFile);
     }
