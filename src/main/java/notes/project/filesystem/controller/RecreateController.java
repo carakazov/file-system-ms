@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/recreate")
-public class RecreationController {
+public class RecreateController {
     private final RecreateFacade recreateFacade;
 
 

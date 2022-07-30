@@ -1,14 +1,9 @@
 package notes.project.filesystem.service.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import javax.transaction.Transactional;
 
-import liquibase.pro.packaged.P;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.exception.ExceptionCode;
@@ -24,7 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RecreateFacadeImpl implements RecreateFacade {
     private final ApplicationProperties properties;
-    private final RecreationService recreationService;
+    private final RecreateService recreationService;
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
     private final CreatedFileService createdFileService;
     private final DirectoryService directoryService;
@@ -62,8 +57,9 @@ public class RecreateFacadeImpl implements RecreateFacade {
     private void proceed(RecreationObject object, CreatedFile file) {
         if(RecreationObject.FILE.equals(object)) {
             recreateFileImpl(file);
+        } else {
+            proceed(object, file.getDirectory());
         }
-        proceed(object, file.getDirectory());
     }
 
     private void proceed(RecreationObject object, Directory directory) {

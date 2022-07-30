@@ -1,7 +1,5 @@
 package notes.project.filesystem.service.impl;
 
-import java.util.UUID;
-
 import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RecreationServiceImpl implements RecreationService {
+public class RecreateServiceImpl implements RecreateService {
     private final DeleteHistoryService deleteHistoryService;
     private final ClusterService clusterService;
     private final ZipManager zipManager;
