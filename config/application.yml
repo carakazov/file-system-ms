@@ -15,7 +15,7 @@ spring:
 application:
   root: root
   archiveRoot: archive-root
-  recreateFullPath: false
+  recreateFullPath: true
   errorMessages:
     unexpectedErrorWhileCreationOperation: Unexpected error while creation operation.
     objectAlreadyExists: Object with such name already exists. Choose another one.

@@ -63,6 +63,10 @@ public class ClusterServiceImpl implements ClusterService {
     public void deleteCluster(UUID externalId) {
         Cluster cluster = findNotDeletedClusterByExternalId(externalId);
         deleteHistoryService.createClusterDeleteHistory(cluster, EventType.DELETED);
+        cluster.getDirectories().forEach(item -> {
+            deleteHistoryService.createDirectoryDeleteHistory(item, EventType.DELETED);
+            item.getCreatedFiles().forEach(innerItem -> deleteHistoryService.createCreatedFileDeleteHistory(innerItem, EventType.DELETED));
+        });
         synchronized(LOCK) {
             zipManager.zipCluster(cluster);
             objectExistingStatusChanger.changeClusterExistingStatus(cluster, Boolean.TRUE);

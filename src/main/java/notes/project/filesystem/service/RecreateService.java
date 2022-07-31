@@ -8,4 +8,6 @@ public interface RecreateService {
     void recreateFile(CreatedFile createdFile);
     void recreateDirectory(Directory directory);
     void recreateCluster(Cluster cluster);
+    void recreateFileWithPath(CreatedFile createdFile);
+    void recreateDirectoryWithPath(Directory directory);
 }

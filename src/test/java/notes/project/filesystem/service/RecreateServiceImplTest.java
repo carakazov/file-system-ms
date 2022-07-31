@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class RecreateServiceImplTest {
@@ -48,7 +48,7 @@ class RecreateServiceImplTest {
 
     @Test
     void recreateDirectorySuccess() {
-        Directory directory = DbUtils.directory();
+        Directory directory = DbUtils.directoryWithFiles();
 
         service.recreateDirectory(directory);
 
@@ -59,7 +59,7 @@ class RecreateServiceImplTest {
 
     @Test
     void recreateClusterSuccess() {
-        Cluster cluster = DbUtils.cluster();
+        Cluster cluster = DbUtils.clusterWithFiles();
 
         service.recreateCluster(cluster);
 

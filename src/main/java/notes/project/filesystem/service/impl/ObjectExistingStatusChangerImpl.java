@@ -29,4 +29,16 @@ public class ObjectExistingStatusChangerImpl implements ObjectExistingStatusChan
     public void changeCreatedFileExistingStatus(CreatedFile createdFile, Boolean deleted) {
         createdFile.setDeleted(deleted);
     }
+
+    @Override
+    @Transactional
+    public void changeClusterExistingStatusOnly(Cluster cluster, Boolean deleted) {
+        cluster.setDeleted(deleted);
+    }
+
+    @Override
+    @Transactional
+    public void changeDirectoryExistingStatusOnly(Directory directory, Boolean deleted) {
+        directory.setDeleted(deleted);
+    }
 }
