@@ -17,7 +17,9 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.repository.DirectoryRepository;
-import notes.project.filesystem.service.*;
+import notes.project.filesystem.service.ClusterService;
+import notes.project.filesystem.service.DeleteHistoryService;
+import notes.project.filesystem.service.DirectoryService;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
@@ -63,7 +65,7 @@ public class DirectoryServiceImpl implements DirectoryService {
         clusterService.updateClusterLastRequestedTime(directory.getCluster());
         synchronized(LOCK) {
             zipManager.zipDirectory(directory);
-            objectExistingStatusChanger.changeDirectoryExistingStatus(directory);
+            objectExistingStatusChanger.changeDirectoryExistingStatus(directory, Boolean.TRUE);
         }
     }
 

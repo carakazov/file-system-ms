@@ -2,6 +2,7 @@ package notes.project.filesystem.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.ClusterCreationRequestDto;
@@ -21,8 +22,6 @@ import notes.project.filesystem.service.DeleteHistoryService;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +65,7 @@ public class ClusterServiceImpl implements ClusterService {
         deleteHistoryService.createClusterDeleteHistory(cluster, EventType.DELETED);
         synchronized(LOCK) {
             zipManager.zipCluster(cluster);
-            objectExistingStatusChanger.changeClusterExistingStatus(cluster);
+            objectExistingStatusChanger.changeClusterExistingStatus(cluster, Boolean.TRUE);
         }
     }
 

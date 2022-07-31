@@ -1,7 +1,6 @@
 package notes.project.filesystem.service.impl;
 
 import java.util.UUID;
-
 import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -73,21 +72,21 @@ public class RecreateFacadeImpl implements RecreateFacade {
     private void recreateFileImpl(CreatedFile file) {
         synchronized(LOCK) {
             recreationService.recreateFile(file);
-            objectExistingStatusChanger.changeCreatedFileExistingStatus(file);
+            objectExistingStatusChanger.changeCreatedFileExistingStatus(file, Boolean.FALSE);
         }
     }
 
     private void recreateDirectoryImpl(Directory directory) {
         synchronized(LOCK) {
             recreationService.recreateDirectory(directory);
-            objectExistingStatusChanger.changeDirectoryExistingStatus(directory);
+            objectExistingStatusChanger.changeDirectoryExistingStatus(directory, Boolean.FALSE);
         }
     }
 
     private void recreateClusterImpl(Cluster cluster) {
         synchronized(LOCK) {
             recreationService.recreateCluster(cluster);
-            objectExistingStatusChanger.changeClusterExistingStatus(cluster);
+            objectExistingStatusChanger.changeClusterExistingStatus(cluster, Boolean.FALSE);
         }
     }
 

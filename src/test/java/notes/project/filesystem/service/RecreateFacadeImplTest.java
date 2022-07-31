@@ -4,7 +4,6 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.service.impl.RecreateFacadeImpl;
-import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.ApplicationPropertiesUtils;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.validation.Validator;
@@ -14,10 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static notes.project.filesystem.utils.TestDataConstants.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecreateFacadeImplTest {
@@ -67,7 +65,7 @@ class RecreateFacadeImplTest {
 
         verify(createdFileService).findFileByExternalId(createdFile.getExternalId());
         verify(recreateService).recreateCluster(createdFile.getDirectory().getCluster());
-        verify(objectExistingStatusChanger).changeClusterExistingStatus(createdFile.getDirectory().getCluster());
+        verify(objectExistingStatusChanger).changeClusterExistingStatus(createdFile.getDirectory().getCluster(), Boolean.FALSE);
     }
 
     @Test
@@ -81,7 +79,7 @@ class RecreateFacadeImplTest {
 
         verify(createdFileService).findFileByExternalId(createdFile.getExternalId());
         verify(recreateService).recreateDirectory(createdFile.getDirectory());
-        verify(objectExistingStatusChanger).changeDirectoryExistingStatus(createdFile.getDirectory());
+        verify(objectExistingStatusChanger).changeDirectoryExistingStatus(createdFile.getDirectory(), Boolean.FALSE);
     }
 
     @Test
@@ -95,7 +93,7 @@ class RecreateFacadeImplTest {
 
         verify(createdFileService).findFileByExternalId(createdFile.getExternalId());
         verify(recreateService).recreateFile(createdFile);
-        verify(objectExistingStatusChanger).changeCreatedFileExistingStatus(createdFile);
+        verify(objectExistingStatusChanger).changeCreatedFileExistingStatus(createdFile, Boolean.FALSE);
     }
 
     @Test
@@ -109,7 +107,7 @@ class RecreateFacadeImplTest {
 
         verify(directoryService).findByExternalId(directory.getExternalId());
         verify(recreateService).recreateCluster(directory.getCluster());
-        verify(objectExistingStatusChanger).changeClusterExistingStatus(directory.getCluster());
+        verify(objectExistingStatusChanger).changeClusterExistingStatus(directory.getCluster(), Boolean.FALSE);
     }
 
     @Test
@@ -123,7 +121,7 @@ class RecreateFacadeImplTest {
 
         verify(directoryService).findByExternalId(directory.getExternalId());
         verify(recreateService).recreateDirectory(directory);
-        verify(objectExistingStatusChanger).changeDirectoryExistingStatus(directory);
+        verify(objectExistingStatusChanger).changeDirectoryExistingStatus(directory, Boolean.FALSE);
     }
 
     @Test
@@ -137,6 +135,6 @@ class RecreateFacadeImplTest {
 
         verify(clusterService).findByExternalId(cluster.getExternalId());
         verify(recreateService).recreateCluster(cluster);
-        verify(objectExistingStatusChanger).changeClusterExistingStatus(cluster);
+        verify(objectExistingStatusChanger).changeClusterExistingStatus(cluster, Boolean.FALSE);
     }
 }

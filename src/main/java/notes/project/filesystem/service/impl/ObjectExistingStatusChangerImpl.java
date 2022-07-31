@@ -6,28 +6,27 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.service.ObjectExistingStatusChanger;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ObjectExistingStatusChangerImpl implements ObjectExistingStatusChanger {
     @Override
     @Transactional
-    public void changeClusterExistingStatus(Cluster cluster) {
-        cluster.setDeleted(!cluster.getDeleted());
-        cluster.getDirectories().forEach(this::changeDirectoryExistingStatus);
+    public void changeClusterExistingStatus(Cluster cluster, Boolean deleted) {
+        cluster.setDeleted(deleted);
+        cluster.getDirectories().forEach(item -> changeDirectoryExistingStatus(item, deleted));
     }
 
     @Override
     @Transactional
-    public void changeDirectoryExistingStatus(Directory directory) {
-        directory.setDeleted(!directory.getDeleted());
-        directory.getCreatedFiles().forEach(this::changeCreatedFileExistingStatus);
+    public void changeDirectoryExistingStatus(Directory directory, Boolean deleted) {
+        directory.setDeleted(deleted);
+        directory.getCreatedFiles().forEach(item -> changeCreatedFileExistingStatus(item, deleted));
     }
 
     @Override
     @Transactional
-    public void changeCreatedFileExistingStatus(CreatedFile createdFile) {
-        createdFile.setDeleted(!createdFile.getDeleted());
+    public void changeCreatedFileExistingStatus(CreatedFile createdFile, Boolean deleted) {
+        createdFile.setDeleted(deleted);
     }
 }
