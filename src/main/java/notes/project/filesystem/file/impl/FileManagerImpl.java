@@ -1,6 +1,13 @@
 package notes.project.filesystem.file.impl;
 
-import liquibase.pro.packaged.P;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import notes.project.filesystem.exception.ExceptionCode;
@@ -13,15 +20,6 @@ import notes.project.filesystem.model.FileResolution;
 import notes.project.filesystem.utils.PathHelper;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Component;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Collections;
 
 @Component
 @Slf4j
@@ -57,7 +55,7 @@ public class FileManagerImpl implements FileManager {
             checkFileExists(directoryPath, new FileSystemException(ExceptionCode.DIRECTORY_DOES_NOT_EXIST));
             Path fullPath = pathHelper.createPathToFile(createdFile);
             Files.createFile(fullPath);
-            Files.write(fullPath, Collections.singleton(content), StandardCharsets.UTF_8);
+            Files.write(fullPath, content.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new FileSystemException(ExceptionCode.CREATION_ERROR, e.getMessage());
         }
