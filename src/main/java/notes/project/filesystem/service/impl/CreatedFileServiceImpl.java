@@ -19,7 +19,6 @@ import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.model.ReplacingHistory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.*;
-import notes.project.filesystem.service.ObjectExistingStatusChanger;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +71,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         synchronized(LOCK) {
             zipManager.zipCreatedFile(createdFile);
-            objectExistingStatusChanger.changeCreatedFileExistingStatus(createdFile);
+            objectExistingStatusChanger.changeCreatedFileExistingStatus(createdFile, Boolean.TRUE);
         }
     }
 
