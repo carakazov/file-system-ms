@@ -1,14 +1,14 @@
 package notes.project.filesystem.service;
 
+import notes.project.filesystem.mapper.DeleteHistoryResponseMapper;
 import notes.project.filesystem.model.*;
 import notes.project.filesystem.repository.DeleteHistoryRepository;
-import notes.project.filesystem.service.DeleteHistoryService;
 import notes.project.filesystem.service.impl.DeleteHistoryServiceImpl;
 import notes.project.filesystem.utils.DbUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.aggregator.ArgumentAccessException;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -31,7 +31,10 @@ class DeleteHistoryImplTest {
 
     @BeforeEach
     void init() {
-        service = new DeleteHistoryServiceImpl(repository);
+        service = new DeleteHistoryServiceImpl(
+            repository,
+            Mappers.getMapper(DeleteHistoryResponseMapper.class)
+        );
     }
 
     @Test
