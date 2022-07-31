@@ -57,7 +57,7 @@ public class RecreateFacadeImpl implements RecreateFacade {
         if(RecreationObject.FILE.equals(object)) {
             recreateFileImpl(file);
         } else {
-            proceed(object, file.getDirectory());
+            recreateFileWithPath(file);
         }
     }
 
@@ -65,13 +65,32 @@ public class RecreateFacadeImpl implements RecreateFacade {
         if(RecreationObject.DIRECTORY.equals(object)) {
             recreateDirectoryImpl(directory);
         } else {
-            recreateClusterImpl(directory.getCluster());
+            recreateDirectoryWithPath(directory);
         }
     }
 
     private void recreateFileImpl(CreatedFile file) {
         synchronized(LOCK) {
             recreationService.recreateFile(file);
+            objectExistingStatusChanger.changeCreatedFileExistingStatus(file, Boolean.FALSE);
+        }
+    }
+
+    private void recreateDirectoryWithPath(Directory directory) {
+        synchronized(LOCK) {
+            recreationService.recreateDirectoryWithPath(directory);
+            objectExistingStatusChanger.changeClusterExistingStatusOnly(directory.getCluster(), Boolean.FALSE);
+            objectExistingStatusChanger.changeDirectoryExistingStatus(directory, Boolean.FALSE);
+        }
+    }
+
+    private void recreateFileWithPath(CreatedFile file) {
+        synchronized(LOCK) {
+            recreationService.recreateFileWithPath(file);
+            if(Boolean.TRUE.equals(file.getDirectory().getCluster().getDeleted())) {
+                objectExistingStatusChanger.changeClusterExistingStatusOnly(file.getDirectory().getCluster(), Boolean.FALSE);
+            }
+            objectExistingStatusChanger.changeDirectoryExistingStatusOnly(file.getDirectory(), Boolean.FALSE);
             objectExistingStatusChanger.changeCreatedFileExistingStatus(file, Boolean.FALSE);
         }
     }
@@ -93,15 +112,21 @@ public class RecreateFacadeImpl implements RecreateFacade {
     private RecreationObject defineObject(CreatedFile createdFile) {
         if(Boolean.FALSE.equals(properties.getRecreateFullPath()) && Boolean.TRUE.equals(createdFile.getDirectory().getDeleted())) {
             throw new FileSystemException(ExceptionCode.PARENT_OBJECT_DELETED);
+        } else if(Boolean.TRUE.equals(properties.getRecreateFullPath()) && Boolean.TRUE.equals(createdFile.getDirectory().getDeleted())) {
+            return RecreationObject.FILE_WITH_PATH;
+        } else {
+            return RecreationObject.FILE;
         }
-        return definePath(createdFile.getDirectory());
     }
 
     private RecreationObject defineObject(Directory directory) {
         if(Boolean.FALSE.equals(properties.getRecreateFullPath()) && Boolean.TRUE.equals(directory.getCluster().getDeleted())) {
             throw new FileSystemException(ExceptionCode.PARENT_OBJECT_DELETED);
+        } else if(Boolean.TRUE.equals(properties.getRecreateFullPath()) && Boolean.TRUE.equals(directory.getCluster().getDeleted())) {
+            return RecreationObject.DIRECTORY_WITH_PATH;
+        } else {
+            return RecreationObject.DIRECTORY;
         }
-        return definePath(directory);
     }
 
     private RecreationObject definePath(Directory directory) {
@@ -116,7 +141,9 @@ public class RecreateFacadeImpl implements RecreateFacade {
 
     private enum RecreationObject {
         FILE,
+        FILE_WITH_PATH,
         DIRECTORY,
+        DIRECTORY_WITH_PATH,
         CLUSTER
     }
 

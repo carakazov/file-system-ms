@@ -64,8 +64,9 @@ class RecreateFacadeImplTest {
         facade.recreateFile(createdFile.getExternalId());
 
         verify(createdFileService).findFileByExternalId(createdFile.getExternalId());
-        verify(recreateService).recreateCluster(createdFile.getDirectory().getCluster());
-        verify(objectExistingStatusChanger).changeClusterExistingStatus(createdFile.getDirectory().getCluster(), Boolean.FALSE);
+        verify(recreateService).recreateFileWithPath(createdFile);
+        verify(objectExistingStatusChanger).changeDirectoryExistingStatusOnly(createdFile.getDirectory(), Boolean.FALSE);
+        verify(objectExistingStatusChanger).changeCreatedFileExistingStatus(createdFile, Boolean.FALSE);
     }
 
     @Test
@@ -78,8 +79,9 @@ class RecreateFacadeImplTest {
         facade.recreateFile(createdFile.getExternalId());
 
         verify(createdFileService).findFileByExternalId(createdFile.getExternalId());
-        verify(recreateService).recreateDirectory(createdFile.getDirectory());
-        verify(objectExistingStatusChanger).changeDirectoryExistingStatus(createdFile.getDirectory(), Boolean.FALSE);
+        verify(recreateService).recreateFileWithPath(createdFile);
+        verify(objectExistingStatusChanger).changeDirectoryExistingStatusOnly(createdFile.getDirectory(), Boolean.FALSE);
+        verify(objectExistingStatusChanger).changeCreatedFileExistingStatus(createdFile, Boolean.FALSE);
     }
 
     @Test
@@ -106,8 +108,9 @@ class RecreateFacadeImplTest {
         facade.recreateDirectory(directory.getExternalId());
 
         verify(directoryService).findByExternalId(directory.getExternalId());
-        verify(recreateService).recreateCluster(directory.getCluster());
-        verify(objectExistingStatusChanger).changeClusterExistingStatus(directory.getCluster(), Boolean.FALSE);
+        verify(recreateService).recreateDirectoryWithPath(directory);
+        verify(objectExistingStatusChanger).changeClusterExistingStatusOnly(directory.getCluster(), Boolean.FALSE);
+        verify(objectExistingStatusChanger).changeDirectoryExistingStatus(directory, Boolean.FALSE);
     }
 
     @Test

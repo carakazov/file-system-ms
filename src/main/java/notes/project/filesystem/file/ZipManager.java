@@ -1,6 +1,5 @@
 package notes.project.filesystem.file;
 
-import java.util.List;
 import java.util.UUID;
 
 import notes.project.filesystem.model.Cluster;
@@ -13,6 +12,8 @@ public interface ZipManager {
     void zipCluster(Cluster cluster);
     void zipFileForUpdate(CreatedFile createdFile, UUID versionFileExternalId);
     void recreateFile(CreatedFile createdFile);
+    void recreateFileWithPath(CreatedFile createdFile);
+    void recreateDirectoryWithPath(Directory directory);
     void recreateDirectory(Directory directory);
     void recreateCluster(Cluster cluster);
 }

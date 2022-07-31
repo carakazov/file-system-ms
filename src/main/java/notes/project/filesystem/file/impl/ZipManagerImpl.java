@@ -1,6 +1,9 @@
 package notes.project.filesystem.file.impl;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +12,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import liquibase.pro.packaged.B;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.exception.ExceptionCode;
@@ -20,6 +22,7 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.FileResolution;
+import notes.project.filesystem.utils.PathHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
@@ -29,6 +32,7 @@ import org.springframework.stereotype.Component;
 public class ZipManagerImpl implements ZipManager {
     private final ApplicationProperties properties;
     private final FileManager fileManager;
+    private final PathHelper pathHelper;
 
     @Override
     public void zipCreatedFile(CreatedFile createdFile) {
@@ -83,6 +87,21 @@ public class ZipManagerImpl implements ZipManager {
         } catch(IOException exception) {
             throw new FileSystemException(ExceptionCode.RECREATING_ERROR, exception.getMessage());
         }
+    }
+
+    @Override
+    public void recreateFileWithPath(CreatedFile createdFile) {
+        if(!Files.exists(pathHelper.createPathToCluster(createdFile.getDirectory().getCluster()))) {
+            fileManager.createCluster(createdFile.getDirectory().getCluster());
+        }
+        fileManager.createDirectory(createdFile.getDirectory());
+        recreateFile(createdFile);
+    }
+
+    @Override
+    public void recreateDirectoryWithPath(Directory directory) {
+        fileManager.createCluster(directory.getCluster());
+        recreateDirectory(directory);
     }
 
     @Override
