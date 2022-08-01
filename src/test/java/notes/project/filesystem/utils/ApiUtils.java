@@ -1,13 +1,13 @@
 package notes.project.filesystem.utils;
 
+import java.util.Collections;
+
 import lombok.experimental.UtilityClass;
 import notes.project.filesystem.dto.*;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.exception.ValidationException;
-
-import java.util.Collections;
 
 import static notes.project.filesystem.utils.TestDataConstants.*;
 
@@ -90,6 +90,20 @@ public class ApiUtils {
     public static UpdateFileRequestDto updateFileRequestDto() {
         return new UpdateFileRequestDto()
             .setContent(NEW_FILE_CONTENT);
+    }
+
+    public static DeleteHistoryResponseDto deleteHistoryCreatedFileResponseDto() {
+        return new DeleteHistoryResponseDto()
+            .setObjectTitle(FILE_TITLE)
+            .setCreatedDate(CREATED_FILE_CREATED_DATE)
+            .setCurrentState(LAST_EVENT)
+            .setHistory(Collections.singletonList(deleteHistoryDto()));
+    }
+
+    public static DeleteHistoryDto deleteHistoryDto() {
+        return new DeleteHistoryDto()
+            .setEvent(LAST_EVENT)
+            .setEventDate(DELETE_DATE);
     }
 
     public static ErrorDto errorDto() {

@@ -1,8 +1,8 @@
 package notes.project.filesystem.service;
 
+import java.util.Collections;
 import java.util.Optional;
 
-import io.swagger.annotations.Api;
 import notes.project.filesystem.dto.*;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
@@ -26,11 +26,11 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
+import static notes.project.filesystem.utils.TestDataConstants.FILE_CONTENT;
+import static notes.project.filesystem.utils.TestDataConstants.FILE_EXTERNAL_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static notes.project.filesystem.utils.TestDataConstants.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreatedFileServiceImplTest {
@@ -160,5 +160,39 @@ class CreatedFileServiceImplTest {
         verify(archiveService).create(eq(createdFile), any());
         verify(zipManager).zipFileForUpdate(eq(createdFile), any());
         verify(fileManager).updateFile(createdFile, request.getContent());
+    }
+
+    @Test
+    void getFileDeletedHistoryWhenHistoryExistsSuccess() {
+        CreatedFile createdFile = DbUtils.createdFile();
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryCreatedFileResponseDto();
+
+        when(repository.findByExternalId(any())).thenReturn(Optional.of(createdFile));
+        when(deleteHistoryService.getCreatedFileDeleteHistory(any())).thenReturn(expected);
+
+        DeleteHistoryResponseDto actual = service.getFileDeleteHistory(createdFile.getExternalId());
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByExternalId(createdFile.getExternalId());
+        verify(deleteHistoryService).getCreatedFileDeleteHistory(createdFile);
+    }
+
+    @Test
+    void getFileDeletedHistoryWhenHistoryDoesNotExistSuccess() {
+        CreatedFile createdFile = DbUtils.createdFile();
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryCreatedFileResponseDto();
+        expected.setCurrentState(EventType.CREATED);
+        expected.setHistory(Collections.emptyList());
+
+        when(repository.findByExternalId(any())).thenReturn(Optional.of(createdFile));
+        when(deleteHistoryService.getCreatedFileDeleteHistory(any())).thenReturn(expected);
+
+        DeleteHistoryResponseDto actual = service.getFileDeleteHistory(createdFile.getExternalId());
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByExternalId(createdFile.getExternalId());
+        verify(deleteHistoryService).getCreatedFileDeleteHistory(createdFile);
     }
 }

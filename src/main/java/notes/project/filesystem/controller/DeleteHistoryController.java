@@ -19,7 +19,7 @@ public class DeleteHistoryController {
     private final DeleteHistoryFacade deleteHistoryFacade;
 
     @GetMapping("/file/{id}")
-    public DeleteHistoryResponseDto getCreatedFileHistory(@PathVariable(name = "id")UUID fileExternalId) {
+    public DeleteHistoryResponseDto getCreatedFileHistory(@PathVariable(name = "id") UUID fileExternalId) {
         return deleteHistoryFacade.getCreatedFileHistory(fileExternalId);
     }
 }

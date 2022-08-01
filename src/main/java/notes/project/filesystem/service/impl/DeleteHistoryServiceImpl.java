@@ -1,6 +1,7 @@
 package notes.project.filesystem.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import javax.transaction.Transactional;
 
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class DeleteHistoryServiceImpl implements DeleteHistoryService {
     private final DeleteHistoryRepository deleteHistoryRepository;
     private final DeleteHistoryResponseMapper deleteHistoryResponseMapper;
+
+    private static final Comparator<DeleteHistory> DELETE_HISTORY_COMPARATOR = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
 
     @Override
     @Transactional
@@ -48,8 +51,15 @@ public class DeleteHistoryServiceImpl implements DeleteHistoryService {
     @Override
     @Transactional
     public DeleteHistoryResponseDto getCreatedFileDeleteHistory(CreatedFile createdFile) {
-        List<DeleteHistory> items = deleteHistoryRepository.findByCreatedFile(createdFile);
-        return new DeleteHistoryResponseDto(deleteHistoryResponseMapper.to(items));
+        List<DeleteHistory> history = deleteHistoryRepository.findByCreatedFile(createdFile);
+        history.sort(DELETE_HISTORY_COMPARATOR);
+        EventType type;
+        if(history.isEmpty()) {
+            type = EventType.CREATED;
+        } else {
+            type = history.get(0).getEvent();
+        }
+        return deleteHistoryResponseMapper.to(createdFile, history, type);
     }
 
     private void setDefaultParameters(DeleteHistory deleteHistory, EventType eventType) {

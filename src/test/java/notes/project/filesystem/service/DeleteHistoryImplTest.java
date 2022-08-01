@@ -1,14 +1,18 @@
 package notes.project.filesystem.service;
 
+import java.util.Collections;
+
+import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.mapper.DeleteHistoryResponseMapper;
 import notes.project.filesystem.model.*;
 import notes.project.filesystem.repository.DeleteHistoryRepository;
 import notes.project.filesystem.service.impl.DeleteHistoryServiceImpl;
+import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -33,7 +37,7 @@ class DeleteHistoryImplTest {
     void init() {
         service = new DeleteHistoryServiceImpl(
             repository,
-            Mappers.getMapper(DeleteHistoryResponseMapper.class)
+            TestUtils.getComplexMapper(DeleteHistoryResponseMapper.class)
         );
     }
 
@@ -86,5 +90,38 @@ class DeleteHistoryImplTest {
 
         assertEquals(expected.getCluster(), actual.getCluster());
         assertEquals(expected.getEvent(), actual.getEvent());
+    }
+
+    @Test
+    void getCreateFileDeleteHistoryWhenHistoryExistsSuccess() {
+        CreatedFile createdFile = DbUtils.createdFile();
+        DeleteHistory deleteHistory = DbUtils.deleteCreatedFileHistory();
+
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryCreatedFileResponseDto();
+
+        when(repository.findByCreatedFile(any())).thenReturn(Collections.singletonList(deleteHistory));
+
+        DeleteHistoryResponseDto actual = service.getCreatedFileDeleteHistory(createdFile);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByCreatedFile(createdFile);
+    }
+
+    @Test
+    void getCreatedFileDeleteHistoryWhenHistoryDoesNotExistSuccess() {
+        CreatedFile createdFile = DbUtils.createdFile();
+
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryCreatedFileResponseDto();
+        expected.setCurrentState(EventType.CREATED);
+        expected.setHistory(Collections.EMPTY_LIST);
+
+        when(repository.findByCreatedFile(any())).thenReturn(Collections.EMPTY_LIST);
+
+        DeleteHistoryResponseDto actual = service.getCreatedFileDeleteHistory(createdFile);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByCreatedFile(createdFile);
     }
 }
