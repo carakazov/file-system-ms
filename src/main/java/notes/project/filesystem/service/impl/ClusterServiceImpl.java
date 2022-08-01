@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.ClusterCreationRequestDto;
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
+import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.dto.ReadClusterDto;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.ResourceNotFoundException;
@@ -84,5 +85,11 @@ public class ClusterServiceImpl implements ClusterService {
     public Cluster findNotDeletedClusterByExternalId(UUID externalId) {
         return clusterRepository.findByExternalIdAndDeletedFalse(externalId)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
+    }
+
+    @Override
+    public DeleteHistoryResponseDto getClusterDeleteHistory(UUID externalId) {
+        Cluster cluster = findByExternalId(externalId);
+        return deleteHistoryService.getClusterDeleteHistory(cluster);
     }
 }

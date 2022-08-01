@@ -2,7 +2,7 @@ package notes.project.filesystem.controller;
 
 import java.util.UUID;
 
-import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.*;
 import notes.project.filesystem.service.CreatedFileService;
@@ -38,5 +38,11 @@ public class CreatedFileController {
     @PutMapping("/{id}")
     public void updateFile(@PathVariable(name = "id") UUID externalId, @RequestBody UpdateFileRequestDto request) {
         createdFileService.updateFile(externalId, request);
+    }
+
+    @GetMapping("/{id}/deleteHistory")
+    @ApiOperation(value = "Запрос истории удалений и восстановлений файла")
+    public DeleteHistoryResponseDto getDeleteHistory(@PathVariable(name = "id") UUID externalId) {
+        return createdFileService.getFileDeleteHistory(externalId);
     }
 }

@@ -2,6 +2,7 @@ package notes.project.filesystem.service;
 
 import java.util.UUID;
 
+import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
 import notes.project.filesystem.dto.ReadDirectoryDto;
@@ -17,4 +18,6 @@ public interface DirectoryService {
     ReadDirectoryDto readDirectory(UUID externalId);
 
     Directory findNotDeletedDirectoryByExternalId(UUID externalId);
+
+    DeleteHistoryResponseDto getDirectoryDeleteHistory(UUID externalId);
 }

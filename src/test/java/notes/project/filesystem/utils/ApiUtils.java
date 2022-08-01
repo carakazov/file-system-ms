@@ -8,6 +8,7 @@ import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.exception.ValidationException;
+import notes.project.filesystem.model.EventType;
 
 import static notes.project.filesystem.utils.TestDataConstants.*;
 
@@ -90,6 +91,22 @@ public class ApiUtils {
     public static UpdateFileRequestDto updateFileRequestDto() {
         return new UpdateFileRequestDto()
             .setContent(NEW_FILE_CONTENT);
+    }
+
+    public static DeleteHistoryResponseDto deleteHistoryClusterResponseDto() {
+        return new DeleteHistoryResponseDto()
+            .setObjectTitle(CLUSTER_TITLE)
+            .setCreatedDate(CREATED_CLUSTER_DATE)
+            .setCurrentState(EventType.DELETED)
+            .setHistory(Collections.singletonList(deleteHistoryDto()));
+    }
+
+    public static DeleteHistoryResponseDto deleteHistoryDirectoryResponseDto() {
+        return new DeleteHistoryResponseDto()
+            .setObjectTitle(DIRECTORY_TITLE)
+            .setCreatedDate(CREATED_DIRECTORY_TIME)
+            .setCurrentState(EventType.DELETED)
+            .setHistory(Collections.singletonList(deleteHistoryDto()));
     }
 
     public static DeleteHistoryResponseDto deleteHistoryCreatedFileResponseDto() {

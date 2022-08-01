@@ -4,6 +4,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
 import notes.project.filesystem.dto.ReadDirectoryDto;
@@ -81,5 +82,11 @@ public class DirectoryServiceImpl implements DirectoryService {
     public Directory findNotDeletedDirectoryByExternalId(UUID externalId) {
         return repository.findByExternalIdAndDeletedFalse(externalId)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
+    }
+
+    @Override
+    public DeleteHistoryResponseDto getDirectoryDeleteHistory(UUID externalId) {
+        Directory directory = findByExternalId(externalId);
+        return deleteHistoryService.getDirectoryDeleteHistory(directory);
     }
 }

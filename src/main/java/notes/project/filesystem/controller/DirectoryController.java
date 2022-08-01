@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
 import notes.project.filesystem.dto.ReadDirectoryDto;
@@ -35,5 +36,11 @@ public class DirectoryController {
     @ApiOperation(value = "/directory/{id}", notes = "Метод запроса информации о директории и её содержимом")
     public ReadDirectoryDto readDirectory(@PathVariable(name = "id") UUID externalId) {
         return directoryService.readDirectory(externalId);
+    }
+
+    @GetMapping("/{id}/deleteHistory")
+    @ApiOperation(value = "Запрос истории удалений и восстановлений файлов")
+    public DeleteHistoryResponseDto getDeleteHistory(@PathVariable(name = "id") UUID externalId) {
+        return directoryService.getDirectoryDeleteHistory(externalId);
     }
 }

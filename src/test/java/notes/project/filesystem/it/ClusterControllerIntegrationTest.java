@@ -24,10 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static notes.project.filesystem.utils.TestDataConstants.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static notes.project.filesystem.utils.TestDataConstants.*;
 
 @Tag("it")
 @ExtendWith(SpringExtension.class)
@@ -104,5 +104,27 @@ class ClusterControllerIntegrationTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.externalId").value(CLUSTER_EXTERNAL_ID_STRING))
             .andExpect(jsonPath("$.directories[0].title").value(DIRECTORY_TITLE))
             .andExpect(jsonPath("$.directories[0].externalId").value(DIRECTORY_EXTERNAL_ID_STRING));
+    }
+
+    @Test
+    void getClusterDeleteHistoryWhenHistoryExistsSuccess() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.deleteClusterHistory());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/cluster/3edce674-f3cf-4650-ad89-1bdd44b3f26a/deleteHistory"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.objectTitle").value(CLUSTER_TITLE))
+            .andExpect(jsonPath("$.currentState").value("DELETED"))
+            .andExpect(jsonPath("$.history[0].event").value("DELETED"));
+    }
+
+    @Test
+    void getClustetDeleteHistoryWhenHistoryDoesNotExits() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/cluster/3edce674-f3cf-4650-ad89-1bdd44b3f26a/deleteHistory"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.objectTitle").value(CLUSTER_TITLE))
+            .andExpect(jsonPath("$.currentState").value("CREATED"));
     }
 }
