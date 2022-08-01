@@ -1,11 +1,9 @@
 package notes.project.filesystem.service;
 
-import java.util.List;
 import java.util.UUID;
 
 import notes.project.filesystem.dto.*;
 import notes.project.filesystem.model.CreatedFile;
-import notes.project.filesystem.model.Directory;
 
 public interface CreatedFileService {
     AddFileResponseDto addFile(AddFileRequestDto request);
@@ -21,4 +19,6 @@ public interface CreatedFileService {
     CreatedFile findNotDeletedFileByExternalId(UUID externalId);
 
     void updateFile(UUID externalId, UpdateFileRequestDto request);
+
+    DeleteHistoryResponseDto getFileDeleteHistory(UUID fileExternalId);
 }

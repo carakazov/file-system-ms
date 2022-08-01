@@ -115,4 +115,11 @@ public class CreatedFileServiceImpl implements CreatedFileService {
             fileManager.updateFile(createdFile, request.getContent());
         }
     }
+
+    @Override
+    @Transactional
+    public DeleteHistoryResponseDto getFileDeleteHistory(UUID fileExternalId) {
+        CreatedFile createdFile = findFileByExternalId(fileExternalId);
+        return deleteHistoryService.getCreatedFileDeleteHistory(createdFile);
+    }
 }

@@ -1,12 +1,13 @@
 package notes.project.filesystem.utils;
 
-import lombok.experimental.UtilityClass;
-import notes.project.filesystem.model.FileResolution;
-
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
+
+import lombok.experimental.UtilityClass;
+import notes.project.filesystem.model.EventType;
+import notes.project.filesystem.model.FileResolution;
 
 @UtilityClass
 public class TestDataConstants {
@@ -56,6 +57,7 @@ public class TestDataConstants {
     public static final Path ZIPPED_FILE_PATH_FOR_UPDATE = Path.of(ARCHIVE_ROOT_PATH + "/" + FILE_VERSION_UUID + FileResolution.ZIP.getResolution());
     //Delete history constants
     public static final LocalDateTime DELETE_DATE = LocalDateTime.of(2022,  6, 26, 10, 10, 10);
+    public static final EventType LAST_EVENT = EventType.DELETED;
     //Replacing history constants
     public static final LocalDateTime REPLACING_DATE = LocalDateTime.of(2022,  6, 26, 10, 10, 12);
 
