@@ -1,7 +1,9 @@
 package notes.project.filesystem.service;
 
+import java.util.Collections;
 import java.util.Optional;
 
+import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
 import notes.project.filesystem.dto.ReadDirectoryDto;
@@ -24,10 +26,11 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static notes.project.filesystem.utils.TestDataConstants.DIRECTORY_EXTERNAL_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static notes.project.filesystem.utils.TestDataConstants.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DirectoryServiceImplTest {
@@ -101,5 +104,40 @@ class DirectoryServiceImplTest {
         assertEquals(expected, actual);
 
         verify(repository).findByExternalIdAndDeletedFalse(DIRECTORY_EXTERNAL_ID);
+    }
+
+    @Test
+    void getDirectoryDeleteHistoryWhenDirectoryExistsSuccess() {
+        Directory directory = DbUtils.directory();
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryDirectoryResponseDto();
+
+        when(repository.findByExternalId(any())).thenReturn(Optional.of(directory));
+        when(deleteHistoryService.getDirectoryDeleteHistory(any())).thenReturn(expected);
+
+        DeleteHistoryResponseDto actual = service.getDirectoryDeleteHistory(directory.getExternalId());
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByExternalId(directory.getExternalId());
+        verify(deleteHistoryService).getDirectoryDeleteHistory(directory);
+    }
+
+    @Test
+    void getDirectoryDeleteHistoryWhenDirectoryDoesNotExistSuccess() {
+        Directory directory = DbUtils.directory();
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryDirectoryResponseDto();
+
+        expected.setCurrentState(EventType.CREATED);
+        expected.setHistory(Collections.emptyList());
+
+        when(repository.findByExternalId(any())).thenReturn(Optional.of(directory));
+        when(deleteHistoryService.getDirectoryDeleteHistory(any())).thenReturn(expected);
+
+        DeleteHistoryResponseDto actual = service.getDirectoryDeleteHistory(directory.getExternalId());
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByExternalId(directory.getExternalId());
+        verify(deleteHistoryService).getDirectoryDeleteHistory(directory);
     }
 }

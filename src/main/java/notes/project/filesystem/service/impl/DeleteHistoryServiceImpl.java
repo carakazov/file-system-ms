@@ -62,6 +62,33 @@ public class DeleteHistoryServiceImpl implements DeleteHistoryService {
         return deleteHistoryResponseMapper.to(createdFile, history, type);
     }
 
+    @Override
+    @Transactional
+    public DeleteHistoryResponseDto getDirectoryDeleteHistory(Directory directory) {
+        List<DeleteHistory> history = deleteHistoryRepository.findByDirectory(directory);
+        history.sort(DELETE_HISTORY_COMPARATOR);
+        EventType type;
+        if(history.isEmpty()) {
+            type = EventType.CREATED;
+        } else {
+            type = history.get(0).getEvent();
+        }
+        return deleteHistoryResponseMapper.to(directory, history, type);
+    }
+
+    @Override
+    public DeleteHistoryResponseDto getClusterDeleteHistory(Cluster cluster) {
+        List<DeleteHistory> history = deleteHistoryRepository.findByCluster(cluster);
+        history.sort(DELETE_HISTORY_COMPARATOR);
+        EventType type;
+        if(history.isEmpty()) {
+            type = EventType.CREATED;
+        } else {
+            type = history.get(0).getEvent();
+        }
+        return deleteHistoryResponseMapper.to(cluster, history, type);
+    }
+
     private void setDefaultParameters(DeleteHistory deleteHistory, EventType eventType) {
         deleteHistory.setEvent(eventType);
         deleteHistory.setDate(LocalDateTime.now());

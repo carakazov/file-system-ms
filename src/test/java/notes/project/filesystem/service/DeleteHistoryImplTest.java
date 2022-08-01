@@ -124,4 +124,69 @@ class DeleteHistoryImplTest {
 
         verify(repository).findByCreatedFile(createdFile);
     }
+
+    @Test
+    void getDirectoryDeleteHistoryWhenHistoryExistsSuccess() {
+        Directory directory = DbUtils.directory();
+
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryDirectoryResponseDto();
+
+        when(repository.findByDirectory(any())).thenReturn(Collections.singletonList(DbUtils.deleteDirectoryHistory()));
+
+        DeleteHistoryResponseDto actual = service.getDirectoryDeleteHistory(directory);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByDirectory(directory);
+    }
+
+    @Test
+    void getDirectoryDeleteHistoryWhenHistoryDoesNotExistsSuccess() {
+        Directory directory = DbUtils.directory();
+
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryDirectoryResponseDto();
+        expected.setCurrentState(EventType.CREATED);
+        expected.setHistory(Collections.emptyList());
+
+        when(repository.findByDirectory(any())).thenReturn(Collections.emptyList());
+
+        DeleteHistoryResponseDto actual = service.getDirectoryDeleteHistory(directory);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByDirectory(directory);
+    }
+
+    @Test
+    void getClusterDeleteHistoryWhenHistoryExistsSuccess() {
+        Cluster cluster = DbUtils.cluster();
+        DeleteHistory deleteHistory = DbUtils.deleteClusterHistory();
+
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryClusterResponseDto();
+
+        when(repository.findByCluster(any())).thenReturn(Collections.singletonList(deleteHistory));
+
+        DeleteHistoryResponseDto actual = service.getClusterDeleteHistory(cluster);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByCluster(cluster);
+    }
+
+    @Test
+    void getClusterDeleteHistoryWhenHistoryDoesNotExitsSuccess() {
+        Cluster cluster = DbUtils.cluster();
+
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryClusterResponseDto();
+        expected.setCurrentState(EventType.CREATED);
+        expected.setHistory(Collections.emptyList());
+
+        when(repository.findByCluster(any())).thenReturn(Collections.emptyList());
+
+        DeleteHistoryResponseDto actual = service.getClusterDeleteHistory(cluster);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByCluster(cluster);
+    }
 }

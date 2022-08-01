@@ -1,16 +1,15 @@
 package notes.project.filesystem.it;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collections;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import liquibase.pro.packaged.E;
-import lombok.extern.slf4j.Slf4j;
 import notes.project.filesystem.controller.CreatedFileController;
-import notes.project.filesystem.model.*;
+import notes.project.filesystem.model.Archive;
+import notes.project.filesystem.model.Cluster;
+import notes.project.filesystem.model.CreatedFile;
+import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.TestDataConstants;
 import notes.project.filesystem.utils.TestUtils;
@@ -29,7 +28,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -163,4 +161,29 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
         FileUtils.deleteDirectory(new File("target/root"));
     }
 
+    @Test
+    void getCreateFileDeleteHistoryWhenHistoryExists() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+        testEntityManager.merge(DbUtils.createdFile());
+        testEntityManager.merge(DbUtils.deleteCreatedFileHistory());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/2a99b6fe-44f2-4837-bbee-80fbe43f3076/deleteHistory"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.objectTitle").value("file-title"))
+            .andExpect(jsonPath("$.currentState").value("DELETED"))
+            .andExpect(jsonPath("$.history[0].event").value("DELETED"));
+    }
+
+    @Test
+    void getCreateFileDeleteHistoryWhenHistoryNotExists() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+        testEntityManager.merge(DbUtils.createdFile());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/2a99b6fe-44f2-4837-bbee-80fbe43f3076/deleteHistory"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.objectTitle").value("file-title"))
+            .andExpect(jsonPath("$.currentState").value("CREATED"));
+    }
 }

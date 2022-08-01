@@ -24,10 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static notes.project.filesystem.utils.TestDataConstants.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static notes.project.filesystem.utils.TestDataConstants.*;
 
 @Tag("it")
 @ExtendWith(SpringExtension.class)
@@ -109,5 +109,29 @@ class DirectoryControllerIntegrationTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.externalId").value(DIRECTORY_EXTERNAL_ID_STRING))
             .andExpect(jsonPath("$.files[0].title").value(FILE_TITLE))
             .andExpect(jsonPath("$.files[0].externalId").value(FILE_EXTERNAL_ID_STRING));
+    }
+
+    @Test
+    void getDirectoryDeleteHistoryWhenHistoryExistsSuccess() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+        testEntityManager.merge(DbUtils.deleteDirectoryHistory());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/directory/c139de85-4d96-4f27-8648-8cc86c1286be/deleteHistory"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.objectTitle").value(DIRECTORY_TITLE))
+            .andExpect(jsonPath("$.currentState").value("DELETED"))
+            .andExpect(jsonPath("$.history[0].event").value("DELETED"));
+    }
+
+    @Test
+    void getDirectoryDeleteHistoryWhenHistoryDoesNotExitsSuccess() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/directory/c139de85-4d96-4f27-8648-8cc86c1286be/deleteHistory"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.objectTitle").value(DIRECTORY_TITLE))
+            .andExpect(jsonPath("$.currentState").value("CREATED"));
     }
 }

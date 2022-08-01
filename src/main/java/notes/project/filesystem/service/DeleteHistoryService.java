@@ -12,4 +12,6 @@ public interface DeleteHistoryService {
     void createClusterDeleteHistory(Cluster cluster, EventType eventType);
 
     DeleteHistoryResponseDto getCreatedFileDeleteHistory(CreatedFile createdFile);
+    DeleteHistoryResponseDto getDirectoryDeleteHistory(Directory directory);
+    DeleteHistoryResponseDto getClusterDeleteHistory(Cluster cluster);
 }

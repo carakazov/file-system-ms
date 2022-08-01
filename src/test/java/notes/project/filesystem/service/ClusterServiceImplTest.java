@@ -1,8 +1,10 @@
 package notes.project.filesystem.service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
+import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ClusterCreationMapper;
@@ -90,4 +92,37 @@ class ClusterServiceImplTest {
         verify(clusterRepository).findByExternalIdAndDeletedFalse(cluster.getExternalId());
     }
 
+    @Test
+    void getClusterDeleteHistoryWhenHistoryExistsSuccess() {
+        Cluster cluster = DbUtils.cluster();
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryClusterResponseDto();
+
+        when(clusterRepository.findByExternalId(any())).thenReturn(Optional.of(cluster));
+        when(deleteHistoryService.getClusterDeleteHistory(any())).thenReturn(expected);
+
+        DeleteHistoryResponseDto actual = service.getClusterDeleteHistory(cluster.getExternalId());
+
+        assertEquals(expected, actual);
+
+        verify(clusterRepository).findByExternalId(cluster.getExternalId());
+        verify(deleteHistoryService).getClusterDeleteHistory(cluster);
+    }
+
+    @Test
+    void getClusterDeleteHistoryWhenHistoryDoesNotExitsSuccess() {
+        Cluster cluster = DbUtils.cluster();
+        DeleteHistoryResponseDto expected = ApiUtils.deleteHistoryClusterResponseDto();
+        expected.setCurrentState(EventType.CREATED);
+        expected.setHistory(Collections.emptyList());
+
+        when(clusterRepository.findByExternalId(any())).thenReturn(Optional.of(cluster));
+        when(deleteHistoryService.getClusterDeleteHistory(any())).thenReturn(expected);
+
+        DeleteHistoryResponseDto actual = service.getClusterDeleteHistory(cluster.getExternalId());
+
+        assertEquals(expected, actual);
+
+        verify(clusterRepository).findByExternalId(cluster.getExternalId());
+        verify(deleteHistoryService).getClusterDeleteHistory(cluster);
+    }
 }
