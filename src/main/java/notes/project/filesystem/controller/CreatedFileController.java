@@ -47,7 +47,12 @@ public class CreatedFileController {
     }
 
     @GetMapping("/{id}/replacingHistory")
-    public ReplacingHistoryResponseDto getReplaсingHistory(@PathVariable(name = "id") UUID externalId) {
+    public ReplacingHistoryResponseDto getReplacingHistory(@PathVariable(name = "id") UUID externalId) {
         return createdFileService.getReplacingHistory(externalId);
+    }
+
+    @GetMapping("/{id}/archiveHistory")
+    public ArchiveHistoryResponseDto getArchiveHistory(@PathVariable(name = "id") UUID externalId) {
+        return createdFileService.getArchiveHistory(externalId);
     }
 }

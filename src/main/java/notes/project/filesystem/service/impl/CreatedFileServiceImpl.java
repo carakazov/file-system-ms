@@ -128,4 +128,10 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         CreatedFile file = findFileByExternalId(fileExternalId);
         return replacingHistoryService.getReplacingHistory(file);
     }
+
+    @Override
+    public ArchiveHistoryResponseDto getArchiveHistory(UUID fileExternalId) {
+        CreatedFile file = findFileByExternalId(fileExternalId);
+        return archiveService.getArchiveHistory(file);
+    }
 }

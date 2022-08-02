@@ -204,4 +204,18 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.history[0].targetDirectory.directoryTitle").value("directory-title"))
             .andExpect(jsonPath("$.history[0].targetDirectory.directoryExternalId").value("9816d9b5-5988-4cc9-b6cf-5628ce00648f"));
     }
+
+    @Test
+    void getArchiveHistory() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+        testEntityManager.merge(DbUtils.createdFile());
+        testEntityManager.merge(DbUtils.archive());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/2a99b6fe-44f2-4837-bbee-80fbe43f3076/archiveHistory"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.file.fileTitle").value("file-title"))
+            .andExpect(jsonPath("$.file.fileExternalId").value("2a99b6fe-44f2-4837-bbee-80fbe43f3076"))
+            .andExpect(jsonPath("$.history[0].versionFileGuid").value("ec1d0392-6aac-43c3-ba31-6e4e0a6c1f03"));
+    }
 }

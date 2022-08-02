@@ -213,4 +213,20 @@ class CreatedFileServiceImplTest {
         verify(repository).findByExternalId(file.getExternalId());
         verify(replacingHistoryService).getReplacingHistory(file);
     }
+
+    @Test
+    void getArchiveHistorySuccess() {
+        CreatedFile file = DbUtils.createdFile();
+        ArchiveHistoryResponseDto expected = ApiUtils.archiveHistoryResponseDto();
+
+        when(repository.findByExternalId(any())).thenReturn(Optional.of(file));
+        when(archiveService.getArchiveHistory(any())).thenReturn(expected);
+
+        ArchiveHistoryResponseDto actual = service.getArchiveHistory(file.getExternalId());
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByExternalId(file.getExternalId());
+        verify(archiveService).getArchiveHistory(file);
+    }
 }

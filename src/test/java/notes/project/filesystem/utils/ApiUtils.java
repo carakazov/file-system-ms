@@ -161,6 +161,24 @@ public class ApiUtils {
             .setFile(DbUtils.createdFile());
     }
 
+    public static ArchiveHistoryResponseDto archiveHistoryResponseDto() {
+        return new ArchiveHistoryResponseDto()
+            .setFile(archiveCreatedFileRequestDto())
+            .setHistory(Collections.singletonList(archiveDto()));
+    }
+
+    public static ArchiveDto archiveDto() {
+        return new ArchiveDto()
+            .setVersionFileGuid(FILE_VERSION_UUID)
+            .setEditedDate(EDITED_DATE);
+    }
+
+    public static ArchiveCreatedFileRequestDto archiveCreatedFileRequestDto() {
+        return new ArchiveCreatedFileRequestDto()
+            .setFileTitle(FILE_TITLE)
+            .setFileExternalId(FILE_EXTERNAL_ID);
+    }
+
     public static ErrorDto errorDto() {
         return new ErrorDto()
                 .setCode(EXCEPTION_CODE)
