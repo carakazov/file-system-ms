@@ -37,3 +37,4 @@ application:
     parentObjectDeleted: Parent object deleted.
     directoryNotDeleted: Directory not deleted.
     clusterNotDeleted: Cluster not deleted.
+    sameDirectoryReplacing: File already in this directory.

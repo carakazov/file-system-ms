@@ -9,6 +9,7 @@ import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.exception.ValidationException;
 import notes.project.filesystem.model.EventType;
+import notes.project.filesystem.validation.dto.ReplaceCreatedFileValidationDto;
 
 import static notes.project.filesystem.utils.TestDataConstants.*;
 
@@ -152,6 +153,12 @@ public class ApiUtils {
         return new ReplacingHistoryDirectoryDto()
             .setDirectoryTitle(DIRECTORY_TITLE)
             .setDirectoryExternalId(DIRECTORY_EXTERNAL_ID);
+    }
+
+    public static ReplaceCreatedFileValidationDto replaceCreatedFileValidationDto() {
+        return new ReplaceCreatedFileValidationDto()
+            .setDirectory(DbUtils.directoryWithAlternativeExternalId())
+            .setFile(DbUtils.createdFile());
     }
 
     public static ErrorDto errorDto() {
