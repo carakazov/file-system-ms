@@ -123,6 +123,37 @@ public class ApiUtils {
             .setEventDate(DELETE_DATE);
     }
 
+    public static ReplacingHistoryResponseDto replacingHistoryResponseDto() {
+        return new ReplacingHistoryResponseDto()
+            .setFile(replacingHistoryCreatedFileDto())
+            .setHistory(Collections.singletonList(getReplacingHistoryDto()));
+    }
+
+    public static ReplacingHistoryCreatedFileDto replacingHistoryCreatedFileDto() {
+        return new ReplacingHistoryCreatedFileDto()
+            .setFileTitle(FILE_TITLE)
+            .setFileExternalId(FILE_EXTERNAL_ID);
+    }
+
+    public static ReplacingHistoryDto getReplacingHistoryDto() {
+        return new ReplacingHistoryDto()
+            .setSourceDirectory(getReplacingHistorySourceDirectoryDto())
+            .setTargetDirectory(getReplacingHistoryTargetDirectoryDto())
+            .setReplacingDate(REPLACING_DATE);
+    }
+
+    public static ReplacingHistoryDirectoryDto getReplacingHistoryTargetDirectoryDto() {
+        return new ReplacingHistoryDirectoryDto()
+            .setDirectoryTitle(DIRECTORY_TITLE)
+            .setDirectoryExternalId(ALTERNATIVE_DIRECTORY_EXTERNAL_ID);
+    }
+
+    public static ReplacingHistoryDirectoryDto getReplacingHistorySourceDirectoryDto() {
+        return new ReplacingHistoryDirectoryDto()
+            .setDirectoryTitle(DIRECTORY_TITLE)
+            .setDirectoryExternalId(DIRECTORY_EXTERNAL_ID);
+    }
+
     public static ErrorDto errorDto() {
         return new ErrorDto()
                 .setCode(EXCEPTION_CODE)

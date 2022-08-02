@@ -21,4 +21,6 @@ public interface CreatedFileService {
     void updateFile(UUID externalId, UpdateFileRequestDto request);
 
     DeleteHistoryResponseDto getFileDeleteHistory(UUID fileExternalId);
+
+    ReplacingHistoryResponseDto getReplacingHistory(UUID fileExternalId);
 }

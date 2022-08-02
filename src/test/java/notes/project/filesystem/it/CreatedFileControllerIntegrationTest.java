@@ -162,7 +162,7 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getCreateFileDeleteHistoryWhenHistoryExists() throws Exception {
+    void getCreatedFileDeleteHistoryWhenHistoryExists() throws Exception {
         testEntityManager.merge(DbUtils.cluster());
         testEntityManager.merge(DbUtils.directory());
         testEntityManager.merge(DbUtils.createdFile());
@@ -176,7 +176,7 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getCreateFileDeleteHistoryWhenHistoryNotExists() throws Exception {
+    void getCreatedFileDeleteHistoryWhenHistoryNotExists() throws Exception {
         testEntityManager.merge(DbUtils.cluster());
         testEntityManager.merge(DbUtils.directory());
         testEntityManager.merge(DbUtils.createdFile());
@@ -185,5 +185,23 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.objectTitle").value("file-title"))
             .andExpect(jsonPath("$.currentState").value("CREATED"));
+    }
+
+    @Test
+    void getCreatedFileReplacingHistory() throws Exception {
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+        testEntityManager.merge(DbUtils.directoryWithAlternativeExternalId());
+        testEntityManager.merge(DbUtils.createdFile());
+        testEntityManager.merge(DbUtils.replacingHistory());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/2a99b6fe-44f2-4837-bbee-80fbe43f3076/replacingHistory"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.file.fileTitle").value("file-title"))
+            .andExpect(jsonPath("$.file.fileExternalId").value("2a99b6fe-44f2-4837-bbee-80fbe43f3076"))
+            .andExpect(jsonPath("$.history[0].sourceDirectory.directoryTitle").value("directory-title"))
+            .andExpect(jsonPath("$.history[0].sourceDirectory.directoryExternalId").value("c139de85-4d96-4f27-8648-8cc86c1286be"))
+            .andExpect(jsonPath("$.history[0].targetDirectory.directoryTitle").value("directory-title"))
+            .andExpect(jsonPath("$.history[0].targetDirectory.directoryExternalId").value("9816d9b5-5988-4cc9-b6cf-5628ce00648f"));
     }
 }
