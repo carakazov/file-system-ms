@@ -6,9 +6,9 @@ import java.util.Optional;
 import notes.project.filesystem.dto.*;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
+import notes.project.filesystem.mapper.AddReplacingHistoryMapper;
 import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.mapper.ReadFileMapper;
-import notes.project.filesystem.mapper.ReplacingHistoryMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.EventType;
@@ -73,11 +73,9 @@ class CreatedFileServiceImplTest {
             objectExistingStatusChanger,
             Mappers.getMapper(ReadFileMapper.class),
             replacingHistoryService,
-            Mappers.getMapper(ReplacingHistoryMapper.class),
+            Mappers.getMapper(AddReplacingHistoryMapper.class),
             archiveService,
-            updateFileValidator,
-            null,
-            null
+            updateFileValidator
         );
     }
 
@@ -194,5 +192,21 @@ class CreatedFileServiceImplTest {
 
         verify(repository).findByExternalId(createdFile.getExternalId());
         verify(deleteHistoryService).getCreatedFileDeleteHistory(createdFile);
+    }
+
+    @Test
+    void getReplacingHistorySuccess() {
+        CreatedFile file = DbUtils.createdFile();
+        ReplacingHistoryResponseDto expected = ApiUtils.replacingHistoryResponseDto();
+
+        when(repository.findByExternalId(any())).thenReturn(Optional.of(file));
+        when(replacingHistoryService.getReplacingHistory(any())).thenReturn(expected);
+
+        ReplacingHistoryResponseDto actual = service.getReplacingHistory(file.getExternalId());
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByExternalId(file.getExternalId());
+        verify(replacingHistoryService).getReplacingHistory(file);
     }
 }

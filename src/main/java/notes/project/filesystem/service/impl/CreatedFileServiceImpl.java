@@ -4,15 +4,14 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import notes.project.filesystem.config.ApplicationProperties;
 import notes.project.filesystem.dto.*;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.file.FileManager;
 import notes.project.filesystem.file.ZipManager;
+import notes.project.filesystem.mapper.AddReplacingHistoryMapper;
 import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.mapper.ReadFileMapper;
-import notes.project.filesystem.mapper.ReplacingHistoryMapper;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.EventType;
@@ -36,13 +35,11 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final ObjectExistingStatusChanger objectExistingStatusChanger;
     private final ReadFileMapper readFileMapper;
     private final ReplacingHistoryService replacingHistoryService;
-    private final ReplacingHistoryMapper replacingHistoryMapper;
+    private final AddReplacingHistoryMapper addReplacingHistoryMapper;
     private final ArchiveService archiveService;
     private final Validator<UpdateFileRequestDto> updateFileValidator;
-    private final Validator<CreatedFile> recreateFileValidator;
-    private final ApplicationProperties properties;
 
-    private final static Object LOCK = new Object();
+    private static final Object LOCK = new Object();
 
     @Override
     @Transactional
@@ -93,7 +90,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
             fileManager.moveFile(createdFile, directory);
             createdFile.setDirectory(directory);
         }
-        return replacingHistoryMapper.from(replacingHistory);
+        return addReplacingHistoryMapper.from(replacingHistory);
     }
 
     @Override
@@ -121,5 +118,11 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     public DeleteHistoryResponseDto getFileDeleteHistory(UUID fileExternalId) {
         CreatedFile createdFile = findFileByExternalId(fileExternalId);
         return deleteHistoryService.getCreatedFileDeleteHistory(createdFile);
+    }
+
+    @Override
+    public ReplacingHistoryResponseDto getReplacingHistory(UUID fileExternalId) {
+        CreatedFile file = findFileByExternalId(fileExternalId);
+        return replacingHistoryService.getReplacingHistory(file);
     }
 }

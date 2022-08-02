@@ -45,4 +45,9 @@ public class CreatedFileController {
     public DeleteHistoryResponseDto getDeleteHistory(@PathVariable(name = "id") UUID externalId) {
         return createdFileService.getFileDeleteHistory(externalId);
     }
+
+    @GetMapping("/{id}/replacingHistory")
+    public ReplacingHistoryResponseDto getReplaсingHistory(@PathVariable(name = "id") UUID externalId) {
+        return createdFileService.getReplacingHistory(externalId);
+    }
 }

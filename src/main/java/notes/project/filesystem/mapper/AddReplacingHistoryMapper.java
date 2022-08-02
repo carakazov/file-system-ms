@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ReplacingHistoryMapper {
+public interface AddReplacingHistoryMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "targetDirectory", source = "newDirectory")
     @Mapping(target = "createdFile", source = "file")

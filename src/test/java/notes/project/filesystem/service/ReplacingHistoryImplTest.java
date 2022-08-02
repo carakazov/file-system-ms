@@ -1,22 +1,28 @@
 package notes.project.filesystem.service;
 
-import notes.project.filesystem.mapper.ReplacingHistoryMapper;
+import java.util.Collections;
+
+import notes.project.filesystem.dto.ReplacingHistoryResponseDto;
+import notes.project.filesystem.mapper.AddReplacingHistoryMapper;
+import notes.project.filesystem.mapper.ReplacingHistoryResponseMapper;
+import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.ReplacingHistory;
 import notes.project.filesystem.repository.ReplacingHistoryRepository;
 import notes.project.filesystem.service.impl.ReplacingHistoryServiceImpl;
+import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
+import notes.project.filesystem.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static notes.project.filesystem.utils.TestDataConstants.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ReplacingHistoryImplTest {
@@ -29,7 +35,8 @@ class ReplacingHistoryImplTest {
     void init() {
         service = new ReplacingHistoryServiceImpl(
             repository,
-            Mappers.getMapper(ReplacingHistoryMapper.class)
+            Mappers.getMapper(AddReplacingHistoryMapper.class),
+            TestUtils.getComplexMapper(ReplacingHistoryResponseMapper.class)
         );
     }
 
@@ -41,5 +48,20 @@ class ReplacingHistoryImplTest {
         ReplacingHistory actual = service.create(DbUtils.createdFile(), DbUtils.directoryWithAlternativeExternalId());
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void getReplacingHistorySuccess() {
+        CreatedFile file = DbUtils.createdFile();
+        ReplacingHistory history = DbUtils.replacingHistory();
+        ReplacingHistoryResponseDto expected = ApiUtils.replacingHistoryResponseDto();
+
+        when(repository.findByCreatedFile(any())).thenReturn(Collections.singletonList(history));
+
+        ReplacingHistoryResponseDto actual = service.getReplacingHistory(file);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByCreatedFile(file);
     }
 }
