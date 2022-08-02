@@ -23,4 +23,6 @@ public interface CreatedFileService {
     DeleteHistoryResponseDto getFileDeleteHistory(UUID fileExternalId);
 
     ReplacingHistoryResponseDto getReplacingHistory(UUID fileExternalId);
+
+    ArchiveHistoryResponseDto getArchiveHistory(UUID fileExternalId);
 }

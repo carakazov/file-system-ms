@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ArchiveMapper {
+public interface CreateArchiveMapper {
     @Mapping(target = "versionFileGuid", source = "versionFileExternalId")
     @Mapping(target = "createdFile", source = "file")
     @Mapping(target = "id", ignore = true)
