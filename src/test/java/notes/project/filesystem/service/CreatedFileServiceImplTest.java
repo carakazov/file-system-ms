@@ -18,6 +18,7 @@ import notes.project.filesystem.service.impl.CreatedFileServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.validation.Validator;
+import notes.project.filesystem.validation.dto.ReplaceCreatedFileValidationDto;
 import notes.project.filesystem.validation.impl.FileCreationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,8 @@ class CreatedFileServiceImplTest {
     private ArchiveService archiveService;
     @Mock
     private Validator<UpdateFileRequestDto> updateFileValidator;
+    @Mock
+    private Validator<ReplaceCreatedFileValidationDto> replaceFileValidator;
     private CreatedFileService service;
 
 
@@ -75,7 +78,8 @@ class CreatedFileServiceImplTest {
             replacingHistoryService,
             Mappers.getMapper(AddReplacingHistoryMapper.class),
             archiveService,
-            updateFileValidator
+            updateFileValidator,
+            replaceFileValidator
         );
     }
 

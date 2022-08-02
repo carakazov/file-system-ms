@@ -19,6 +19,7 @@ import notes.project.filesystem.model.ReplacingHistory;
 import notes.project.filesystem.repository.CreatedFileRepository;
 import notes.project.filesystem.service.*;
 import notes.project.filesystem.validation.Validator;
+import notes.project.filesystem.validation.dto.ReplaceCreatedFileValidationDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +39,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     private final AddReplacingHistoryMapper addReplacingHistoryMapper;
     private final ArchiveService archiveService;
     private final Validator<UpdateFileRequestDto> updateFileValidator;
+    private final Validator<ReplaceCreatedFileValidationDto> replaceFileValidator;
 
     private static final Object LOCK = new Object();
 
@@ -84,6 +86,7 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     public MoveCreatedFileResponseDto moveFile(MoveCreatedFileRequestDto request) {
         CreatedFile createdFile = findNotDeletedFileByExternalId(request.getCreatedFileExternalId());
         Directory directory = directoryService.findNotDeletedDirectoryByExternalId(request.getNewDirectoryExternalId());
+        replaceFileValidator.validate(new ReplaceCreatedFileValidationDto(createdFile, directory));
         ReplacingHistory replacingHistory = replacingHistoryService.create(createdFile, directory);
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         synchronized(LOCK) {
