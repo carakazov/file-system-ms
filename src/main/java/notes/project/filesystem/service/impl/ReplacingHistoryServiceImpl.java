@@ -1,5 +1,6 @@
 package notes.project.filesystem.service.impl;
 
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,9 @@ public class ReplacingHistoryServiceImpl implements ReplacingHistoryService {
     private final ReplacingHistoryRepository repository;
     private final AddReplacingHistoryMapper addReplacingHistoryMapper;
     private final ReplacingHistoryResponseMapper replacingHistoryResponseMapper;
+
+    private static final Comparator<ReplacingHistory> REPLACING_HISTORY_COMPARATOR = (o1, o2) -> o2.getReplacingDate().compareTo(o1.getReplacingDate());
+
     @Override
     public ReplacingHistory create(CreatedFile createdFile, Directory newDirectory) {
         ReplacingHistory replacingHistory = addReplacingHistoryMapper.to(createdFile, newDirectory);
@@ -28,6 +32,7 @@ public class ReplacingHistoryServiceImpl implements ReplacingHistoryService {
     @Override
     public ReplacingHistoryResponseDto getReplacingHistory(CreatedFile createdFile) {
         List<ReplacingHistory> history = repository.findByCreatedFile(createdFile);
+        history.sort(REPLACING_HISTORY_COMPARATOR);
         return replacingHistoryResponseMapper.to(createdFile, history);
     }
 }
