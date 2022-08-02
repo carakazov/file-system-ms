@@ -9,4 +9,6 @@ public interface ArchiveService {
     void create(CreatedFile file, UUID versionFileExternalId);
 
     ArchiveHistoryResponseDto getArchiveHistory(CreatedFile file);
+
+    String readFileVersion(UUID fileVersionGuid);
 }

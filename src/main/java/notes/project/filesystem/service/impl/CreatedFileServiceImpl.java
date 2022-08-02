@@ -134,4 +134,9 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         CreatedFile file = findFileByExternalId(fileExternalId);
         return archiveService.getArchiveHistory(file);
     }
+
+    @Override
+    public ReadFileArchiveVersionDto readFileVersion(UUID fileVersionId) {
+        return new ReadFileArchiveVersionDto(archiveService.readFileVersion(fileVersionId));
+    }
 }

@@ -3,6 +3,7 @@ package notes.project.filesystem.service;
 import java.util.Collections;
 
 import notes.project.filesystem.dto.ArchiveHistoryResponseDto;
+import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ArchiveHistoryResponseMapper;
 import notes.project.filesystem.mapper.CreateArchiveMapper;
 import notes.project.filesystem.model.Archive;
@@ -31,6 +32,8 @@ import static org.mockito.Mockito.when;
 class ArchiveServiceImplTest {
     @Mock
     private ArchiveRepository repository;
+    @Mock
+    private ZipManager zipManager;
 
     private ArchiveService service;
 
@@ -42,7 +45,8 @@ class ArchiveServiceImplTest {
         service = new ArchiveServiceImpl(
             repository,
             Mappers.getMapper(CreateArchiveMapper.class),
-            TestUtils.getComplexMapper(ArchiveHistoryResponseMapper.class)
+            TestUtils.getComplexMapper(ArchiveHistoryResponseMapper.class),
+            zipManager
         );
     }
 

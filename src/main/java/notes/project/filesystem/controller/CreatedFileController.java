@@ -55,4 +55,9 @@ public class CreatedFileController {
     public ArchiveHistoryResponseDto getArchiveHistory(@PathVariable(name = "id") UUID externalId) {
         return createdFileService.getArchiveHistory(externalId);
     }
+
+    @GetMapping("/version/{id}")
+    public ReadFileArchiveVersionDto readFileVersion(@PathVariable(name = "id") UUID versionFileUuid) {
+        return createdFileService.readFileVersion(versionFileUuid);
+    }
 }
