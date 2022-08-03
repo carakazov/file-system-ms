@@ -218,4 +218,22 @@ class CreatedFileControllerIntegrationTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.file.fileExternalId").value("2a99b6fe-44f2-4837-bbee-80fbe43f3076"))
             .andExpect(jsonPath("$.history[0].versionFileGuid").value("ec1d0392-6aac-43c3-ba31-6e4e0a6c1f03"));
     }
+
+    @Test
+    void readFileVersionSuccess() throws Exception {
+        createTestRoot();
+        createZipFileWithSpecifiedEntry(TestDataConstants.ZIPPED_FILE_PATH_FOR_UPDATE, TestDataConstants.FILE_VERSION_UUID);
+
+        testEntityManager.merge(DbUtils.cluster());
+        testEntityManager.merge(DbUtils.directory());
+        testEntityManager.merge(DbUtils.createdFile());
+        testEntityManager.merge(DbUtils.archive());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/version/ec1d0392-6aac-43c3-ba31-6e4e0a6c1f03/"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").value("some test file content"));
+
+        FileUtils.deleteDirectory(new File("target/archive-root"));
+        FileUtils.deleteDirectory(new File("target/root"));
+    }
 }

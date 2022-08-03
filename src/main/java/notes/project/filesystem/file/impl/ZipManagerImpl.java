@@ -76,13 +76,8 @@ public class ZipManagerImpl implements ZipManager {
     public synchronized void recreateFile(CreatedFile createdFile) {
         String path = createPathToArchive(createdFile.getExternalId());
         try {
-            ZipFile zipFile = new ZipFile(path);
-            ZipEntry zipEntry = zipFile.getEntry(createdFile.getExternalId() + FileResolution.TXT.getResolution());
-            InputStream inputStream = zipFile.getInputStream(zipEntry);
-            String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            String content = readZipFile(path, createdFile.getExternalId().toString());
             fileManager.createFile(createdFile, content);
-            inputStream.close();
-            zipFile.close();
             FileUtils.delete(new File(path));
         } catch(IOException exception) {
             throw new FileSystemException(ExceptionCode.RECREATING_ERROR, exception.getMessage());
@@ -114,6 +109,26 @@ public class ZipManagerImpl implements ZipManager {
     public synchronized void recreateCluster(Cluster cluster) {
         fileManager.createCluster(cluster);
         cluster.getDirectories().forEach(this::recreateDirectory);
+    }
+
+    @Override
+    public String readZipFile(UUID versionFileExternalId) {
+        String pathToArchive = createPathToArchive(versionFileExternalId);
+        try {
+            return readZipFile(pathToArchive, versionFileExternalId.toString());
+        } catch(IOException exception) {
+            throw new FileSystemException(ExceptionCode.READING_ERROR, exception.getMessage());
+        }
+    }
+
+    private String readZipFile(String archivePath, String zipEntryName) throws IOException {
+        ZipFile zipFile = new ZipFile(archivePath);
+        ZipEntry zipEntry = zipFile.getEntry(zipEntryName + FileResolution.TXT.getResolution());
+        InputStream inputStream = zipFile.getInputStream(zipEntry);
+        String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        inputStream.close();
+        zipFile.close();
+        return content;
     }
 
     private String createPathToArchive(UUID externalId) {

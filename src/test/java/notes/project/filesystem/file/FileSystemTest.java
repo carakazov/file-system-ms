@@ -6,15 +6,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.FileResolution;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 import static notes.project.filesystem.utils.TestDataConstants.*;
-import static notes.project.filesystem.utils.TestDataConstants.ROOT_DIRECTORY_PATH;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,11 +31,22 @@ public abstract class FileSystemTest {
     protected void createZipFile(Path path) throws IOException {
         Files.createFile(path);
         try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(path.toString()))) {
-            ZipEntry zipEntry = new ZipEntry(FILE_EXTERNAL_ID_STRING + FileResolution.TXT.getResolution());
-            zipOutputStream.putNextEntry(zipEntry);
-            zipOutputStream.write(FILE_CONTENT.getBytes(StandardCharsets.UTF_8));
-            zipOutputStream.closeEntry();
+            writeEntry(zipOutputStream, FILE_EXTERNAL_ID);
         }
+    }
+
+    protected void createZipFileWithSpecifiedEntry(Path path, UUID entryName) throws IOException {
+        Files.createFile(path);
+        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(path.toString()))) {
+            writeEntry(zipOutputStream, entryName);
+        }
+    }
+
+    private void writeEntry(ZipOutputStream zipOutputStream, UUID entryName) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(entryName.toString() + FileResolution.TXT.getResolution());
+        zipOutputStream.putNextEntry(zipEntry);
+        zipOutputStream.write(FILE_CONTENT.getBytes(StandardCharsets.UTF_8));
+        zipOutputStream.closeEntry();
     }
 
     protected void createClusterPath(Path path) throws IOException {

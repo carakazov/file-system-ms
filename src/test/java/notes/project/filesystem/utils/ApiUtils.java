@@ -179,6 +179,11 @@ public class ApiUtils {
             .setFileExternalId(FILE_EXTERNAL_ID);
     }
 
+    public static ReadFileArchiveVersionDto readFileArchiveVersionDto() {
+        return new ReadFileArchiveVersionDto()
+            .setContent(FILE_CONTENT);
+    }
+
     public static ErrorDto errorDto() {
         return new ErrorDto()
                 .setCode(EXCEPTION_CODE)

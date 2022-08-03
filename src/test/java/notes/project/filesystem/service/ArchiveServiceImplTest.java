@@ -1,8 +1,10 @@
 package notes.project.filesystem.service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import notes.project.filesystem.dto.ArchiveHistoryResponseDto;
+import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.ArchiveHistoryResponseMapper;
 import notes.project.filesystem.mapper.CreateArchiveMapper;
 import notes.project.filesystem.model.Archive;
@@ -21,6 +23,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static notes.project.filesystem.utils.TestDataConstants.FILE_CONTENT;
 import static notes.project.filesystem.utils.TestDataConstants.FILE_VERSION_UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,6 +34,8 @@ import static org.mockito.Mockito.when;
 class ArchiveServiceImplTest {
     @Mock
     private ArchiveRepository repository;
+    @Mock
+    private ZipManager zipManager;
 
     private ArchiveService service;
 
@@ -42,7 +47,8 @@ class ArchiveServiceImplTest {
         service = new ArchiveServiceImpl(
             repository,
             Mappers.getMapper(CreateArchiveMapper.class),
-            TestUtils.getComplexMapper(ArchiveHistoryResponseMapper.class)
+            TestUtils.getComplexMapper(ArchiveHistoryResponseMapper.class),
+            zipManager
         );
     }
 
@@ -74,5 +80,21 @@ class ArchiveServiceImplTest {
         assertEquals(expected, actual);
 
         verify(repository).findAllByCreatedFile(createdFile);
+    }
+
+    @Test
+    void readFileVersionSuccess() {
+        Archive archive = DbUtils.archive();
+        String expected = FILE_CONTENT;
+
+        when(repository.findByVersionFileGuid(any())).thenReturn(Optional.of(archive));
+        when(zipManager.readZipFile(any())).thenReturn(expected);
+
+        String actual = service.readFileVersion(FILE_VERSION_UUID);
+
+        assertEquals(expected, actual);
+
+        verify(repository).findByVersionFileGuid(FILE_VERSION_UUID);
+        verify(zipManager).readZipFile(FILE_VERSION_UUID);
     }
 }

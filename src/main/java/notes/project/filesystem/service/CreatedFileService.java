@@ -25,4 +25,6 @@ public interface CreatedFileService {
     ReplacingHistoryResponseDto getReplacingHistory(UUID fileExternalId);
 
     ArchiveHistoryResponseDto getArchiveHistory(UUID fileExternalId);
+
+    ReadFileArchiveVersionDto readFileVersion(UUID fileVersionId);
 }

@@ -27,8 +27,7 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static notes.project.filesystem.utils.TestDataConstants.FILE_CONTENT;
-import static notes.project.filesystem.utils.TestDataConstants.FILE_EXTERNAL_ID;
+import static notes.project.filesystem.utils.TestDataConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -228,5 +227,18 @@ class CreatedFileServiceImplTest {
 
         verify(repository).findByExternalId(file.getExternalId());
         verify(archiveService).getArchiveHistory(file);
+    }
+
+    @Test
+    void readFileVersionSuccess() {
+        ReadFileArchiveVersionDto expected = ApiUtils.readFileArchiveVersionDto();
+
+        when(archiveService.readFileVersion(any())).thenReturn(FILE_CONTENT);
+
+        ReadFileArchiveVersionDto actual = service.readFileVersion(FILE_VERSION_UUID);
+
+        assertEquals(expected, actual);
+
+        verify(archiveService).readFileVersion(FILE_VERSION_UUID);
     }
 }

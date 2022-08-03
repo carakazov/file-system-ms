@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import notes.project.filesystem.config.ApplicationProperties;
@@ -17,7 +20,6 @@ import notes.project.filesystem.utils.TestAsyncTaskExecutor;
 import notes.project.filesystem.utils.TestDataConstants;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,9 +28,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
 import static notes.project.filesystem.utils.TestDataConstants.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -100,6 +99,20 @@ public abstract class AbstractIntegrationTest {
 
     protected void assertFileDeleted(Path path) throws IOException {
         assertFalse(Files.exists(path));
+    }
+
+    protected void createZipFileWithSpecifiedEntry(Path path, UUID entryName) throws IOException {
+        Files.createFile(path);
+        try(ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(path.toString()))) {
+            writeEntry(zipOutputStream, entryName);
+        }
+    }
+
+    private void writeEntry(ZipOutputStream zipOutputStream, UUID entryName) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(entryName.toString() + FileResolution.TXT.getResolution());
+        zipOutputStream.putNextEntry(zipEntry);
+        zipOutputStream.write(FILE_CONTENT.getBytes(StandardCharsets.UTF_8));
+        zipOutputStream.closeEntry();
     }
 
     protected void createZippedFile() throws IOException {

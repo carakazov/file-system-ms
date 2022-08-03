@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
 import static notes.project.filesystem.utils.TestDataConstants.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -129,6 +130,19 @@ class ZipManagerImplTest extends FileSystemTest {
         zipManager.recreateCluster(DbUtils.clusterWithFiles());
 
         assertFileDeleted(ZIPPED_CREATED_FILE_PATH);
+        Files.delete(ARCHIVE_ROOT_PATH);
+    }
+
+    @Test
+    void readZipFileSuccess() throws IOException {
+        createClusterPath(ARCHIVE_ROOT_PATH);
+        createZipFileWithSpecifiedEntry(ZIPPED_FILE_PATH_FOR_UPDATE, FILE_VERSION_UUID);
+
+        String actual = zipManager.readZipFile(FILE_VERSION_UUID);
+
+        assertEquals(FILE_CONTENT, actual);
+
+        Files.delete(ZIPPED_FILE_PATH_FOR_UPDATE);
         Files.delete(ARCHIVE_ROOT_PATH);
     }
 }
