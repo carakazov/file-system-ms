@@ -2,7 +2,6 @@ package notes.project.filesystem.utils;
 
 import lombok.experimental.UtilityClass;
 import notes.project.filesystem.config.ApplicationProperties;
-import org.junit.jupiter.api.Test;
 
 @UtilityClass
 public class ApplicationPropertiesUtils {
@@ -28,5 +27,21 @@ public class ApplicationPropertiesUtils {
     public static ApplicationProperties applicationPropertiesForRecreateFacade() {
         return new ApplicationProperties()
             .setRecreateFullPath(Boolean.TRUE);
+    }
+
+    public static ApplicationProperties applicationPropertiesForArchiveJob() {
+        return new ApplicationProperties()
+            .setDaysBeforeArchive(1L);
+    }
+
+    public static ApplicationProperties applicationPropertiesForNotificationJob() {
+        return new ApplicationProperties()
+            .setDaysBeforeNotification(3L)
+            .setDaysBeforeDeleteArchive(6L);
+    }
+
+    public static ApplicationProperties applicationPropertiesForDeleteJob() {
+        return new ApplicationProperties()
+            .setDaysBeforeDeleteArchive(2L);
     }
 }

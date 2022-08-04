@@ -1,4 +1,4 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import java.util.Comparator;
 import java.util.List;
@@ -15,7 +15,7 @@ import notes.project.filesystem.mapper.CreateArchiveMapper;
 import notes.project.filesystem.model.Archive;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.repository.ArchiveRepository;
-import notes.project.filesystem.service.ArchiveService;
+import notes.project.filesystem.service.logic.ArchiveService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,8 +42,12 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
+    public Archive findByVersionFileGuid(UUID versionFileGuid) {
+        return repository.findByVersionFileGuid(versionFileGuid).orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
+    }
+
+    @Override
     public String readFileVersion(UUID fileVersionGuid) {
-        Archive archive = repository.findByVersionFileGuid(fileVersionGuid).orElseThrow(() -> new ResourceNotFoundException(ExceptionCode.RESOURCE_NOT_FOUND));
-        return zipManager.readZipFile(archive.getVersionFileGuid());
+        return zipManager.readZipFile(fileVersionGuid);
     }
 }

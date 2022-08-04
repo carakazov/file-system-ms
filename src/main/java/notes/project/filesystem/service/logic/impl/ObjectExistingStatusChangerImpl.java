@@ -1,11 +1,11 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import javax.transaction.Transactional;
 
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
-import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import notes.project.filesystem.service.logic.ObjectExistingStatusChanger;
 import org.springframework.stereotype.Service;
 
 @Service

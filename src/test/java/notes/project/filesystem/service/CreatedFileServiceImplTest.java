@@ -14,7 +14,8 @@ import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.model.ReplacingHistory;
 import notes.project.filesystem.repository.CreatedFileRepository;
-import notes.project.filesystem.service.impl.CreatedFileServiceImpl;
+import notes.project.filesystem.service.logic.*;
+import notes.project.filesystem.service.logic.impl.CreatedFileServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.validation.Validator;
@@ -233,6 +234,7 @@ class CreatedFileServiceImplTest {
     void readFileVersionSuccess() {
         ReadFileArchiveVersionDto expected = ApiUtils.readFileArchiveVersionDto();
 
+        when(archiveService.findByVersionFileGuid(any())).thenReturn(DbUtils.archive());
         when(archiveService.readFileVersion(any())).thenReturn(FILE_CONTENT);
 
         ReadFileArchiveVersionDto actual = service.readFileVersion(FILE_VERSION_UUID);
@@ -240,5 +242,6 @@ class CreatedFileServiceImplTest {
         assertEquals(expected, actual);
 
         verify(archiveService).readFileVersion(FILE_VERSION_UUID);
+        verify(archiveService).findByVersionFileGuid(FILE_VERSION_UUID);
     }
 }

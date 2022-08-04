@@ -5,7 +5,7 @@ import java.util.UUID;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import notes.project.filesystem.dto.*;
-import notes.project.filesystem.service.CreatedFileService;
+import notes.project.filesystem.service.logic.CreatedFileService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

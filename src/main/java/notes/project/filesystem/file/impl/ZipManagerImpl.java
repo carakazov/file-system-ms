@@ -112,6 +112,16 @@ public class ZipManagerImpl implements ZipManager {
     }
 
     @Override
+    public synchronized void deleteZip(CreatedFile createdFile) {
+        String pathToArchive = createPathToArchive(createdFile.getExternalId());
+        try {
+            Files.delete(Path.of(pathToArchive));
+        } catch(IOException exception) {
+            throw new FileSystemException(ExceptionCode.DELETION_ERROR, exception.getMessage());
+        }
+    }
+
+    @Override
     public String readZipFile(UUID versionFileExternalId) {
         String pathToArchive = createPathToArchive(versionFileExternalId);
         try {
