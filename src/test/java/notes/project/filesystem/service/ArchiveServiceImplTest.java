@@ -1,7 +1,6 @@
 package notes.project.filesystem.service;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import notes.project.filesystem.dto.ArchiveHistoryResponseDto;
 import notes.project.filesystem.file.ZipManager;
@@ -10,7 +9,8 @@ import notes.project.filesystem.mapper.CreateArchiveMapper;
 import notes.project.filesystem.model.Archive;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.repository.ArchiveRepository;
-import notes.project.filesystem.service.impl.ArchiveServiceImpl;
+import notes.project.filesystem.service.logic.ArchiveService;
+import notes.project.filesystem.service.logic.impl.ArchiveServiceImpl;
 import notes.project.filesystem.utils.ApiUtils;
 import notes.project.filesystem.utils.DbUtils;
 import notes.project.filesystem.utils.TestUtils;
@@ -84,17 +84,14 @@ class ArchiveServiceImplTest {
 
     @Test
     void readFileVersionSuccess() {
-        Archive archive = DbUtils.archive();
         String expected = FILE_CONTENT;
 
-        when(repository.findByVersionFileGuid(any())).thenReturn(Optional.of(archive));
         when(zipManager.readZipFile(any())).thenReturn(expected);
 
         String actual = service.readFileVersion(FILE_VERSION_UUID);
 
         assertEquals(expected, actual);
 
-        verify(repository).findByVersionFileGuid(FILE_VERSION_UUID);
         verify(zipManager).readZipFile(FILE_VERSION_UUID);
     }
 }

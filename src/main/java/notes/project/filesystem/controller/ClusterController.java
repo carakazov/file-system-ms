@@ -10,7 +10,7 @@ import notes.project.filesystem.dto.ClusterCreationRequestDto;
 import notes.project.filesystem.dto.ClusterCreationResponseDto;
 import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.dto.ReadClusterDto;
-import notes.project.filesystem.service.ClusterService;
+import notes.project.filesystem.service.logic.ClusterService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

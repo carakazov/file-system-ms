@@ -1,4 +1,4 @@
-package notes.project.filesystem.service;
+package notes.project.filesystem.service.logic;
 
 import notes.project.filesystem.dto.ReplacingHistoryResponseDto;
 import notes.project.filesystem.model.CreatedFile;

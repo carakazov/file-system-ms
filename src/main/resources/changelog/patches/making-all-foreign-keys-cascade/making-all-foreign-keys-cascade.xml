@@ -1,0 +1,47 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="008" author="vadim.lebediantsev">
+        <dropForeignKeyConstraint baseTableName="archive"
+                                  constraintName="created_file_archive_fk"/>
+        <addForeignKeyConstraint baseTableName="archive" baseColumnNames="created_file_id" 
+                                 constraintName="created_file_archive_fk" referencedTableName="created_files"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+        
+        <dropForeignKeyConstraint baseTableName="created_files"
+                                  constraintName="directory_created_file_fk"/>
+        <addForeignKeyConstraint baseTableName="created_files" baseColumnNames="directory_id"
+                                 constraintName="directory_created_file_fk" referencedTableName="directories"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+        
+        <dropAllForeignKeyConstraints baseTableName="delete_history"/>
+        <addForeignKeyConstraint baseTableName="delete_history" baseColumnNames="cluster_id"
+                                 constraintName="cluster_delete_history_fk" referencedTableName="clusters"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="delete_history" baseColumnNames="created_file_id"
+                                 constraintName="created_file_delete_history_fk" referencedTableName="created_files"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="delete_history" baseColumnNames="directory_id"
+                                 constraintName="directory_delete_history_fk" referencedTableName="directories"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="directories"
+                                  constraintName="cluster_directory_fk"/>
+        <addForeignKeyConstraint baseTableName="directories" baseColumnNames="cluster_id"
+                                 constraintName="cluster_directory_fk" referencedTableName="clusters"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <dropAllForeignKeyConstraints baseTableName="replacing_history"/>
+        <addForeignKeyConstraint baseTableName="replacing_history" baseColumnNames="created_file_id"
+                                 constraintName="creating_file_replacing_history_fk" referencedTableName="created_files"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="replacing_history" baseColumnNames="source_directory_id"
+                                 constraintName="source_directory_replacing_history_fk" referencedTableName="directories"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="replacing_history" baseColumnNames="target_directory_id"
+                                 constraintName="target_directory_replacing_history_fk" referencedTableName="directories"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,4 +1,4 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -10,7 +10,7 @@ import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.mapper.DeleteHistoryResponseMapper;
 import notes.project.filesystem.model.*;
 import notes.project.filesystem.repository.DeleteHistoryRepository;
-import notes.project.filesystem.service.DeleteHistoryService;
+import notes.project.filesystem.service.logic.DeleteHistoryService;
 import org.springframework.stereotype.Service;
 
 @Service

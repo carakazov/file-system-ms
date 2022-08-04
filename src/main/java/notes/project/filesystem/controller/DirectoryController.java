@@ -10,7 +10,7 @@ import notes.project.filesystem.dto.DeleteHistoryResponseDto;
 import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
 import notes.project.filesystem.dto.ReadDirectoryDto;
-import notes.project.filesystem.service.DirectoryService;
+import notes.project.filesystem.service.logic.DirectoryService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

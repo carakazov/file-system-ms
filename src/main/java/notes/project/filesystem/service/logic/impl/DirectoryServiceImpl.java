@@ -1,4 +1,4 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import java.util.UUID;
 import javax.transaction.Transactional;
@@ -18,10 +18,10 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.repository.DirectoryRepository;
-import notes.project.filesystem.service.ClusterService;
-import notes.project.filesystem.service.DeleteHistoryService;
-import notes.project.filesystem.service.DirectoryService;
-import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import notes.project.filesystem.service.logic.ClusterService;
+import notes.project.filesystem.service.logic.DeleteHistoryService;
+import notes.project.filesystem.service.logic.DirectoryService;
+import notes.project.filesystem.service.logic.ObjectExistingStatusChanger;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +75,7 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Transactional
     public ReadDirectoryDto readDirectory(UUID externalId) {
         Directory directory = findNotDeletedDirectoryByExternalId(externalId);
+        clusterService.updateClusterLastRequestedTime(directory.getCluster());
         return readDirectoryMapper.to(directory);
     }
 
@@ -87,6 +88,7 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Override
     public DeleteHistoryResponseDto getDirectoryDeleteHistory(UUID externalId) {
         Directory directory = findByExternalId(externalId);
+        clusterService.updateClusterLastRequestedTime(directory.getCluster());
         return deleteHistoryService.getDirectoryDeleteHistory(directory);
     }
 }

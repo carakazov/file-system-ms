@@ -16,5 +16,6 @@ public interface ZipManager {
     void recreateDirectoryWithPath(Directory directory);
     void recreateDirectory(Directory directory);
     void recreateCluster(Cluster cluster);
+    void deleteZip(CreatedFile createdFile);
     String readZipFile(UUID versionFileExternalId);
 }

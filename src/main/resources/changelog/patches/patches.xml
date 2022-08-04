@@ -10,4 +10,6 @@
     <include file="changelog/patches/adding-deleted-column-to-cluster/adding-deleted-column-to-cluster.xml"/>
 
     <include file="changelog/patches/add-file-creation-date/add-file-creation-date.xml"/>
+
+    <include file="changelog/patches/making-all-foreign-keys-cascade/making-all-foreign-keys-cascade.xml"/>
 </databaseChangeLog>

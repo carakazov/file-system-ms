@@ -1,5 +1,6 @@
-package notes.project.filesystem.service;
+package notes.project.filesystem.service.logic;
 
+import java.util.List;
 import java.util.UUID;
 
 import notes.project.filesystem.dto.ClusterCreationRequestDto;
@@ -22,4 +23,10 @@ public interface ClusterService {
     Cluster findNotDeletedClusterByExternalId(UUID externalId);
 
     DeleteHistoryResponseDto getClusterDeleteHistory(UUID externalId);
+
+    List<Cluster> findAllNotDeleted();
+
+    List<Cluster> findAllDeleted();
+
+    void eraseCluster(Cluster cluster);
 }

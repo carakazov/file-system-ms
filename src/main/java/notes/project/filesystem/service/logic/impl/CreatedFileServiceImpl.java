@@ -1,4 +1,4 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import java.util.UUID;
 import javax.transaction.Transactional;
@@ -12,12 +12,9 @@ import notes.project.filesystem.file.ZipManager;
 import notes.project.filesystem.mapper.AddReplacingHistoryMapper;
 import notes.project.filesystem.mapper.FileCreationMapper;
 import notes.project.filesystem.mapper.ReadFileMapper;
-import notes.project.filesystem.model.CreatedFile;
-import notes.project.filesystem.model.Directory;
-import notes.project.filesystem.model.EventType;
-import notes.project.filesystem.model.ReplacingHistory;
+import notes.project.filesystem.model.*;
 import notes.project.filesystem.repository.CreatedFileRepository;
-import notes.project.filesystem.service.*;
+import notes.project.filesystem.service.logic.*;
 import notes.project.filesystem.validation.Validator;
 import notes.project.filesystem.validation.dto.ReplaceCreatedFileValidationDto;
 import org.springframework.stereotype.Service;
@@ -89,6 +86,9 @@ public class CreatedFileServiceImpl implements CreatedFileService {
         replaceFileValidator.validate(new ReplaceCreatedFileValidationDto(createdFile, directory));
         ReplacingHistory replacingHistory = replacingHistoryService.create(createdFile, directory);
         clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
+        if(Boolean.FALSE.equals(createdFile.getDirectory().getCluster().equals(directory.getCluster()))) {
+            clusterService.updateClusterLastRequestedTime(directory.getCluster());
+        }
         synchronized(LOCK) {
             fileManager.moveFile(createdFile, directory);
             createdFile.setDirectory(directory);
@@ -120,23 +120,28 @@ public class CreatedFileServiceImpl implements CreatedFileService {
     @Transactional
     public DeleteHistoryResponseDto getFileDeleteHistory(UUID fileExternalId) {
         CreatedFile createdFile = findFileByExternalId(fileExternalId);
+        clusterService.updateClusterLastRequestedTime(createdFile.getDirectory().getCluster());
         return deleteHistoryService.getCreatedFileDeleteHistory(createdFile);
     }
 
     @Override
     public ReplacingHistoryResponseDto getReplacingHistory(UUID fileExternalId) {
         CreatedFile file = findFileByExternalId(fileExternalId);
+        clusterService.updateClusterLastRequestedTime(file.getDirectory().getCluster());
         return replacingHistoryService.getReplacingHistory(file);
     }
 
     @Override
     public ArchiveHistoryResponseDto getArchiveHistory(UUID fileExternalId) {
         CreatedFile file = findFileByExternalId(fileExternalId);
+        clusterService.updateClusterLastRequestedTime(file.getDirectory().getCluster());
         return archiveService.getArchiveHistory(file);
     }
 
     @Override
     public ReadFileArchiveVersionDto readFileVersion(UUID fileVersionId) {
-        return new ReadFileArchiveVersionDto(archiveService.readFileVersion(fileVersionId));
+        Archive archive = archiveService.findByVersionFileGuid(fileVersionId);
+        clusterService.updateClusterLastRequestedTime(archive.getCreatedFile().getDirectory().getCluster());
+        return new ReadFileArchiveVersionDto(archiveService.readFileVersion(archive.getVersionFileGuid()));
     }
 }

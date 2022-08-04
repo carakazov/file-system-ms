@@ -23,7 +23,8 @@ public enum ExceptionCode {
     DIRECTORY_NOT_DELETED("directoryNotDeleted"),
     CLUSTER_NOT_DELETED("clusterNotDeleted"),
     PARENT_OBJECT_DELETED("parentObjectDeleted"),
-    SAME_DIRECTORY_REPLACING("sameDirectoryReplacing");
+    SAME_DIRECTORY_REPLACING("sameDirectoryReplacing"),
+    JOB_BROKER_EXCEPTION("exceptionWhileSendingToBroker");
     @Getter
     private final String code;
 

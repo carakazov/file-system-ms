@@ -1,6 +1,7 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import javax.transaction.Transactional;
 
@@ -18,9 +19,9 @@ import notes.project.filesystem.mapper.ReadClusterMapper;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.repository.ClusterRepository;
-import notes.project.filesystem.service.ClusterService;
-import notes.project.filesystem.service.DeleteHistoryService;
-import notes.project.filesystem.service.ObjectExistingStatusChanger;
+import notes.project.filesystem.service.logic.ClusterService;
+import notes.project.filesystem.service.logic.DeleteHistoryService;
+import notes.project.filesystem.service.logic.ObjectExistingStatusChanger;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class ClusterServiceImpl implements ClusterService {
     private final ZipManager zipManager;
     private final ReadClusterMapper readClusterMapper;
 
-    private final static Object LOCK = new Object();
+    private static final Object LOCK = new Object();
 
     @Override
     @Transactional
@@ -68,6 +69,7 @@ public class ClusterServiceImpl implements ClusterService {
             deleteHistoryService.createDirectoryDeleteHistory(item, EventType.DELETED);
             item.getCreatedFiles().forEach(innerItem -> deleteHistoryService.createCreatedFileDeleteHistory(innerItem, EventType.DELETED));
         });
+        updateClusterLastRequestedTime(cluster);
         synchronized(LOCK) {
             zipManager.zipCluster(cluster);
             objectExistingStatusChanger.changeClusterExistingStatus(cluster, Boolean.TRUE);
@@ -78,6 +80,7 @@ public class ClusterServiceImpl implements ClusterService {
     @Transactional
     public ReadClusterDto readCluster(UUID externalId) {
         Cluster cluster = findNotDeletedClusterByExternalId(externalId);
+        updateClusterLastRequestedTime(cluster);
         return readClusterMapper.to(cluster);
     }
 
@@ -90,6 +93,26 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     public DeleteHistoryResponseDto getClusterDeleteHistory(UUID externalId) {
         Cluster cluster = findByExternalId(externalId);
+        updateClusterLastRequestedTime(cluster);
         return deleteHistoryService.getClusterDeleteHistory(cluster);
+    }
+
+    @Override
+    public List<Cluster> findAllNotDeleted() {
+        return clusterRepository.findAllByDeletedFalse();
+    }
+
+    @Override
+    public List<Cluster> findAllDeleted() {
+        return clusterRepository.findAllByDeletedTrue();
+    }
+
+    @Override
+    @Transactional
+    public void eraseCluster(Cluster cluster) {
+        synchronized(LOCK) {
+            cluster.getDirectories().forEach(directory -> directory.getCreatedFiles().forEach(zipManager::deleteZip));
+            clusterRepository.delete(cluster);
+        }
     }
 }

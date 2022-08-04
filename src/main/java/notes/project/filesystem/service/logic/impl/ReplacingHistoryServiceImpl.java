@@ -1,4 +1,4 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +11,7 @@ import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.ReplacingHistory;
 import notes.project.filesystem.repository.ReplacingHistoryRepository;
-import notes.project.filesystem.service.ReplacingHistoryService;
+import notes.project.filesystem.service.logic.ReplacingHistoryService;
 import org.springframework.stereotype.Service;
 
 @Service

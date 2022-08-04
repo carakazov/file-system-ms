@@ -1,4 +1,4 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import java.util.UUID;
 import javax.transaction.Transactional;
@@ -10,7 +10,7 @@ import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
-import notes.project.filesystem.service.*;
+import notes.project.filesystem.service.logic.*;
 import notes.project.filesystem.validation.Validator;
 import org.springframework.stereotype.Service;
 
