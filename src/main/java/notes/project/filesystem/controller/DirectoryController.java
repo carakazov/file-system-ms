@@ -11,6 +11,7 @@ import notes.project.filesystem.dto.DirectoryCreationRequestDto;
 import notes.project.filesystem.dto.DirectoryCreationResponseDto;
 import notes.project.filesystem.dto.ReadDirectoryDto;
 import notes.project.filesystem.service.logic.DirectoryService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,26 +22,26 @@ public class DirectoryController {
     private final DirectoryService directoryService;
 
     @PostMapping
-    @ApiOperation(value = "/directory", notes = "Метод по созданию директории")
-    public DirectoryCreationResponseDto createDirectory(@RequestBody DirectoryCreationRequestDto request) {
+    @ApiOperation(value = "Метод по созданию директории")
+    public DirectoryCreationResponseDto createDirectory(@RequestBody @Validated DirectoryCreationRequestDto request) {
         return  directoryService.createDirectory(request);
     }
 
     @DeleteMapping("/{externalId}")
-    @ApiOperation(value = "/{directory/{externalId}}", notes = "Метод по удалению директории")
+    @ApiOperation(value = "Метод по удалению директории")
     public void deleteDirectory(@PathVariable(name = "externalId") @ApiParam(name = "Внешний ID директории") UUID externalId) {
         directoryService.deleteDirectory(externalId);
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "/directory/{id}", notes = "Метод запроса информации о директории и её содержимом")
-    public ReadDirectoryDto readDirectory(@PathVariable(name = "id") UUID externalId) {
+    @ApiOperation(value = "Метод запроса информации о директории и её содержимом")
+    public ReadDirectoryDto readDirectory(@PathVariable(name = "id") @ApiParam(value = "Внешний ID директории") UUID externalId) {
         return directoryService.readDirectory(externalId);
     }
 
     @GetMapping("/{id}/deleteHistory")
     @ApiOperation(value = "Запрос истории удалений и восстановлений файлов")
-    public DeleteHistoryResponseDto getDeleteHistory(@PathVariable(name = "id") UUID externalId) {
+    public DeleteHistoryResponseDto getDeleteHistory(@PathVariable(name = "id") @ApiParam(value = "Внешний ID директории") UUID externalId) {
         return directoryService.getDirectoryDeleteHistory(externalId);
     }
 }
