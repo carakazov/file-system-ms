@@ -4,10 +4,13 @@ import java.util.Collections;
 
 import lombok.experimental.UtilityClass;
 import notes.project.filesystem.dto.*;
+import notes.project.filesystem.dto.integration.ArchiveClusterEventDto;
+import notes.project.filesystem.dto.integration.ClusterWillBeDeletedSoonEventDto;
 import notes.project.filesystem.exception.ExceptionCode;
 import notes.project.filesystem.exception.FileSystemException;
 import notes.project.filesystem.exception.ResourceNotFoundException;
 import notes.project.filesystem.exception.ValidationException;
+import notes.project.filesystem.job.JobEventCode;
 import notes.project.filesystem.model.EventType;
 import notes.project.filesystem.validation.dto.ReplaceCreatedFileValidationDto;
 
@@ -182,6 +185,20 @@ public class ApiUtils {
     public static ReadFileArchiveVersionDto readFileArchiveVersionDto() {
         return new ReadFileArchiveVersionDto()
             .setContent(FILE_CONTENT);
+    }
+
+    public static ArchiveClusterEventDto archiveClusterEventDto() {
+        return new ArchiveClusterEventDto()
+            .setEventCode(JobEventCode.CLUSTER_WAS_ARCHIVED.getCode())
+            .setClusterExternalId(CLUSTER_EXTERNAL_ID);
+    }
+
+    public static ClusterWillBeDeletedSoonEventDto clusterWillBeDeletedSoonEventDto() {
+        return new ClusterWillBeDeletedSoonEventDto(
+            JobEventCode.CLUSTER_WILL_BE_DELETED_SOON.getCode(),
+            CLUSTER_EXTERNAL_ID,
+            2L
+        );
     }
 
     public static ErrorDto errorDto() {

@@ -1,4 +1,4 @@
-package notes.project.filesystem.service.impl;
+package notes.project.filesystem.service.logic.impl;
 
 import javax.transaction.Transactional;
 
@@ -8,9 +8,9 @@ import notes.project.filesystem.model.Cluster;
 import notes.project.filesystem.model.CreatedFile;
 import notes.project.filesystem.model.Directory;
 import notes.project.filesystem.model.EventType;
-import notes.project.filesystem.service.ClusterService;
-import notes.project.filesystem.service.DeleteHistoryService;
-import notes.project.filesystem.service.RecreateService;
+import notes.project.filesystem.service.logic.ClusterService;
+import notes.project.filesystem.service.logic.DeleteHistoryService;
+import notes.project.filesystem.service.logic.RecreateService;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,4 +1,21 @@
 spring:
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
+    virtualHost: /
+  cloud:
+    stream:
+      bindings:
+        delete-object-notification-channel:
+          destination: notification.channel
+          content-type: application/json
+      rabbit:
+        bindings:
+          delete-object-notification-channel:
+            producer:
+              declare-exchange: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/file_system
@@ -16,6 +33,9 @@ application:
   root: root
   archiveRoot: archive-root
   recreateFullPath: true
+  daysBeforeArchive: 30
+  daysBeforeDeleteArchive: 150
+  daysBeforeNotification: 140
   errorMessages:
     unexpectedErrorWhileCreationOperation: Unexpected error while creation operation.
     objectAlreadyExists: Object with such name already exists. Choose another one.
