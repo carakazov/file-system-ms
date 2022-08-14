@@ -1,0 +1,17 @@
+spring:
+  config:
+    import: configserver:http://${CONFIG_SERVER_URL:localhost}:${CONFIG_SERVER_PORT:7777}, vault://
+  application:
+    name: filesystem
+  profiles:
+    active: dev
+  cloud:
+    vault:
+      kv:
+        backend: kv
+      host: ${VAULT_HOST:0.0.0.0}
+      port: ${VAULT_PORT:8200}
+      scheme: http
+      uri: ${VAULT_URL:http://0.0.0.0:8200}
+      authentication: token
+      token: hvs.GASjTkkXwJjbrw1D36853UIJ
