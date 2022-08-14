@@ -61,8 +61,8 @@ application:
 
 keycloak:
   auth-server-url: http://localhost:8484/auth
-  realm: file_system_realm
-  resource: file-sysmte-ms-client
+  realm: file-system-realm
+  resource: file-system-client
   bearer-only: true
   security-constraints:
     - authRoles:
